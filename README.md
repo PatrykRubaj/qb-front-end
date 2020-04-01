@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/patrykrubaj/Quantum%20Budget/_apis/build/status/PatrykRubaj.qb-front-end?branchName=master)](https://dev.azure.com/patrykrubaj/Quantum%20Budget/_build/latest?definitionId=2&branchName=master)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
