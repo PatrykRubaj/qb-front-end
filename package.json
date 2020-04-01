@@ -2,6 +2,7 @@
   "name": "home-budget-mvp",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://quantumbudget.com/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -44,6 +45,7 @@
     "@types/react-dom": "^16.9.5",
     "@types/react-router-dom": "^5.1.3",
     "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0"
   }
