@@ -95,7 +95,7 @@ const CategoryComponent: React.FC<Props> = ({
             </div>
           </div>
         </form>
-
+        
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>

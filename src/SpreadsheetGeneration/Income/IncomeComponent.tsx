@@ -84,7 +84,6 @@ const IncomeComponent: React.FC<Props> = ({
     <div className="row">
       <div className="col">
         <h2>Income sources</h2>
-
         <form onSubmit={(e): void => onAddSaveNewIncome(e, newIncome)}>
           <div className="form-row">
             <div className="col">

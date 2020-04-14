@@ -4,6 +4,7 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
+
 import { GeneratorState, Income, Category, Subcategory } from "./state";
 
 const GeneratorPage: React.FC = () => {
