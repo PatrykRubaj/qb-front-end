@@ -14,6 +14,7 @@ export interface Subcategory {
   id: string;
   categoryId: string;
   name: string;
+  amount: number | null;
 }
 
 export interface Income {
