@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/node": "^12.12.30",
     "@types/react": "^16.9.23",
+    "@types/uuid": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "eslint": "^6.8.0",
@@ -20,7 +21,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-sortable-hoc": "^1.11.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "uuid": "^7.0.3"
   },
   "scripts": {
     "start": "set PORT=4001 && react-scripts start",
