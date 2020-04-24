@@ -1,8 +1,10 @@
+import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
+
 export interface GeneratorState {
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
   incomes: Array<Income>;
-  expectedSpendings: Array<ExpectedSpending>;
+  locale: Country | null;
 }
 
 export interface Category {
@@ -20,18 +22,12 @@ export interface Subcategory {
 export interface Income {
   id: string;
   name: string;
-  amount: number;
-}
-
-export interface ExpectedSpending {
-  id: string;
-  subcategoryId: string;
-  amount: number;
+  amount: number | undefined;
 }
 
 export const initialState: GeneratorState = {
   categories: [],
   subcategories: [],
   incomes: [],
-  expectedSpendings: []
+  locale: null
 };
