@@ -3,6 +3,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, Subcategory } from "../state";
 import { v4 as uuidv4 } from "uuid";
+import WarningDialog from "../../Common/WarningDialog";
+import ConfirmationDialog from "../../Common/ConfirmationDialog";
 
 interface Props {
   categories: Array<Category>;
@@ -26,6 +28,7 @@ const SubcategoryComponent: React.FC<Props> = ({
     amount: null
   });
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const subcategoryInput = React.createRef<HTMLInputElement>();
 
@@ -49,6 +52,10 @@ const SubcategoryComponent: React.FC<Props> = ({
     setNewSubcategory({ ...newSubcategory, categoryId: category.id });
 
     subcategoryInput.current?.focus();
+    subcategoryInput.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   };
 
   const onSubcategorySubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -70,13 +77,17 @@ const SubcategoryComponent: React.FC<Props> = ({
     setEditMode(false);
 
     subcategoryInput.current?.focus();
+    subcategoryInput.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   };
 
   const onSubcategoryDeleteClick = (
     e: React.MouseEvent<HTMLButtonElement>,
     subcategory: Subcategory
   ): void => {
-    e.preventDefault();
+    // e.preventDefault();
     deleteSubcategory(subcategory);
   };
 
@@ -86,16 +97,30 @@ const SubcategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    deleteSubcategory(subcategory);
+    if (editMode === false) {
+      deleteSubcategory(subcategory);
 
-    setNewSubcategory(subcategory);
-    setEditMode(true);
+      setNewSubcategory(subcategory);
+      setEditMode(true);
 
-    subcategoryInput.current?.focus();
+      subcategoryInput.current?.focus();
+      subcategoryInput.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    } else {
+      setShowWarning(true);
+    }
   };
 
   return (
     <div className="row">
+      <WarningDialog
+        title="Finish editing entry"
+        description="You can't edit entry when another is already edited"
+        show={showWarning}
+        onExit={(): void => setShowWarning(false)}
+      />
       <div className="col">
         <h2>Subcategories</h2>
         <form onSubmit={onSubcategorySubmit}>
@@ -165,15 +190,25 @@ const SubcategoryComponent: React.FC<Props> = ({
                         >
                           <EditIcon />
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={(e): void => {
-                            onSubcategoryDeleteClick(e, subcategory);
-                          }}
+                        <ConfirmationDialog
+                          title="Delete subcategory?"
+                          description="Do You want to delete subcategory?"
                         >
-                          <DeleteIcon />
-                        </button>
+                          {confirm => {
+                            return (
+                              <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={confirm(
+                                  onSubcategoryDeleteClick,
+                                  subcategory
+                                )}
+                              >
+                                <DeleteIcon />
+                              </button>
+                            );
+                          }}
+                        </ConfirmationDialog>
                       </div>
                     </td>
                   </tr>

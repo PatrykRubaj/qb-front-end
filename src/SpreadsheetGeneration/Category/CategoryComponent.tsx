@@ -3,6 +3,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category } from "../state";
 import { v4 as uuidv4 } from "uuid";
+import WarngingDialog from "../../Common/WarningDialog";
+import ConfirmationDialog from "../../Common/ConfirmationDialog";
 
 interface Props {
   categories: Array<Category>;
@@ -22,6 +24,7 @@ const CategoryComponent: React.FC<Props> = ({
     name: ""
   });
   const [editMode, setEditMode] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const categoryInput = React.createRef<HTMLInputElement>();
 
@@ -42,19 +45,23 @@ const CategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    deleteCategory(category);
+    if (editMode === false) {
+      deleteCategory(category);
 
-    setNewCategory(category);
-    setEditMode(true);
+      setNewCategory(category);
+      setEditMode(true);
 
-    categoryInput.current?.focus();
+      categoryInput.current?.focus();
+    } else {
+      setShowWarning(true);
+    }
   };
 
   const onDeleteClick = (
     e: React.MouseEvent<HTMLButtonElement>,
     category: Category
   ): void => {
-    e.preventDefault();
+    // e.preventDefault();
 
     deleteCategory(category);
   };
@@ -67,12 +74,19 @@ const CategoryComponent: React.FC<Props> = ({
       id: uuidv4(),
       name: ""
     });
+    setEditMode(false);
 
     categoryInput.current?.focus();
   };
 
   return (
     <div className="row">
+      <WarngingDialog
+        show={showWarning}
+        onExit={(): void => setShowWarning(false)}
+        title="Edit already in progress"
+        description="Save entry before editing a new one"
+      />
       <div className="col">
         <h2>Categories</h2>
         <form onSubmit={onFormSubmit}>
@@ -95,7 +109,6 @@ const CategoryComponent: React.FC<Props> = ({
             </div>
           </div>
         </form>
-        
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
@@ -118,13 +131,22 @@ const CategoryComponent: React.FC<Props> = ({
                     >
                       <EditIcon />
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={(e): void => onDeleteClick(e, category)}
+                    <ConfirmationDialog
+                      title="Delete category?"
+                      description="Do You want to delete category?"
                     >
-                      <DeleteIcon />
-                    </button>
+                      {confirm => {
+                        return (
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={confirm(onDeleteClick, category)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                        );
+                      }}
+                    </ConfirmationDialog>
                   </div>
                 </td>
               </tr>
