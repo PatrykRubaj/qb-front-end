@@ -6,6 +6,7 @@ import { Income } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import { Country } from "../LocaleSelector/Country";
+import IncomeForm from "./IncomeForm";
 
 interface Props {
   incomes: Array<Income>;
@@ -32,27 +33,26 @@ const IncomeComponent: React.FC<Props> = ({
   const [showWarning, setShowWarning] = useState(false);
   const nameInput = React.createRef<HTMLInputElement>();
 
-  const formatter = new Intl.NumberFormat(locale?.key || "en-US", {
-    style: "currency",
-    currency: locale?.currency || "USD"
-  });
+  const getCurrency = (currenciesString: string | null | undefined): string => {
+    if (currenciesString === undefined || currenciesString === null) {
+      return "USD";
+    }
 
-  const onInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const target = event.currentTarget;
-    const value = target.value;
-    const name = target.name;
+    const indexOfComma = currenciesString.indexOf(",") || 0;
+    if (indexOfComma > 0) {
+      return currenciesString.slice(0, indexOfComma) || "USD";
+    }
 
-    setNewIncome({
-      ...newIncome,
-      [name]: value
-    });
+    return currenciesString || "USD";
   };
 
-  const onAddSaveNewIncome = (
-    e: React.FormEvent<HTMLFormElement>,
-    income: Income
-  ): void => {
-    e.preventDefault();
+  const formatter = new Intl.NumberFormat(locale?.key || "en-US", {
+    style: "currency",
+    currency: getCurrency(locale?.currency)
+  });
+
+  const onAddSaveNewIncome = (income: Income): void => {
+    // e.preventDefault();
 
     editMode ? editIncome(income) : addIncome(income);
 
@@ -69,8 +69,6 @@ const IncomeComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     income: Income
   ): void => {
-    // e.preventDefault();
-
     deleteIncome(income);
   };
 
@@ -81,8 +79,8 @@ const IncomeComponent: React.FC<Props> = ({
     e.preventDefault();
 
     if (editMode === false) {
-      deleteIncome(income);
       setNewIncome({ ...income });
+      deleteIncome(income);
       setEditMode(true);
       nameInput.current?.focus();
     } else {
@@ -100,38 +98,12 @@ const IncomeComponent: React.FC<Props> = ({
           show={showWarning}
           onExit={(): void => setShowWarning(false)}
         />
-        <form onSubmit={(e): void => onAddSaveNewIncome(e, newIncome)}>
-          <div className="form-row">
-            <div className="col">
-              <input
-                name="name"
-                value={newIncome.name || ""}
-                onChange={onInputChange}
-                ref={nameInput}
-                type="text"
-                className="form-control"
-                placeholder="Source"
-                autoFocus
-              />
-            </div>
-            <div className="col">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Amount"
-                name="amount"
-                value={newIncome.amount || ""}
-                onChange={onInputChange}
-              />
-            </div>
-            <div className="col-auto">
-              <button type="submit" className="btn btn-primary">
-                {editMode ? "Save" : "+ Add"}
-              </button>
-            </div>
-          </div>
-        </form>
-
+        <IncomeForm
+          editMode={editMode}
+          newIncome={newIncome}
+          addSaveNewIncome={onAddSaveNewIncome}
+          incomeNameInputRef={nameInput}
+        />
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>

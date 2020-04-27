@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { countries } from "countries-list";
 import { Country } from "./Country";
 import Select, { ValueType } from "react-select";
-import { getUserLocale } from "get-user-locale";
-
+import {
+  getUsersCountry,
+  countriesList,
+  findCountryBasedOnKey
+} from "../../Helpers/LocaleHelper";
 interface SelectOption {
   value: string;
   label: string;
@@ -14,66 +16,54 @@ interface Props {
 }
 
 const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
-  const [countriesArr, setCountriesArr] = useState<Country[]>([]);
-
-  const getCountryCode = (): string =>
-    getUserLocale()
-      .substring(0, 2)
-      .toUpperCase();
-
-  const findCountryBasedOnKey = (countryCode: string): Country => {
-    const country: Country = countriesArr.filter(
-      x => x.key === countryCode
-    )?.[0];
-
-    return country;
-  };
-
-  const setDefaultLocale = (): void => {
-    const country: Country = findCountryBasedOnKey(getCountryCode());
-
-    if (country !== undefined) {
-      setLocale({
-        key: country.key,
-        name: country.name,
-        currency: country.currency,
-        emojiU: country.emojiU
-      });
-    }
-  };
-
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
-  const [selectedCountryCode, setSelectedCountryCode] = useState<string>(
-    getCountryCode()
-  );
+  const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
+    value: "",
+    label: ""
+  });
 
   useEffect(() => {
-    const tmpCountryList: Country[] = [];
-    Object.entries(countries).forEach(([key, value]) =>
-      tmpCountryList.push({ ...value, key: key })
-    );
+    const setDefaultLocale = (): void => {
+      const country: Country = getUsersCountry();
+      setSelectedCountry({ value: country.key, label: country.name });
 
-    setCountriesArr(tmpCountryList);
+      if (country !== undefined) {
+        setLocale({
+          key: country.key,
+          name: country.name,
+          currency: country.currency,
+          emojiU: country.emojiU
+        });
+      }
+    };
 
-    setCountriesOptions(
-      tmpCountryList.map(country => {
-        return {
-          value: country.key,
-          label: country.name
-        };
-      })
-    );
+    const tmpCountriesList = countriesList();
 
-    setDefaultLocale();
+    if (tmpCountriesList.length > 0) {
+      setCountriesOptions(
+        tmpCountriesList.map(country => {
+          return {
+            value: country.key,
+            label: country.name
+          };
+        })
+      );
+
+      setDefaultLocale();
+    }
+    // eslint-disable-next-line
   }, []);
 
   const onCountryChange = (
     selection?: ValueType<SelectOption> | null | undefined
   ): void => {
     const countryCode = (selection as SelectOption)?.value;
-    setSelectedCountryCode(countryCode);
+    const country: Country | null = findCountryBasedOnKey(countryCode);
 
-    const country: Country = findCountryBasedOnKey(countryCode);
+    setSelectedCountry({
+      value: country?.key || "",
+      label: country?.name || ""
+    });
 
     if (country !== null) {
       setLocale({
@@ -95,6 +85,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
         <Select
           options={countriesOptions}
           onChange={(value): void => onCountryChange(value)}
+          value={selectedCountry}
         />
       </div>
     </div>
