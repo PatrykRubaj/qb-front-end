@@ -5,6 +5,7 @@ import { Category } from "../state";
 import { v4 as uuidv4 } from "uuid";
 import WarngingDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import CategoryForm from "./CategoryForm";
 
 interface Props {
   categories: Array<Category>;
@@ -27,17 +28,6 @@ const CategoryComponent: React.FC<Props> = ({
   const [showWarning, setShowWarning] = useState(false);
 
   const categoryInput = React.createRef<HTMLInputElement>();
-
-  const onNameChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    const target = e.currentTarget;
-    const value = target.value;
-    const name = target.name;
-
-    setNewCategory({
-      ...newCategory,
-      [name]: value
-    });
-  };
 
   const onEditClick = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -66,10 +56,8 @@ const CategoryComponent: React.FC<Props> = ({
     deleteCategory(category);
   };
 
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-
-    editMode ? editCategory(newCategory) : addCategory(newCategory);
+  const onFormSubmit = (category: Category): void => {
+    editMode ? editCategory(category) : addCategory(category);
     setNewCategory({
       id: uuidv4(),
       name: ""
@@ -89,26 +77,12 @@ const CategoryComponent: React.FC<Props> = ({
       />
       <div className="col">
         <h2>Categories</h2>
-        <form onSubmit={onFormSubmit}>
-          <div className="form-row">
-            <div className="col">
-              <input
-                name="name"
-                value={newCategory.name}
-                onChange={onNameChange}
-                ref={categoryInput}
-                type="text"
-                className="form-control"
-                placeholder="Category"
-              />
-            </div>
-            <div className="col-auto">
-              <button type="submit" className="btn btn-primary">
-                {editMode ? "Save" : "+ Add"}
-              </button>
-            </div>
-          </div>
-        </form>
+        <CategoryForm
+          editMode={editMode}
+          newCategory={newCategory}
+          addSaveCategory={onFormSubmit}
+          categoryNameInputRef={categoryInput}
+        />
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>

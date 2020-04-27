@@ -5,6 +5,7 @@ import { Category, Subcategory } from "../state";
 import { v4 as uuidv4 } from "uuid";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import SubcategoryForm from "./SubcategoryForm";
 
 interface Props {
   categories: Array<Category>;
@@ -31,17 +32,7 @@ const SubcategoryComponent: React.FC<Props> = ({
   const [showWarning, setShowWarning] = useState(false);
 
   const subcategoryInput = React.createRef<HTMLInputElement>();
-
-  const onNameChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    const target = e.currentTarget;
-    const value = target.value;
-    const name = target.name;
-
-    setNewSubcategory({
-      ...newSubcategory,
-      [name]: value
-    });
-  };
+  const subcategoriesHeader = React.createRef<HTMLHeadingElement>();
 
   const onSelectCategoryClick = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -51,36 +42,33 @@ const SubcategoryComponent: React.FC<Props> = ({
 
     setNewSubcategory({ ...newSubcategory, categoryId: category.id });
 
-    subcategoryInput.current?.focus();
-    subcategoryInput.current?.scrollIntoView({
+    subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
+    subcategoryInput.current?.focus();
   };
 
-  const onSubcategorySubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (
-      categories.find(x => x.id === newSubcategory.categoryId) === undefined
-    ) {
+  const onSubcategorySubmit = (subcategory: Subcategory): void => {
+    if (categories.find(x => x.id === subcategory.categoryId) === undefined) {
       return;
     }
 
-    editMode ? editSubcategory(newSubcategory) : addSubcategory(newSubcategory);
+    editMode ? editSubcategory(subcategory) : addSubcategory(subcategory);
 
     setNewSubcategory({
-      ...newSubcategory,
+      ...subcategory,
       id: uuidv4(),
       name: "",
       amount: null
     });
     setEditMode(false);
 
-    subcategoryInput.current?.focus();
-    subcategoryInput.current?.scrollIntoView({
+    subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
+    subcategoryInput.current?.focus();
   };
 
   const onSubcategoryDeleteClick = (
@@ -103,11 +91,11 @@ const SubcategoryComponent: React.FC<Props> = ({
       setNewSubcategory(subcategory);
       setEditMode(true);
 
-      subcategoryInput.current?.focus();
-      subcategoryInput.current?.scrollIntoView({
+      subcategoriesHeader.current?.scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
+      subcategoryInput.current?.focus();
     } else {
       setShowWarning(true);
     }
@@ -122,34 +110,14 @@ const SubcategoryComponent: React.FC<Props> = ({
         onExit={(): void => setShowWarning(false)}
       />
       <div className="col">
-        <h2>Subcategories</h2>
-        <form onSubmit={onSubcategorySubmit}>
-          <div className="fom-row">
-            <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">
-              Category:{" "}
-              {categories.filter(x => x.id === newSubcategory.categoryId)[0]
-                ?.name || ""}
-            </label>
-          </div>
-          <div className="form-row">
-            <div className="col">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Subcategory"
-                name="name"
-                value={newSubcategory.name}
-                onChange={onNameChange}
-                ref={subcategoryInput}
-              />
-            </div>
-            <div className="col-auto">
-              <button type="submit" className="btn btn-primary">
-                {editMode ? "Save" : "+ Add"}
-              </button>
-            </div>
-          </div>
-        </form>
+        <h2 ref={subcategoriesHeader}>Subcategories</h2>
+        <SubcategoryForm
+          editMode={editMode}
+          addSaveNewSubcategory={onSubcategorySubmit}
+          newSubcategory={newSubcategory}
+          subcategoryNameInputRef={subcategoryInput}
+          categories={categories}
+        />
 
         {categories.map(category => (
           <table
