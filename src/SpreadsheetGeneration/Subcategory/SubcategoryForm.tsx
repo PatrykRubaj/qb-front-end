@@ -29,15 +29,19 @@ const SubcategoryForm: React.FC<Props> = ({
     name: Yup.string()
       .trim()
       .required("Name is required"),
-    categoryId: Yup.string()
-      .trim()
-      .required()
+    categoryId: Yup.mixed()
+      .oneOf(
+        categories.map(x => x.id),
+        "Selected category doesn't exist"
+      )
+      .required("Select category before adding subcategory")
   });
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: values => {
+      console.log("onSubSent: ", values);
       addSaveNewSubcategory(values);
     },
     enableReinitialize: true,
@@ -48,10 +52,14 @@ const SubcategoryForm: React.FC<Props> = ({
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="fom-row">
+        {formik.errors.categoryId && formik.touched.categoryId ? (
+          <div className="alert alert-danger" role="alert">
+            {formik.errors.categoryId}
+          </div>
+        ) : null}
         <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">
           Category:{" "}
-          {categories.filter(x => x.id === newSubcategory.categoryId)[0]
-            ?.name || ""}
+          {categories.find(x => x.id === newSubcategory.categoryId)?.name || ""}
         </label>
       </div>
       <div className="form-row">
