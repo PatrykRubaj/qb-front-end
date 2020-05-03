@@ -34,7 +34,6 @@ const CategoryForm: React.FC<Props> = ({
       addSaveCategory(values);
     },
     enableReinitialize: true,
-    isInitialValid: true,
     validateOnBlur: false
   });
 
