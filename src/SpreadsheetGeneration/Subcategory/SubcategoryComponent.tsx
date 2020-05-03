@@ -117,6 +117,9 @@ const SubcategoryComponent: React.FC<Props> = ({
           newSubcategory={newSubcategory}
           subcategoryNameInputRef={subcategoryInput}
           categories={categories}
+          subcategories={subcategories.filter(
+            x => x.categoryId === newSubcategory.categoryId
+          )}
         />
 
         {categories.map(category => (

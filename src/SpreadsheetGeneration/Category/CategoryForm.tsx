@@ -8,13 +8,15 @@ interface Props {
   newCategory: Category;
   addSaveCategory: Function;
   categoryNameInputRef: React.RefObject<HTMLInputElement>;
+  categories: Category[];
 }
 
 const CategoryForm: React.FC<Props> = ({
   editMode,
   newCategory,
   addSaveCategory,
-  categoryNameInputRef
+  categoryNameInputRef,
+  categories
 }: Props) => {
   const initialValues: Category = {
     id: newCategory.id,
@@ -25,6 +27,10 @@ const CategoryForm: React.FC<Props> = ({
     name: Yup.string()
       .trim()
       .required("Name is required")
+      .notOneOf(
+        categories.map(x => x.name),
+        "Category must be unique"
+      )
   });
 
   const formik = useFormik({
