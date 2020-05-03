@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Category, Subcategory } from "../state";
-import { Formik, Form, Field, FieldArray } from "formik";
-import { render } from "@testing-library/react";
+import { Formik, Form, FieldArray, useFormikContext } from "formik";
 import * as Yup from "yup";
+import FieldWithErrorMessage from "../../Common/FieldWithErrorMessage";
 
 interface Props {
   categories: Array<Category>;
@@ -10,20 +10,15 @@ interface Props {
   enterSubcategoryAmount: Function;
 }
 
+interface FormFields {
+  subcategories: Subcategory[];
+}
+
 const SpendingPredictionComponent: React.FC<Props> = ({
   categories,
   subcategories,
   enterSubcategoryAmount
 }: Props) => {
-  const onInputChange = (
-    e: React.FormEvent<HTMLInputElement>,
-    subcategory: Subcategory
-  ): void => {
-    const target = e.currentTarget;
-    const value = target.value;
-    enterSubcategoryAmount(subcategory.id, +value);
-  };
-
   const schema = Yup.object().shape({
     subcategories: Yup.array()
       .of(
@@ -37,84 +32,82 @@ const SpendingPredictionComponent: React.FC<Props> = ({
       .required("Must have subcategories") // these constraints are shown if and only if inner constraints are satisfied
   });
 
+  const SaveDataToState = (): null => {
+    const { values, errors } = useFormikContext<FormFields>();
+    useEffect(() => {
+      values.subcategories &&
+        values.subcategories.length > 0 &&
+        values.subcategories.map((subcategory, subIndex) => {
+          if (
+            errors.subcategories?.[subIndex] === undefined &&
+            subcategory.amount !== null
+          ) {
+            const stateSubcategory = subcategories.find(
+              x => x.id === subcategory.id
+            );
+            if (stateSubcategory?.amount !== subcategory.amount) {
+              enterSubcategoryAmount(subcategory.id, subcategory.amount);
+            }
+          }
+
+          return null;
+        });
+    }, [values, errors]);
+
+    return null;
+  };
+
   return (
     <div className="row">
       <div className="col">
         <h2>Spending plan</h2>
-        {/* <form>
-          {categories.map(category => (
-            <React.Fragment key={category.id}>
-              <h3>{category.name}</h3>
-              {subcategories
-                .filter(x => x.categoryId === category.id)
-                .map(subcategory => (
-                  <div className="form-group" key={`${subcategory.id}`}>
-                    <label htmlFor="formGroupExampleInput">{`Subcategory ${subcategory.name}`}</label>
-                    <input
-                      name="amount"
-                      type="text"
-                      className="form-control"
-                      id="formGroupExampleInput"
-                      placeholder={`Subcategory ${subcategory.name}`}
-                      onChange={(e): void => onInputChange(e, subcategory)}
-                    />
-                  </div>
-                ))}
-            </React.Fragment>
-          ))}
-        </form> */}
 
-        {categories.map((category, catIndex) => (
-          <Formik
-            key={category.id}
-            enableReinitialize={true}
-            isInitialValid={true}
-            validateOnBlur={true}
-            initialValues={{
-              subcategories: subcategories.filter(
-                x => x.categoryId === category.id
-              )
-            }}
-            onSubmit={(values): void => {
-              console.log("sent ", values);
-            }}
-            validationSchema={schema}
-            render={({ values, errors }) => (
-              <Form>
-                <h3>{category.name}</h3>
-                {console.log(errors)}
-                <FieldArray
-                  name={`subcategories`}
-                  render={arrayHelpers => (
-                    <>
-                      {values.subcategories.map((subcategory, index) => {
-                        console.log("index: ", index, "subcaT:", subcategory);
-                        return (
-                          <div className="form-group" key={`${subcategory.id}`}>
-                            <label htmlFor="formGroupExampleInput">{`Subcategory ${subcategory.name}`}</label>
-                            {/* <input
-                              name="amount"
-                              type="text"
-                              className="form-control"
-                              placeholder={`Subcategory ${subcategory.name}`}
-                              onChange={(e): void =>
-                                onInputChange(e, subcategory)
-                              }
-                            /> */}
-                            <Field
-                              name={`subcategories.${index}.amount`}
-                              className="form-control"
-                            />
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                />
-              </Form>
-            )}
-          />
-        ))}
+        {categories.map(category => {
+          const initialValues: FormFields = {
+            subcategories: subcategories.filter(
+              x => x.categoryId === category.id
+            )
+          };
+
+          return (
+            <Formik
+              key={category.id}
+              enableReinitialize={true}
+              validateOnBlur={true}
+              initialValues={initialValues}
+              onSubmit={(values): void => {
+                console.log("sent ", values);
+              }}
+              validationSchema={schema}
+            >
+              {({ values, errors }): JSX.Element => (
+                <Form>
+                  <h3>{category.name}</h3>
+                  <FieldArray name={`subcategories`}>
+                    {(): JSX.Element => (
+                      <>
+                        {values.subcategories.map((subcategory, index) => {
+                          return (
+                            <div
+                              className="form-group"
+                              key={`${subcategory.id}`}
+                            >
+                              <label htmlFor="formGroupExampleInput">{`Subcategory ${subcategory.name}`}</label>
+                              <FieldWithErrorMessage
+                                name={`subcategories.${index}.amount`}
+                              />
+                              <SaveDataToState />
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                  </FieldArray>
+                </Form>
+              )}
+            </Formik>
+          );
+        })}
       </div>
     </div>
   );

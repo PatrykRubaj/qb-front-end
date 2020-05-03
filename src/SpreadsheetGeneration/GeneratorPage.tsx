@@ -11,10 +11,23 @@ import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 const GeneratorPage: React.FC = () => {
   const [state, setState] = useState<GeneratorState>({
     categories: [
-      { id: uuidv4(), name: "Food" },
-      { id: uuidv4(), name: "Utilities" }
+      { id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe", name: "Food" },
+      { id: "1e987730-c0b1-4850-b06e-7c3612393254", name: "Utilities" }
     ],
-    subcategories: [],
+    subcategories: [
+      {
+        id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
+        name: "Home",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null
+      },
+      {
+        id: "fb893109-860f-4f04-8319-3cab83812aab",
+        name: "Takeout",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null
+      }
+    ],
     incomes: [
       { id: uuidv4(), amount: 1500, name: "Starbucks" },
       { id: uuidv4(), amount: 500, name: "McDonald's" },

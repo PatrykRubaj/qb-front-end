@@ -39,7 +39,6 @@ const IncomeForm: React.FC<Props> = ({
       addSaveNewIncome(values);
     },
     enableReinitialize: true,
-    isInitialValid: true,
     validateOnBlur: false
   });
 

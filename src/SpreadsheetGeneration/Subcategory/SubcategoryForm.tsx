@@ -41,11 +41,9 @@ const SubcategoryForm: React.FC<Props> = ({
     initialValues,
     validationSchema,
     onSubmit: values => {
-      console.log("onSubSent: ", values);
       addSaveNewSubcategory(values);
     },
     enableReinitialize: true,
-    isInitialValid: true,
     validateOnBlur: false
   });
 

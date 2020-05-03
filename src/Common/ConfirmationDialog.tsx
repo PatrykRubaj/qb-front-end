@@ -40,9 +40,7 @@ const ConfirmationDialog: React.FC<Props> = (props: Props) => {
   // };
 
   function show(callback: Function, param: any): Function {
-    console.log("first call");
     return function(event: React.MouseEvent<HTMLButtonElement>): void {
-      console.log("second call");
       event.preventDefault();
       event = {
         ...event,
