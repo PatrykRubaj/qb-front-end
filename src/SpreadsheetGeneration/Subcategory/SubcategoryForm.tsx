@@ -9,6 +9,7 @@ interface Props {
   newSubcategory: Subcategory;
   categories: Category[];
   subcategoryNameInputRef: React.RefObject<HTMLInputElement>;
+  subcategories: Subcategory[];
 }
 
 const SubcategoryForm: React.FC<Props> = ({
@@ -16,7 +17,8 @@ const SubcategoryForm: React.FC<Props> = ({
   newSubcategory,
   addSaveNewSubcategory,
   categories,
-  subcategoryNameInputRef
+  subcategoryNameInputRef,
+  subcategories
 }: Props) => {
   const initialValues: Subcategory = {
     id: newSubcategory.id,
@@ -28,7 +30,11 @@ const SubcategoryForm: React.FC<Props> = ({
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required("Name is required"),
+      .required("Name is required")
+      .notOneOf(
+        subcategories.map(x => x.name),
+        "Subcategory must be unique in a category"
+      ),
     categoryId: Yup.mixed()
       .oneOf(
         categories.map(x => x.id),

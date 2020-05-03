@@ -8,13 +8,15 @@ interface Props {
   editMode: boolean;
   newIncome: Income;
   incomeNameInputRef: React.RefObject<HTMLInputElement>;
+  incomes: Income[];
 }
 
 const IncomeForm: React.FC<Props> = ({
   editMode,
   newIncome,
   addSaveNewIncome,
-  incomeNameInputRef
+  incomeNameInputRef,
+  incomes
 }: Props) => {
   const initialValues: Income = {
     id: newIncome.id,
@@ -25,7 +27,11 @@ const IncomeForm: React.FC<Props> = ({
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required("Name is required"),
+      .required("Name is required")
+      .notOneOf(
+        incomes.map(x => x.name),
+        "Income name must be unique"
+      ),
     amount: Yup.number()
       .typeError("Amount must be a number")
       .required("Amount is required")

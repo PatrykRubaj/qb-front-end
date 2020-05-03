@@ -103,6 +103,7 @@ const IncomeComponent: React.FC<Props> = ({
           newIncome={newIncome}
           addSaveNewIncome={onAddSaveNewIncome}
           incomeNameInputRef={nameInput}
+          incomes={incomes}
         />
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">

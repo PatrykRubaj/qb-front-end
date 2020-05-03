@@ -82,6 +82,7 @@ const CategoryComponent: React.FC<Props> = ({
           newCategory={newCategory}
           addSaveCategory={onFormSubmit}
           categoryNameInputRef={categoryInput}
+          categories={categories}
         />
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
