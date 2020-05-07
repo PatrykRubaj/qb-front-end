@@ -27,14 +27,13 @@
     "react-scripts": "3.4.0",
     "react-select": "^3.1.0",
     "react-sortable-hoc": "^1.11.0",
-    "typescript": "^3.8.3",
     "uuid": "^7.0.3",
     "yup": "^0.28.4"
   },
   "scripts": {
     "start": "set PORT=4001 && react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -59,6 +58,9 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^2.5.0"
+    "eslint-plugin-react-hooks": "^2.5.0",
+    "jest": "^25.5.4",
+    "ts-jest": "^25.5.0",
+    "typescript": "^3.8.3"
   }
 }
