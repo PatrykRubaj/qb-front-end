@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Category, Subcategory } from "../state";
 import { Formik, Form, FieldArray, useFormikContext } from "formik";
 import * as Yup from "yup";
-import FieldWithErrorMessage from "../../Common/FieldWithErrorMessage";
+import FormikFieldWithErrorMessage from "../../Common/FormikFieldWithErrorMessage";
 
 interface Props {
   categories: Array<Category>;
@@ -93,7 +93,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
                               key={`${subcategory.id}`}
                             >
                               <label htmlFor="formGroupExampleInput">{`Subcategory ${subcategory.name}`}</label>
-                              <FieldWithErrorMessage
+                              <FormikFieldWithErrorMessage
                                 name={`subcategories.${index}.amount`}
                               />
                               <SaveDataToState />

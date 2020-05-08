@@ -1,39 +1,32 @@
 import React from "react";
-import { Field, getIn, FieldProps } from "formik";
 
 interface Props {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  error: string;
+  touch: boolean;
   name: string;
 }
 
-const FieldWithErrorMessage: React.FC<Props> = ({ name }: Props) => {
+const FieldWithErrorMessage: React.FC<Props> = (props: Props) => {
   return (
-    <Field name={name}>
-      {({ form, field }: FieldProps): JSX.Element | null => {
-        const error = getIn(form.errors, name);
-        const touch = getIn(form.touched, name);
-
-        const inputElement = (
-          <input
-            name={name}
-            value={field.value || ""}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            type="text"
-            className={"form-control " + (touch && error ? "is-invalid" : "")}
-            placeholder="Category"
-          />
-        );
-
-        return (
-          <>
-            {inputElement}
-            {touch && error ? (
-              <div className="invalid-feedback">{error}</div>
-            ) : null}
-          </>
-        );
-      }}
-    </Field>
+    <>
+      <input
+        name={props.name}
+        value={props.value || ""}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+        type="text"
+        className={
+          "form-control " + (props.touch && props.error ? "is-invalid" : "")
+        }
+        placeholder="Category"
+      />
+      {props.touch && props.error ? (
+        <div className="invalid-feedback">{props.error}</div>
+      ) : null}
+    </>
   );
 };
 
