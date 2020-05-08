@@ -12,6 +12,7 @@
     "@types/node": "^12.12.30",
     "@types/react": "^16.9.23",
     "@types/react-select": "^3.0.11",
+    "@types/react-test-renderer": "^16.9.2",
     "@types/uuid": "^7.0.2",
     "@types/yup": "^0.28.0",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
@@ -27,6 +28,7 @@
     "react-scripts": "3.4.0",
     "react-select": "^3.1.0",
     "react-sortable-hoc": "^1.11.0",
+    "react-test-renderer": "^16.13.1",
     "uuid": "^7.0.3",
     "yup": "^0.28.4"
   },
