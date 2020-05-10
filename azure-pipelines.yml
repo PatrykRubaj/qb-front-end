@@ -17,8 +17,26 @@ steps:
 
 - script: |
     npm ci
+  displayName: 'npm ci'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: '/'
+    customCommand: 'test-ci'
+  continueOnError: true
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'junit.xml'
+    mergeTestResults: true
+    testRunTitle: 'React front tests'
+    failTaskOnFailedTests: true
+
+- script: |
     npm run build
-  displayName: 'npm ci and build'
+  displayName: 'npm build'
 
 - task: CopyFiles@1
   inputs:
