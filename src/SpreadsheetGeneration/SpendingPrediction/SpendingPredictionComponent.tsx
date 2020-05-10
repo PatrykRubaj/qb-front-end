@@ -95,6 +95,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
                               <label htmlFor="formGroupExampleInput">{`Subcategory ${subcategory.name}`}</label>
                               <FormikFieldWithErrorMessage
                                 name={`subcategories.${index}.amount`}
+                                placeholder={`Budget planned for ${subcategory.name}`}
                               />
                               <SaveDataToState />
                             </div>

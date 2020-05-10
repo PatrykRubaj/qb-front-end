@@ -7,6 +7,7 @@ interface Props {
   error: string;
   touch: boolean;
   name: string;
+  placeholder?: string;
 }
 
 const FieldWithErrorMessage: React.FC<Props> = (props: Props) => {
@@ -21,7 +22,7 @@ const FieldWithErrorMessage: React.FC<Props> = (props: Props) => {
         className={
           "form-control " + (props.touch && props.error ? "is-invalid" : "")
         }
-        placeholder="Category"
+        placeholder={props.placeholder || ""}
       />
       {props.touch && props.error ? (
         <div className="invalid-feedback">{props.error}</div>
