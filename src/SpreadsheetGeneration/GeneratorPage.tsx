@@ -4,21 +4,36 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
-
 import { GeneratorState, Income, Category, Subcategory } from "./state";
+import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
+import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
 const GeneratorPage: React.FC = () => {
   const [state, setState] = useState<GeneratorState>({
     categories: [
-      { id: uuidv4(), name: "Food" },
-      { id: uuidv4(), name: "Utilities" }
+      { id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe", name: "Food" },
+      { id: "1e987730-c0b1-4850-b06e-7c3612393254", name: "Utilities" }
     ],
-    subcategories: [],
+    subcategories: [
+      {
+        id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
+        name: "Home",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null
+      },
+      {
+        id: "fb893109-860f-4f04-8319-3cab83812aab",
+        name: "Takeout",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null
+      }
+    ],
     incomes: [
       { id: uuidv4(), amount: 1500, name: "Starbucks" },
-      { id: uuidv4(), amount: 500, name: "McDonald's" }
+      { id: uuidv4(), amount: 500, name: "McDonald's" },
+      { id: uuidv4(), amount: 500, name: "McDonald's 2" }
     ],
-    expectedSpendings: []
+    locale: null
   });
 
   const addIncome = (newIncome: Income): void => {
@@ -64,6 +79,9 @@ const GeneratorPage: React.FC = () => {
   const deleteCategory = (category: Category): void => {
     setState({
       ...state,
+      // subcategories: state.subcategories.filter(
+      //   x => x.categoryId !== category.id
+      // ),
       categories: state.categories.filter(x => x.id !== category.id)
     });
     console.log("Deleted category: ", category);
@@ -93,13 +111,42 @@ const GeneratorPage: React.FC = () => {
     console.log("Edited subcategory: ", editedSubcategory);
   };
 
+  const enterSubcategoryAmount = (
+    subcategoryId: string,
+    amount: number
+  ): void => {
+    setState({
+      ...state,
+      subcategories: state.subcategories.map(sub => {
+        if (sub.id !== subcategoryId) {
+          return sub;
+        }
+
+        return {
+          ...sub,
+          amount: amount
+        };
+      })
+    });
+  };
+
+  const setLocale = (country: Country): void => {
+    console.log("Locale set as", country);
+    setState({
+      ...state,
+      locale: country
+    });
+  };
+
   return (
     <>
+      <LocaleSelectorComponent setLocale={setLocale} />
       <IncomeComponent
         incomes={state.incomes}
         addIncome={addIncome}
         editIncome={editIncome}
         deleteIncome={deleteIncome}
+        locale={state.locale}
       />
       <CategoryComponent
         categories={state.categories}
@@ -117,6 +164,7 @@ const GeneratorPage: React.FC = () => {
       <SpendingPredictionComponent
         categories={state.categories}
         subcategories={state.subcategories}
+        enterSubcategoryAmount={enterSubcategoryAmount}
       />
       <button className="btn btn-primary btn-lg btn-block mb-4">
         Generate budget

@@ -3,57 +3,63 @@ import { v4 as uuidv4 } from "uuid";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Income } from "../state";
+import WarningDialog from "../../Common/WarningDialog";
+import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import { Country } from "../LocaleSelector/Country";
+import IncomeForm from "./IncomeForm";
 
 interface Props {
   incomes: Array<Income>;
   addIncome: Function;
   editIncome: Function;
   deleteIncome: Function;
+  locale: Country | null;
 }
 
 const IncomeComponent: React.FC<Props> = ({
   incomes,
   addIncome,
   editIncome,
-  deleteIncome
+  deleteIncome,
+  locale
 }: Props) => {
   const [newIncome, setNewIncome] = useState<Income>({
     id: uuidv4(),
     name: "",
-    amount: 0
+    amount: undefined
   });
 
   const [editMode, setEditMode] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const nameInput = React.createRef<HTMLInputElement>();
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
-  });
+  const getCurrency = (currenciesString: string | null | undefined): string => {
+    if (currenciesString === undefined || currenciesString === null) {
+      return "USD";
+    }
 
-  const onInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const target = event.currentTarget;
-    const value = target.value;
-    const name = target.name;
+    const indexOfComma = currenciesString.indexOf(",") || 0;
+    if (indexOfComma > 0) {
+      return currenciesString.slice(0, indexOfComma) || "USD";
+    }
 
-    setNewIncome({
-      ...newIncome,
-      [name]: value
-    });
+    return currenciesString || "USD";
   };
 
-  const onAddSaveNewIncome = (
-    e: React.FormEvent<HTMLFormElement>,
-    income: Income
-  ): void => {
-    e.preventDefault();
+  const formatter = new Intl.NumberFormat(locale?.key || "en-US", {
+    style: "currency",
+    currency: getCurrency(locale?.currency)
+  });
+
+  const onAddSaveNewIncome = (income: Income): void => {
+    // e.preventDefault();
 
     editMode ? editIncome(income) : addIncome(income);
 
     setNewIncome({
       id: uuidv4(),
       name: "",
-      amount: 0
+      amount: undefined
     });
     setEditMode(false);
     nameInput.current?.focus();
@@ -63,8 +69,6 @@ const IncomeComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     income: Income
   ): void => {
-    e.preventDefault();
-
     deleteIncome(income);
   };
 
@@ -74,48 +78,33 @@ const IncomeComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    deleteIncome(income);
-    setNewIncome({ ...income });
-    setEditMode(true);
-    nameInput.current?.focus();
+    if (editMode === false) {
+      setNewIncome({ ...income });
+      deleteIncome(income);
+      setEditMode(true);
+      nameInput.current?.focus();
+    } else {
+      setShowWarning(true);
+    }
   };
 
   return (
     <div className="row">
       <div className="col">
         <h2>Income sources</h2>
-        <form onSubmit={(e): void => onAddSaveNewIncome(e, newIncome)}>
-          <div className="form-row">
-            <div className="col">
-              <input
-                name="name"
-                value={newIncome.name}
-                onChange={onInputChange}
-                ref={nameInput}
-                type="text"
-                className="form-control"
-                placeholder="Source"
-                autoFocus
-              />
-            </div>
-            <div className="col">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Amount"
-                name="amount"
-                value={newIncome.amount}
-                onChange={onInputChange}
-              />
-            </div>
-            <div className="col-auto">
-              <button type="submit" className="btn btn-primary">
-                {editMode ? "Save" : "+ Add"}
-              </button>
-            </div>
-          </div>
-        </form>
-
+        <WarningDialog
+          title="Finish editing entry"
+          description="You can't edit entry when another is already edited"
+          show={showWarning}
+          onExit={(): void => setShowWarning(false)}
+        />
+        <IncomeForm
+          editMode={editMode}
+          newIncome={newIncome}
+          addSaveNewIncome={onAddSaveNewIncome}
+          incomeNameInputRef={nameInput}
+          incomes={incomes}
+        />
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
@@ -131,7 +120,7 @@ const IncomeComponent: React.FC<Props> = ({
               <tr key={income.id}>
                 <td className="align-middle">{income.name}</td>
                 <td className="align-middle text-center">
-                  {formatter.format(income.amount)}
+                  {formatter.format(income?.amount || 0)}
                 </td>
                 <td className="align-middle text-center">
                   <div className="btn-group" role="group">
@@ -142,13 +131,22 @@ const IncomeComponent: React.FC<Props> = ({
                     >
                       <EditIcon />
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={(e): void => onDeleteIncome(e, income)}
+                    <ConfirmationDialog
+                      title="Delete income?"
+                      description="Do You want to delete income?"
                     >
-                      <DeleteIcon />
-                    </button>
+                      {confirm => {
+                        return (
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={confirm(onDeleteIncome, income)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                        );
+                      }}
+                    </ConfirmationDialog>
                   </div>
                 </td>
               </tr>

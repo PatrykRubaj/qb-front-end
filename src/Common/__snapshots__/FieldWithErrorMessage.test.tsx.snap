@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Field with Error Message component Should renders successfuly 1`] = `
+Array [
+  <input
+    className="form-control is-invalid"
+    name="email"
+    onBlur={[Function]}
+    onChange={[Function]}
+    placeholder="Category"
+    type="text"
+    value="patryk.pl"
+  />,
+  <div
+    className="invalid-feedback"
+  >
+    Invalid email address
+  </div>,
+]
+`;

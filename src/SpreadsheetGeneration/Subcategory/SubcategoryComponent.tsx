@@ -3,6 +3,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, Subcategory } from "../state";
 import { v4 as uuidv4 } from "uuid";
+import WarningDialog from "../../Common/WarningDialog";
+import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import SubcategoryForm from "./SubcategoryForm";
 
 interface Props {
   categories: Array<Category>;
@@ -26,19 +29,10 @@ const SubcategoryComponent: React.FC<Props> = ({
     amount: null
   });
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const subcategoryInput = React.createRef<HTMLInputElement>();
-
-  const onNameChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    const target = e.currentTarget;
-    const value = target.value;
-    const name = target.name;
-
-    setNewSubcategory({
-      ...newSubcategory,
-      [name]: value
-    });
-  };
+  const subcategoriesHeader = React.createRef<HTMLHeadingElement>();
 
   const onSelectCategoryClick = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -48,27 +42,32 @@ const SubcategoryComponent: React.FC<Props> = ({
 
     setNewSubcategory({ ...newSubcategory, categoryId: category.id });
 
+    subcategoriesHeader.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
     subcategoryInput.current?.focus();
   };
 
-  const onSubcategorySubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (
-      categories.find(x => x.id === newSubcategory.categoryId) === undefined
-    ) {
+  const onSubcategorySubmit = (subcategory: Subcategory): void => {
+    if (categories.find(x => x.id === subcategory.categoryId) === undefined) {
       return;
     }
 
-    editMode ? editSubcategory(newSubcategory) : addSubcategory(newSubcategory);
+    editMode ? editSubcategory(subcategory) : addSubcategory(subcategory);
 
     setNewSubcategory({
-      ...newSubcategory,
+      ...subcategory,
       id: uuidv4(),
       name: "",
       amount: null
     });
     setEditMode(false);
 
+    subcategoriesHeader.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
     subcategoryInput.current?.focus();
   };
 
@@ -76,7 +75,7 @@ const SubcategoryComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     subcategory: Subcategory
   ): void => {
-    e.preventDefault();
+    // e.preventDefault();
     deleteSubcategory(subcategory);
   };
 
@@ -86,45 +85,42 @@ const SubcategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    deleteSubcategory(subcategory);
+    if (editMode === false) {
+      deleteSubcategory(subcategory);
 
-    setNewSubcategory(subcategory);
-    setEditMode(true);
+      setNewSubcategory(subcategory);
+      setEditMode(true);
 
-    subcategoryInput.current?.focus();
+      subcategoriesHeader.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+      subcategoryInput.current?.focus();
+    } else {
+      setShowWarning(true);
+    }
   };
 
   return (
     <div className="row">
+      <WarningDialog
+        title="Finish editing entry"
+        description="You can't edit entry when another is already edited"
+        show={showWarning}
+        onExit={(): void => setShowWarning(false)}
+      />
       <div className="col">
-        <h2>Subcategories</h2>
-        <form onSubmit={onSubcategorySubmit}>
-          <div className="fom-row">
-            <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">
-              Category:{" "}
-              {categories.filter(x => x.id === newSubcategory.categoryId)[0]
-                ?.name || ""}
-            </label>
-          </div>
-          <div className="form-row">
-            <div className="col">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Subcategory"
-                name="name"
-                value={newSubcategory.name}
-                onChange={onNameChange}
-                ref={subcategoryInput}
-              />
-            </div>
-            <div className="col-auto">
-              <button type="submit" className="btn btn-primary">
-                {editMode ? "Save" : "+ Add"}
-              </button>
-            </div>
-          </div>
-        </form>
+        <h2 ref={subcategoriesHeader}>Subcategories</h2>
+        <SubcategoryForm
+          editMode={editMode}
+          addSaveNewSubcategory={onSubcategorySubmit}
+          newSubcategory={newSubcategory}
+          subcategoryNameInputRef={subcategoryInput}
+          categories={categories}
+          subcategories={subcategories.filter(
+            x => x.categoryId === newSubcategory.categoryId
+          )}
+        />
 
         {categories.map(category => (
           <table
@@ -165,15 +161,25 @@ const SubcategoryComponent: React.FC<Props> = ({
                         >
                           <EditIcon />
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={(e): void => {
-                            onSubcategoryDeleteClick(e, subcategory);
-                          }}
+                        <ConfirmationDialog
+                          title="Delete subcategory?"
+                          description="Do You want to delete subcategory?"
                         >
-                          <DeleteIcon />
-                        </button>
+                          {confirm => {
+                            return (
+                              <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={confirm(
+                                  onSubcategoryDeleteClick,
+                                  subcategory
+                                )}
+                              >
+                                <DeleteIcon />
+                              </button>
+                            );
+                          }}
+                        </ConfirmationDialog>
                       </div>
                     </td>
                   </tr>
