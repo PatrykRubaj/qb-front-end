@@ -23,8 +23,10 @@ steps:
   inputs:
     command: 'custom'
     workingDir: '/'
-    customCommand: 'test-ci'
+    customCommand: 'run test-ci'
   continueOnError: true
+
+
 
 - task: PublishTestResults@2
   inputs:
