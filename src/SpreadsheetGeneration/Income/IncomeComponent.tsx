@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Income } from "../state";
+import { Income, EntityStatus } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import { Country } from "../LocaleSelector/Country";
@@ -26,10 +26,10 @@ const IncomeComponent: React.FC<Props> = ({
   const [newIncome, setNewIncome] = useState<Income>({
     id: uuidv4(),
     name: "",
-    amount: undefined
+    amount: undefined,
+    status: EntityStatus.New
   });
 
-  const [editMode, setEditMode] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const nameInput = React.createRef<HTMLInputElement>();
 
@@ -53,15 +53,18 @@ const IncomeComponent: React.FC<Props> = ({
 
   const onAddSaveNewIncome = (income: Income): void => {
     // e.preventDefault();
-
-    editMode ? editIncome(income) : addIncome(income);
+    const incomeToSave = { ...income, status: EntityStatus.Saved };
+    income.status === EntityStatus.Editing
+      ? editIncome(incomeToSave)
+      : addIncome(incomeToSave);
 
     setNewIncome({
       id: uuidv4(),
       name: "",
-      amount: undefined
+      amount: undefined,
+      status: EntityStatus.New
     });
-    setEditMode(false);
+
     nameInput.current?.focus();
   };
 
@@ -77,11 +80,11 @@ const IncomeComponent: React.FC<Props> = ({
     income: Income
   ): void => {
     e.preventDefault();
-
-    if (editMode === false) {
+    income = { ...income, status: EntityStatus.Editing };
+    editIncome(income);
+    if (newIncome.status !== EntityStatus.Editing) {
       setNewIncome({ ...income });
-      deleteIncome(income);
-      setEditMode(true);
+      // deleteIncome(income);
       nameInput.current?.focus();
     } else {
       setShowWarning(true);
@@ -99,7 +102,6 @@ const IncomeComponent: React.FC<Props> = ({
           onExit={(): void => setShowWarning(false)}
         />
         <IncomeForm
-          editMode={editMode}
           newIncome={newIncome}
           addSaveNewIncome={onAddSaveNewIncome}
           incomeNameInputRef={nameInput}
@@ -125,6 +127,7 @@ const IncomeComponent: React.FC<Props> = ({
                 <td className="align-middle text-center">
                   <div className="btn-group" role="group">
                     <button
+                      disabled={income.status === EntityStatus.Editing}
                       type="button"
                       className="btn btn-secondary"
                       onClick={(e): void => onEditIncome(e, income)}
@@ -138,6 +141,7 @@ const IncomeComponent: React.FC<Props> = ({
                       {confirm => {
                         return (
                           <button
+                            disabled={income.status === EntityStatus.Editing}
                             type="button"
                             className="btn btn-secondary"
                             onClick={confirm(onDeleteIncome, income)}

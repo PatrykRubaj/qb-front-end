@@ -7,6 +7,13 @@ export interface GeneratorState {
   locale: Country | null;
 }
 
+export enum EntityStatus {
+  New,
+  Saved,
+  Editing,
+  Deleted
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -23,6 +30,7 @@ export interface Income {
   id: string;
   name: string;
   amount: number | undefined;
+  status: EntityStatus;
 }
 
 export const initialState: GeneratorState = {

@@ -4,7 +4,13 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
-import { GeneratorState, Income, Category, Subcategory } from "./state";
+import {
+  GeneratorState,
+  Income,
+  Category,
+  Subcategory,
+  EntityStatus
+} from "./state";
 import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
 import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
@@ -29,9 +35,18 @@ const GeneratorPage: React.FC = () => {
       }
     ],
     incomes: [
-      { id: uuidv4(), amount: 1500, name: "Starbucks" },
-      { id: uuidv4(), amount: 500, name: "McDonald's" },
-      { id: uuidv4(), amount: 500, name: "McDonald's 2" }
+      {
+        id: uuidv4(),
+        amount: 1500,
+        name: "Starbucks",
+        status: EntityStatus.Saved
+      },
+      {
+        id: uuidv4(),
+        amount: 500,
+        name: "McDonald's",
+        status: EntityStatus.Saved
+      }
     ],
     locale: null
   });
@@ -53,9 +68,16 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editIncome = (income: Income): void => {
+    const newIncomes = state.incomes.map(stateIncome => {
+      if (stateIncome.id !== income.id) {
+        return stateIncome;
+      }
+
+      return income;
+    });
     setState({
       ...state,
-      incomes: [...state.incomes.filter(x => x.id !== income.id), income]
+      incomes: [...newIncomes]
     });
     console.log("Edited income: ", income);
   };

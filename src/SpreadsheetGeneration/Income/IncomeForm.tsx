@@ -1,18 +1,16 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Income } from "../state";
+import { Income, EntityStatus } from "../state";
 import * as Yup from "yup";
 
 interface Props {
   addSaveNewIncome: Function;
-  editMode: boolean;
   newIncome: Income;
   incomeNameInputRef: React.RefObject<HTMLInputElement>;
   incomes: Income[];
 }
 
 const IncomeForm: React.FC<Props> = ({
-  editMode,
   newIncome,
   addSaveNewIncome,
   incomeNameInputRef,
@@ -21,7 +19,8 @@ const IncomeForm: React.FC<Props> = ({
   const initialValues: Income = {
     id: newIncome.id,
     name: newIncome.name,
-    amount: newIncome.amount
+    amount: newIncome.amount,
+    status: newIncome.status
   };
 
   const validationSchema = Yup.object({
@@ -29,7 +28,7 @@ const IncomeForm: React.FC<Props> = ({
       .trim()
       .required("Name is required")
       .notOneOf(
-        incomes.map(x => x.name),
+        incomes.filter(x => x.status === EntityStatus.Saved).map(x => x.name),
         "Income name must be unique"
       ),
     amount: Yup.number()
@@ -91,7 +90,7 @@ const IncomeForm: React.FC<Props> = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {editMode ? "Save" : "+ Add"}
+            {newIncome.status === EntityStatus.Editing ? "Save" : "+ Add"}
           </button>
         </div>
       </div>
