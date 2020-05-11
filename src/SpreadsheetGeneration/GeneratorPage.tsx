@@ -17,8 +17,16 @@ import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 const GeneratorPage: React.FC = () => {
   const [state, setState] = useState<GeneratorState>({
     categories: [
-      { id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe", name: "Food" },
-      { id: "1e987730-c0b1-4850-b06e-7c3612393254", name: "Utilities" }
+      {
+        id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        name: "Food",
+        status: EntityStatus.Saved
+      },
+      {
+        id: "1e987730-c0b1-4850-b06e-7c3612393254",
+        name: "Utilities",
+        status: EntityStatus.Saved
+      }
     ],
     subcategories: [
       {
@@ -91,9 +99,17 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editCategory = (editedCategory: Category): void => {
+    const newCategories = state.categories.map(stateCategory => {
+      if (stateCategory.id !== editedCategory.id) {
+        return stateCategory;
+      }
+
+      return editedCategory;
+    });
+
     setState({
       ...state,
-      categories: [...state.categories, editedCategory]
+      categories: [...newCategories]
     });
     console.log("Edited category: ", editedCategory);
   };

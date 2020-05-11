@@ -17,6 +17,7 @@ export enum EntityStatus {
 export interface Category {
   id: string;
   name: string;
+  status: EntityStatus;
 }
 
 export interface Subcategory {
