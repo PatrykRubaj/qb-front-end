@@ -20,6 +20,7 @@ describe(`The Field with Error Message component`, () => {
           onBlur={onBlur}
           touch={touch}
           error={error}
+          placeholder="Category"
         />
       )
       .toJSON();
