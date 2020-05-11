@@ -33,13 +33,15 @@ const GeneratorPage: React.FC = () => {
         id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
         name: "Home",
         categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null
+        amount: null,
+        status: EntityStatus.Saved
       },
       {
         id: "fb893109-860f-4f04-8319-3cab83812aab",
         name: "Takeout",
         categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null
+        amount: null,
+        status: EntityStatus.Saved
       }
     ],
     incomes: [
@@ -76,7 +78,7 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editIncome = (income: Income): void => {
-    const newIncomes = state.incomes.map(stateIncome => {
+    const newIncomes = state.incomes.map((stateIncome: Income) => {
       if (stateIncome.id !== income.id) {
         return stateIncome;
       }
@@ -99,7 +101,7 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editCategory = (editedCategory: Category): void => {
-    const newCategories = state.categories.map(stateCategory => {
+    const newCategories = state.categories.map((stateCategory: Category) => {
       if (stateCategory.id !== editedCategory.id) {
         return stateCategory;
       }
@@ -117,9 +119,9 @@ const GeneratorPage: React.FC = () => {
   const deleteCategory = (category: Category): void => {
     setState({
       ...state,
-      // subcategories: state.subcategories.filter(
-      //   x => x.categoryId !== category.id
-      // ),
+      subcategories: state.subcategories.filter(
+        x => x.categoryId !== category.id
+      ),
       categories: state.categories.filter(x => x.id !== category.id)
     });
     console.log("Deleted category: ", category);
@@ -142,9 +144,19 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editSubcategory = (editedSubcategory: Subcategory): void => {
+    const newSubcategories = state.subcategories.map(
+      (stateSubcategory: Subcategory) => {
+        if (stateSubcategory.id !== editedSubcategory.id) {
+          return stateSubcategory;
+        }
+
+        return editedSubcategory;
+      }
+    );
+
     setState({
       ...state,
-      subcategories: [...state.subcategories, editedSubcategory]
+      subcategories: [...newSubcategories]
     });
     console.log("Edited subcategory: ", editedSubcategory);
   };

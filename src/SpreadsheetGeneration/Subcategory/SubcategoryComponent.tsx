@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Category, Subcategory } from "../state";
+import { Category, Subcategory, EntityStatus } from "../state";
 import { v4 as uuidv4 } from "uuid";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
@@ -26,9 +26,9 @@ const SubcategoryComponent: React.FC<Props> = ({
     id: uuidv4(),
     name: "",
     categoryId: "",
-    amount: null
+    amount: null,
+    status: EntityStatus.New
   });
-  const [editMode, setEditMode] = useState<boolean>(false);
   const [showWarning, setShowWarning] = useState(false);
 
   const subcategoryInput = React.createRef<HTMLInputElement>();
@@ -54,15 +54,19 @@ const SubcategoryComponent: React.FC<Props> = ({
       return;
     }
 
-    editMode ? editSubcategory(subcategory) : addSubcategory(subcategory);
+    const subcategoryToSave = { ...subcategory, status: EntityStatus.Saved };
+
+    subcategory.status === EntityStatus.Editing
+      ? editSubcategory(subcategoryToSave)
+      : addSubcategory(subcategoryToSave);
 
     setNewSubcategory({
       ...subcategory,
       id: uuidv4(),
       name: "",
-      amount: null
+      amount: null,
+      status: EntityStatus.New
     });
-    setEditMode(false);
 
     subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
@@ -75,7 +79,6 @@ const SubcategoryComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     subcategory: Subcategory
   ): void => {
-    // e.preventDefault();
     deleteSubcategory(subcategory);
   };
 
@@ -85,12 +88,12 @@ const SubcategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    if (editMode === false) {
-      deleteSubcategory(subcategory);
-
+    if (
+      subcategories.filter(x => x.status === EntityStatus.Editing).length === 0
+    ) {
+      subcategory = { ...subcategory, status: EntityStatus.Editing };
       setNewSubcategory(subcategory);
-      setEditMode(true);
-
+      editSubcategory(subcategory);
       subcategoriesHeader.current?.scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -115,7 +118,6 @@ const SubcategoryComponent: React.FC<Props> = ({
         {categories.length > 0 ? (
           <>
             <SubcategoryForm
-              editMode={editMode}
               addSaveNewSubcategory={onSubcategorySubmit}
               newSubcategory={newSubcategory}
               subcategoryNameInputRef={subcategoryInput}
@@ -161,6 +163,9 @@ const SubcategoryComponent: React.FC<Props> = ({
                           <td className="align-middle text-center">
                             <div className="btn-group" role="group">
                               <button
+                                disabled={
+                                  subcategory.status === EntityStatus.Editing
+                                }
                                 type="button"
                                 className="btn btn-secondary"
                                 onClick={(e): void =>
@@ -176,6 +181,10 @@ const SubcategoryComponent: React.FC<Props> = ({
                                 {confirm => {
                                   return (
                                     <button
+                                      disabled={
+                                        subcategory.status ===
+                                        EntityStatus.Editing
+                                      }
                                       type="button"
                                       className="btn btn-secondary"
                                       onClick={confirm(

@@ -25,6 +25,7 @@ export interface Subcategory {
   categoryId: string;
   name: string;
   amount: number | null;
+  status: EntityStatus;
 }
 
 export interface Income {
