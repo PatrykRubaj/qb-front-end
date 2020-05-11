@@ -4,34 +4,59 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
-import { GeneratorState, Income, Category, Subcategory } from "./state";
+import {
+  GeneratorState,
+  Income,
+  Category,
+  Subcategory,
+  EntityStatus
+} from "./state";
 import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
 import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
 const GeneratorPage: React.FC = () => {
   const [state, setState] = useState<GeneratorState>({
     categories: [
-      { id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe", name: "Food" },
-      { id: "1e987730-c0b1-4850-b06e-7c3612393254", name: "Utilities" }
+      {
+        id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        name: "Food",
+        status: EntityStatus.Saved
+      },
+      {
+        id: "1e987730-c0b1-4850-b06e-7c3612393254",
+        name: "Utilities",
+        status: EntityStatus.Saved
+      }
     ],
     subcategories: [
       {
         id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
         name: "Home",
         categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null
+        amount: null,
+        status: EntityStatus.Saved
       },
       {
         id: "fb893109-860f-4f04-8319-3cab83812aab",
         name: "Takeout",
         categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null
+        amount: null,
+        status: EntityStatus.Saved
       }
     ],
     incomes: [
-      { id: uuidv4(), amount: 1500, name: "Starbucks" },
-      { id: uuidv4(), amount: 500, name: "McDonald's" },
-      { id: uuidv4(), amount: 500, name: "McDonald's 2" }
+      {
+        id: uuidv4(),
+        amount: 1500,
+        name: "Starbucks",
+        status: EntityStatus.Saved
+      },
+      {
+        id: uuidv4(),
+        amount: 500,
+        name: "McDonald's",
+        status: EntityStatus.Saved
+      }
     ],
     locale: null
   });
@@ -53,9 +78,16 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editIncome = (income: Income): void => {
+    const newIncomes = state.incomes.map((stateIncome: Income) => {
+      if (stateIncome.id !== income.id) {
+        return stateIncome;
+      }
+
+      return income;
+    });
     setState({
       ...state,
-      incomes: [...state.incomes.filter(x => x.id !== income.id), income]
+      incomes: [...newIncomes]
     });
     console.log("Edited income: ", income);
   };
@@ -69,9 +101,17 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editCategory = (editedCategory: Category): void => {
+    const newCategories = state.categories.map((stateCategory: Category) => {
+      if (stateCategory.id !== editedCategory.id) {
+        return stateCategory;
+      }
+
+      return editedCategory;
+    });
+
     setState({
       ...state,
-      categories: [...state.categories, editedCategory]
+      categories: [...newCategories]
     });
     console.log("Edited category: ", editedCategory);
   };
@@ -79,9 +119,9 @@ const GeneratorPage: React.FC = () => {
   const deleteCategory = (category: Category): void => {
     setState({
       ...state,
-      // subcategories: state.subcategories.filter(
-      //   x => x.categoryId !== category.id
-      // ),
+      subcategories: state.subcategories.filter(
+        x => x.categoryId !== category.id
+      ),
       categories: state.categories.filter(x => x.id !== category.id)
     });
     console.log("Deleted category: ", category);
@@ -104,9 +144,19 @@ const GeneratorPage: React.FC = () => {
   };
 
   const editSubcategory = (editedSubcategory: Subcategory): void => {
+    const newSubcategories = state.subcategories.map(
+      (stateSubcategory: Subcategory) => {
+        if (stateSubcategory.id !== editedSubcategory.id) {
+          return stateSubcategory;
+        }
+
+        return editedSubcategory;
+      }
+    );
+
     setState({
       ...state,
-      subcategories: [...state.subcategories, editedSubcategory]
+      subcategories: [...newSubcategories]
     });
     console.log("Edited subcategory: ", editedSubcategory);
   };

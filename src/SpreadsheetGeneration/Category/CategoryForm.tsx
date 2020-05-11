@@ -1,10 +1,9 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Category } from "../state";
+import { Category, EntityStatus } from "../state";
 import * as Yup from "yup";
 
 interface Props {
-  editMode: boolean;
   newCategory: Category;
   addSaveCategory: Function;
   categoryNameInputRef: React.RefObject<HTMLInputElement>;
@@ -12,7 +11,6 @@ interface Props {
 }
 
 const CategoryForm: React.FC<Props> = ({
-  editMode,
   newCategory,
   addSaveCategory,
   categoryNameInputRef,
@@ -20,7 +18,8 @@ const CategoryForm: React.FC<Props> = ({
 }: Props) => {
   const initialValues: Category = {
     id: newCategory.id,
-    name: newCategory.name
+    name: newCategory.name,
+    status: newCategory.status
   };
 
   const validationSchema = Yup.object({
@@ -28,7 +27,9 @@ const CategoryForm: React.FC<Props> = ({
       .trim()
       .required("Name is required")
       .notOneOf(
-        categories.map(x => x.name),
+        categories
+          .filter(x => x.status === EntityStatus.Saved)
+          .map(x => x.name),
         "Category must be unique"
       )
   });
@@ -66,7 +67,7 @@ const CategoryForm: React.FC<Props> = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {editMode ? "Save" : "+ Add"}
+            {newCategory.status === EntityStatus.Editing ? "Save" : "+ Add"}
           </button>
         </div>
       </div>

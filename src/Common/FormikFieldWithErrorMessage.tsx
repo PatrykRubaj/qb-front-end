@@ -4,9 +4,13 @@ import FieldWithErrorMessage from "./FieldWithErrorMessage";
 
 interface Props {
   name: string;
+  placeholder?: string;
 }
 
-const FormikFieldWithErrorMessage: React.FC<Props> = ({ name }: Props) => {
+const FormikFieldWithErrorMessage: React.FC<Props> = ({
+  name,
+  placeholder
+}: Props) => {
   return (
     <Field name={name}>
       {({ form, field }: FieldProps): JSX.Element | null => {
@@ -21,6 +25,7 @@ const FormikFieldWithErrorMessage: React.FC<Props> = ({ name }: Props) => {
             onBlur={field.onBlur}
             touch={touch}
             error={error}
+            placeholder={placeholder}
           />
         );
       }}

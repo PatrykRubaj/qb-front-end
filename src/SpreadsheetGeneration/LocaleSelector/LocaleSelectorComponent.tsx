@@ -25,7 +25,10 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
   useEffect(() => {
     const setDefaultLocale = (): void => {
       const country: Country = getUsersCountry();
-      setSelectedCountry({ value: country.key, label: country.name });
+      setSelectedCountry({
+        value: country.key,
+        label: `${country.currency} - ${country.name}`
+      });
 
       if (country !== undefined) {
         setLocale({
@@ -44,7 +47,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
         tmpCountriesList.map(country => {
           return {
             value: country.key,
-            label: country.name
+            label: `${country.currency} - ${country.name}`
           };
         })
       );
@@ -62,13 +65,13 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
 
     setSelectedCountry({
       value: country?.key || "",
-      label: country?.name || ""
+      label: (selection as SelectOption)?.label || ""
     });
 
     if (country !== null) {
       setLocale({
         key: country.key,
-        name: country.name,
+        name: `${country.currency} - ${country.name}`,
         currency: country.currency,
         emojiU: country.emojiU
       });

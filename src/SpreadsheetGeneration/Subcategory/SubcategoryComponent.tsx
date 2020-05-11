@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Category, Subcategory } from "../state";
+import { Category, Subcategory, EntityStatus } from "../state";
 import { v4 as uuidv4 } from "uuid";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
@@ -26,9 +26,9 @@ const SubcategoryComponent: React.FC<Props> = ({
     id: uuidv4(),
     name: "",
     categoryId: "",
-    amount: null
+    amount: null,
+    status: EntityStatus.New
   });
-  const [editMode, setEditMode] = useState<boolean>(false);
   const [showWarning, setShowWarning] = useState(false);
 
   const subcategoryInput = React.createRef<HTMLInputElement>();
@@ -54,15 +54,19 @@ const SubcategoryComponent: React.FC<Props> = ({
       return;
     }
 
-    editMode ? editSubcategory(subcategory) : addSubcategory(subcategory);
+    const subcategoryToSave = { ...subcategory, status: EntityStatus.Saved };
+
+    subcategory.status === EntityStatus.Editing
+      ? editSubcategory(subcategoryToSave)
+      : addSubcategory(subcategoryToSave);
 
     setNewSubcategory({
       ...subcategory,
       id: uuidv4(),
       name: "",
-      amount: null
+      amount: null,
+      status: EntityStatus.New
     });
-    setEditMode(false);
 
     subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
@@ -75,7 +79,6 @@ const SubcategoryComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     subcategory: Subcategory
   ): void => {
-    // e.preventDefault();
     deleteSubcategory(subcategory);
   };
 
@@ -85,12 +88,12 @@ const SubcategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    if (editMode === false) {
-      deleteSubcategory(subcategory);
-
+    if (
+      subcategories.filter(x => x.status === EntityStatus.Editing).length === 0
+    ) {
+      subcategory = { ...subcategory, status: EntityStatus.Editing };
       setNewSubcategory(subcategory);
-      setEditMode(true);
-
+      editSubcategory(subcategory);
       subcategoriesHeader.current?.scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -111,82 +114,126 @@ const SubcategoryComponent: React.FC<Props> = ({
       />
       <div className="col">
         <h2 ref={subcategoriesHeader}>Subcategories</h2>
-        <SubcategoryForm
-          editMode={editMode}
-          addSaveNewSubcategory={onSubcategorySubmit}
-          newSubcategory={newSubcategory}
-          subcategoryNameInputRef={subcategoryInput}
-          categories={categories}
-          subcategories={subcategories.filter(
-            x => x.categoryId === newSubcategory.categoryId
-          )}
-        />
 
-        {categories.map(category => (
-          <table
-            className="table table-borderless table-sm mt-2"
-            key={category.id}
-          >
-            <thead className="thead-light">
-              <tr>
-                <th>
-                  Subcategories for {category.name}
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm ml-1"
-                    onClick={(e): void => onSelectCategoryClick(e, category)}
-                  >
-                    Select category
-                  </button>
-                </th>
-                <th className="text-center" style={{ width: "10%" }}>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {subcategories
-                .filter(x => x.categoryId === category.id)
-                .map(subcategory => (
-                  <tr key={subcategory.id}>
-                    <td className="align-middle">{subcategory.name}</td>
-                    <td className="align-middle text-center">
-                      <div className="btn-group" role="group">
+        {categories.length > 0 ? (
+          <>
+            <SubcategoryForm
+              addSaveNewSubcategory={onSubcategorySubmit}
+              newSubcategory={newSubcategory}
+              subcategoryNameInputRef={subcategoryInput}
+              categories={categories}
+              subcategories={subcategories.filter(
+                x => x.categoryId === newSubcategory.categoryId
+              )}
+            />
+
+            {categories.map(category => {
+              const filteredSubcategories = subcategories.filter(
+                x => x.categoryId === category.id
+              );
+              return (
+                <table
+                  className="table table-borderless table-sm mt-2"
+                  key={category.id}
+                >
+                  <thead className="thead-light">
+                    <tr>
+                      <th>
+                        Subcategories for {category.name}
                         <button
                           type="button"
-                          className="btn btn-secondary"
+                          className="btn btn-secondary btn-sm ml-1"
                           onClick={(e): void =>
-                            onSubcategoryEditClick(e, subcategory)
+                            onSelectCategoryClick(e, category)
                           }
                         >
-                          <EditIcon />
+                          Select category
                         </button>
-                        <ConfirmationDialog
-                          title="Delete subcategory?"
-                          description="Do You want to delete subcategory?"
-                        >
-                          {confirm => {
-                            return (
+                      </th>
+                      <th className="text-center" style={{ width: "10%" }}>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredSubcategories.length > 0 ? (
+                      filteredSubcategories.map(subcategory => (
+                        <tr key={subcategory.id}>
+                          <td className="align-middle">{subcategory.name}</td>
+                          <td className="align-middle text-center">
+                            <div className="btn-group" role="group">
                               <button
+                                disabled={
+                                  subcategory.status === EntityStatus.Editing
+                                }
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={confirm(
-                                  onSubcategoryDeleteClick,
-                                  subcategory
-                                )}
+                                onClick={(e): void =>
+                                  onSubcategoryEditClick(e, subcategory)
+                                }
                               >
-                                <DeleteIcon />
+                                <EditIcon />
                               </button>
-                            );
-                          }}
-                        </ConfirmationDialog>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        ))}
+                              <ConfirmationDialog
+                                title="Delete subcategory?"
+                                description="Do You want to delete subcategory?"
+                              >
+                                {confirm => {
+                                  return (
+                                    <button
+                                      disabled={
+                                        subcategory.status ===
+                                        EntityStatus.Editing
+                                      }
+                                      type="button"
+                                      className="btn btn-secondary"
+                                      onClick={confirm(
+                                        onSubcategoryDeleteClick,
+                                        subcategory
+                                      )}
+                                    >
+                                      <DeleteIcon />
+                                    </button>
+                                  );
+                                }}
+                              </ConfirmationDialog>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2}>
+                          <div
+                            className="alert alert-warning align-middle"
+                            role="alert"
+                          >
+                            <span>
+                              No subcategories -{" "}
+                              <button
+                                type="button"
+                                className="btn btn-link p-0 alert-link border-0 align-baseline"
+                                onClick={(e): void =>
+                                  onSelectCategoryClick(e, category)
+                                }
+                              >
+                                add subcategory
+                              </button>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              );
+            })}
+          </>
+        ) : (
+          <div className="alert alert-warning align-middle" role="alert">
+            <span>Add categories first.</span>
+          </div>
+        )}
       </div>
     </div>
   );

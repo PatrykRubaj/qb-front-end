@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Category } from "../state";
+import { Category, EntityStatus } from "../state";
 import { v4 as uuidv4 } from "uuid";
 import WarngingDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
@@ -20,11 +20,11 @@ const CategoryComponent: React.FC<Props> = ({
   editCategory,
   deleteCategory
 }: Props) => {
-  const [newCategory, setNewCategory] = useState({
+  const [newCategory, setNewCategory] = useState<Category>({
     id: uuidv4(),
-    name: ""
+    name: "",
+    status: EntityStatus.New
   });
-  const [editMode, setEditMode] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
 
   const categoryInput = React.createRef<HTMLInputElement>();
@@ -35,11 +35,12 @@ const CategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    if (editMode === false) {
-      deleteCategory(category);
-
+    if (
+      categories.filter(x => x.status === EntityStatus.Editing).length === 0
+    ) {
+      category = { ...category, status: EntityStatus.Editing };
       setNewCategory(category);
-      setEditMode(true);
+      editCategory(category);
 
       categoryInput.current?.focus();
     } else {
@@ -57,12 +58,15 @@ const CategoryComponent: React.FC<Props> = ({
   };
 
   const onFormSubmit = (category: Category): void => {
-    editMode ? editCategory(category) : addCategory(category);
+    const categoryToSave = { ...category, status: EntityStatus.Saved };
+    category.status === EntityStatus.Editing
+      ? editCategory(categoryToSave)
+      : addCategory(categoryToSave);
     setNewCategory({
       id: uuidv4(),
-      name: ""
+      name: "",
+      status: EntityStatus.New
     });
-    setEditMode(false);
 
     categoryInput.current?.focus();
   };
@@ -78,7 +82,6 @@ const CategoryComponent: React.FC<Props> = ({
       <div className="col">
         <h2>Categories</h2>
         <CategoryForm
-          editMode={editMode}
           newCategory={newCategory}
           addSaveCategory={onFormSubmit}
           categoryNameInputRef={categoryInput}
@@ -103,6 +106,7 @@ const CategoryComponent: React.FC<Props> = ({
                       type="button"
                       className="btn btn-secondary"
                       onClick={(e): void => onEditClick(e, category)}
+                      disabled={category.status === EntityStatus.Editing}
                     >
                       <EditIcon />
                     </button>
@@ -116,6 +120,7 @@ const CategoryComponent: React.FC<Props> = ({
                             type="button"
                             className="btn btn-secondary"
                             onClick={confirm(onDeleteClick, category)}
+                            disabled={category.status === EntityStatus.Editing}
                           >
                             <DeleteIcon />
                           </button>

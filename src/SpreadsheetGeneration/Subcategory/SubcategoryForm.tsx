@@ -1,11 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Subcategory, Category } from "../state";
+import { Subcategory, Category, EntityStatus } from "../state";
 import * as Yup from "yup";
 
 interface Props {
   addSaveNewSubcategory: Function;
-  editMode: boolean;
   newSubcategory: Subcategory;
   categories: Category[];
   subcategoryNameInputRef: React.RefObject<HTMLInputElement>;
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const SubcategoryForm: React.FC<Props> = ({
-  editMode,
   newSubcategory,
   addSaveNewSubcategory,
   categories,
@@ -24,7 +22,8 @@ const SubcategoryForm: React.FC<Props> = ({
     id: newSubcategory.id,
     categoryId: newSubcategory.categoryId,
     name: newSubcategory.name,
-    amount: newSubcategory.amount
+    amount: newSubcategory.amount,
+    status: newSubcategory.status
   };
 
   const validationSchema = Yup.object({
@@ -32,7 +31,9 @@ const SubcategoryForm: React.FC<Props> = ({
       .trim()
       .required("Name is required")
       .notOneOf(
-        subcategories.map(x => x.name),
+        subcategories
+          .filter(x => x.status !== EntityStatus.Editing)
+          .map(x => x.name),
         "Subcategory must be unique in a category"
       ),
     categoryId: Yup.mixed()
@@ -87,7 +88,7 @@ const SubcategoryForm: React.FC<Props> = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {editMode ? "Save" : "+ Add"}
+            {newSubcategory.status === EntityStatus.Editing ? "Save" : "+ Add"}
           </button>
         </div>
       </div>
