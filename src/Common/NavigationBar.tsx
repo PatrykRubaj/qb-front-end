@@ -13,11 +13,6 @@ const NavigationBar: React.FC = () => (
             Generator
           </NavLink>
         </li>
-        <li className="nav-item">
-          <NavLink to="/countries" className="nav-link">
-            Countries
-          </NavLink>
-        </li>
       </ul>
     </div>
   </nav>
