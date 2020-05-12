@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import { Income, EntityStatus } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
-import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import { Country } from "../LocaleSelector/Country";
 import IncomeForm from "./IncomeForm";
+import IncomeRowComponent from "./IncomeRowComponent";
 
 interface Props {
   incomes: Array<Income>;
@@ -81,10 +79,9 @@ const IncomeComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
     income = { ...income, status: EntityStatus.Editing };
-    editIncome(income);
     if (newIncome.status !== EntityStatus.Editing) {
       setNewIncome({ ...income });
-      // deleteIncome(income);
+      editIncome(income);
       nameInput.current?.focus();
     } else {
       setShowWarning(true);
@@ -119,41 +116,13 @@ const IncomeComponent: React.FC<Props> = ({
           </thead>
           <tbody>
             {incomes.map(income => (
-              <tr key={income.id}>
-                <td className="align-middle">{income.name}</td>
-                <td className="align-middle text-center">
-                  {formatter.format(income?.amount || 0)}
-                </td>
-                <td className="align-middle text-center">
-                  <div className="btn-group" role="group">
-                    <button
-                      disabled={income.status === EntityStatus.Editing}
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={(e): void => onEditIncome(e, income)}
-                    >
-                      <EditIcon />
-                    </button>
-                    <ConfirmationDialog
-                      title="Delete income?"
-                      description="Do You want to delete income?"
-                    >
-                      {confirm => {
-                        return (
-                          <button
-                            disabled={income.status === EntityStatus.Editing}
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={confirm(onDeleteIncome, income)}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        );
-                      }}
-                    </ConfirmationDialog>
-                  </div>
-                </td>
-              </tr>
+              <IncomeRowComponent
+                key={income.id}
+                income={income}
+                onEditIncome={onEditIncome}
+                onDeleteIncome={onDeleteIncome}
+                formatter={formatter}
+              />
             ))}
           </tbody>
         </table>
