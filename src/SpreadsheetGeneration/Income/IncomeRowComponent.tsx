@@ -9,6 +9,7 @@ interface Props {
   onEditIncome: Function;
   onDeleteIncome: Function;
   formatter: Intl.NumberFormat;
+  dragHandle?: any;
 }
 
 const IncomeRowComponent: React.FC<Props> = (props: Props) => {
@@ -45,6 +46,7 @@ const IncomeRowComponent: React.FC<Props> = (props: Props) => {
               );
             }}
           </ConfirmationDialog>
+          {props.dragHandle}
         </div>
       </td>
     </tr>

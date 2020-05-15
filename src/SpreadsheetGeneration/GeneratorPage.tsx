@@ -69,6 +69,13 @@ const GeneratorPage: React.FC = () => {
     console.log("Added income: ", newIncome);
   };
 
+  const setIncomes = (incomes: Income[]): void => {
+    setState({
+      ...state,
+      incomes
+    });
+  };
+
   const deleteIncome = (income: Income): void => {
     setState({
       ...state,
@@ -193,6 +200,7 @@ const GeneratorPage: React.FC = () => {
       <LocaleSelectorComponent setLocale={setLocale} />
       <IncomeComponent
         incomes={state.incomes}
+        setIncomes={setIncomes}
         addIncome={addIncome}
         editIncome={editIncome}
         deleteIncome={deleteIncome}
