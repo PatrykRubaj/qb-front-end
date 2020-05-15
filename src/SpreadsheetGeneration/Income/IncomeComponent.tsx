@@ -1,21 +1,72 @@
 import React, { useState } from "react";
+import DragHandleIcon from "@material-ui/icons/DragHandle";
 import { v4 as uuidv4 } from "uuid";
 import { Income, EntityStatus } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
 import { Country } from "../LocaleSelector/Country";
 import IncomeForm from "./IncomeForm";
 import IncomeRowComponent from "./IncomeRowComponent";
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle
+} from "react-sortable-hoc";
+import arrayMove from "array-move";
 
 interface Props {
   incomes: Array<Income>;
+  setIncomes: Function;
   addIncome: Function;
   editIncome: Function;
   deleteIncome: Function;
   locale: Country | null;
 }
 
+interface SortableItemValue {
+  income: Income;
+  onEditIncome: Function;
+  onDeleteIncome: Function;
+  formatter: Intl.NumberFormat;
+}
+const DragHandle = SortableHandle(() => (
+  <div className="btn btn-secondary">
+    <DragHandleIcon fontSize="small" />
+  </div>
+));
+
+const SortableItem = SortableElement(
+  ({ value }: { value: SortableItemValue }) => (
+    <>
+      <IncomeRowComponent
+        income={value.income}
+        onEditIncome={value.onEditIncome}
+        onDeleteIncome={value.onDeleteIncome}
+        formatter={value.formatter}
+        dragHandle={<DragHandle />}
+      />
+    </>
+  )
+);
+
+interface SortableListProps {
+  items: Income[];
+}
+
+const SortableList = SortableContainer(
+  ({ items }: { items: SortableItemValue[] }) => {
+    return (
+      <tbody>
+        {items.map((value, index) => (
+          <SortableItem key={value.income.id} index={index} value={value} />
+        ))}
+      </tbody>
+    );
+  }
+);
+
 const IncomeComponent: React.FC<Props> = ({
   incomes,
+  setIncomes,
   addIncome,
   editIncome,
   deleteIncome,
@@ -48,6 +99,16 @@ const IncomeComponent: React.FC<Props> = ({
     style: "currency",
     currency: getCurrency(locale?.currency)
   });
+
+  const onSortEnd = ({
+    oldIndex,
+    newIndex
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }): void => {
+    setIncomes(arrayMove(incomes, oldIndex, newIndex));
+  };
 
   const onAddSaveNewIncome = (income: Income): void => {
     // e.preventDefault();
@@ -88,6 +149,15 @@ const IncomeComponent: React.FC<Props> = ({
     }
   };
 
+  const sortableItems: SortableItemValue[] = incomes.map(inc => {
+    return {
+      income: inc,
+      onEditIncome: onEditIncome,
+      onDeleteIncome: onDeleteIncome,
+      formatter: formatter
+    };
+  });
+
   return (
     <div className="row">
       <div className="col">
@@ -114,8 +184,15 @@ const IncomeComponent: React.FC<Props> = ({
               </th>
             </tr>
           </thead>
-          <tbody>
-            {incomes.map(income => (
+          <SortableList
+            items={sortableItems}
+            onSortEnd={onSortEnd}
+            lockAxis="y"
+            useDragHandle={true}
+            lockToContainerEdges={true}
+            helperClass="w-100"
+          />
+          {/* {incomes.map((income) => (
               <IncomeRowComponent
                 key={income.id}
                 income={income}
@@ -123,8 +200,7 @@ const IncomeComponent: React.FC<Props> = ({
                 onDeleteIncome={onDeleteIncome}
                 formatter={formatter}
               />
-            ))}
-          </tbody>
+            ))} */}
         </table>
       </div>
     </div>
