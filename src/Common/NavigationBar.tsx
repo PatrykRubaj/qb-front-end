@@ -1,10 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import { RootState } from "../Redux/reducers";
 
-const NavigationBar: React.FC = () => (
+const NavigationBar: React.FC<RootState> = ({ incomes }: RootState) => (
   <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
     <NavLink to="/" className="navbar-brand">
-      Quantum Budget
+      Quantum Budget - {incomes[0].name}
     </NavLink>
     <div className="">
       <ul className="navbar-nav">
@@ -18,4 +20,8 @@ const NavigationBar: React.FC = () => (
   </nav>
 );
 
-export default NavigationBar;
+const mapStateToProps = (state: RootState) => {
+  return { ...state };
+};
+
+export default connect(mapStateToProps)(NavigationBar);

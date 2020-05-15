@@ -1,5 +1,4 @@
 import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
-import { createStore } from "redux";
 
 export interface GeneratorState {
   categories: Array<Category>;
@@ -42,7 +41,3 @@ export const initialState: GeneratorState = {
   incomes: [],
   locale: null
 };
-
-// export default function getState() {
-//   const store = createStore();
-// }
