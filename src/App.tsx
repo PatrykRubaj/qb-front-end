@@ -3,10 +3,14 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
 import NavigationBar from "./Common/NavigationBar";
+import getStore from "./Redux/getStore";
+import { Provider } from "react-redux";
+
+const store = getStore();
 
 const App: React.FC = () => {
   return (
-    <>
+    <Provider store={store}>
       <Router>
         <NavigationBar />
         <Switch>
@@ -15,7 +19,7 @@ const App: React.FC = () => {
           <Route path="/about" />
         </Switch>
       </Router>
-    </>
+    </Provider>
   );
 };
 
