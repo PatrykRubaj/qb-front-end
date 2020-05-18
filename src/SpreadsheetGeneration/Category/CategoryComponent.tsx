@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import WarngingDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import CategoryForm from "./CategoryForm";
+import { RootState } from "../../Redux/reducers";
+import { connect } from "react-redux";
 
 interface Props {
   categories: Array<Category>;
@@ -138,4 +140,10 @@ const CategoryComponent: React.FC<Props> = ({
   );
 };
 
-export default CategoryComponent;
+const mapStateToProps = (state: RootState) => {
+  return {
+    categories: state.categories
+  };
+};
+
+export default connect(mapStateToProps)(CategoryComponent);

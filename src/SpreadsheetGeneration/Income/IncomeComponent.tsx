@@ -12,6 +12,8 @@ import {
   SortableHandle
 } from "react-sortable-hoc";
 import arrayMove from "array-move";
+import { RootState } from "../../Redux/reducers";
+import { connect } from "react-redux";
 
 interface Props {
   incomes: Array<Income>;
@@ -207,4 +209,10 @@ const IncomeComponent: React.FC<Props> = ({
   );
 };
 
-export default IncomeComponent;
+const mapStateToProps = (state: RootState) => {
+  return {
+    incomes: state.incomes
+  };
+};
+
+export default connect(mapStateToProps)(IncomeComponent);

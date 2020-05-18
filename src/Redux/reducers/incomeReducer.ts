@@ -1,17 +1,9 @@
-import { Income, EntityStatus } from "../../SpreadsheetGeneration/state";
+import { Income } from "../../SpreadsheetGeneration/state";
 import { IncomeActionTypes } from "../types/incomeTypes";
-
-const initialSate: Income[] = [
-  {
-    id: "14",
-    name: "Testowy Income",
-    status: EntityStatus.Saved,
-    amount: undefined
-  }
-];
+import { initialState } from "../initialsState";
 
 export default function incomeReducer(
-  incomes: Income[] = initialSate,
+  incomes: Income[] = initialState.incomes,
   action: IncomeActionTypes
 ): Income[] {
   switch (action.type) {
