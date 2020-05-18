@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
@@ -16,48 +15,9 @@ import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
 const GeneratorPage: React.FC = () => {
   const [state, setState] = useState<GeneratorState>({
-    categories: [
-      {
-        id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        name: "Food",
-        status: EntityStatus.Saved
-      },
-      {
-        id: "1e987730-c0b1-4850-b06e-7c3612393254",
-        name: "Utilities",
-        status: EntityStatus.Saved
-      }
-    ],
-    subcategories: [
-      {
-        id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
-        name: "Home",
-        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null,
-        status: EntityStatus.Saved
-      },
-      {
-        id: "fb893109-860f-4f04-8319-3cab83812aab",
-        name: "Takeout",
-        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-        amount: null,
-        status: EntityStatus.Saved
-      }
-    ],
-    incomes: [
-      {
-        id: uuidv4(),
-        amount: 1500,
-        name: "Starbucks",
-        status: EntityStatus.Saved
-      },
-      {
-        id: uuidv4(),
-        amount: 500,
-        name: "McDonald's",
-        status: EntityStatus.Saved
-      }
-    ],
+    categories: [],
+    subcategories: [],
+    incomes: [],
     locale: null
   });
 
@@ -199,7 +159,7 @@ const GeneratorPage: React.FC = () => {
     <>
       <LocaleSelectorComponent setLocale={setLocale} />
       <IncomeComponent
-        incomes={state.incomes}
+        // incomes={state.incomes}
         setIncomes={setIncomes}
         addIncome={addIncome}
         editIncome={editIncome}
@@ -207,21 +167,21 @@ const GeneratorPage: React.FC = () => {
         locale={state.locale}
       />
       <CategoryComponent
-        categories={state.categories}
+        // categories={state.categories}
         addCategory={addCategory}
         editCategory={editCategory}
         deleteCategory={deleteCategory}
       />
       <SubcategoryComponent
-        categories={state.categories}
-        subcategories={state.subcategories}
+        // categories={state.categories}
+        // subcategories={state.subcategories}
         addSubcategory={addSubcategory}
         editSubcategory={editSubcategory}
         deleteSubcategory={deleteSubcategory}
       />
       <SpendingPredictionComponent
-        categories={state.categories}
-        subcategories={state.subcategories}
+        // categories={state.categories}
+        // subcategories={state.subcategories}
         enterSubcategoryAmount={enterSubcategoryAmount}
       />
       <button className="btn btn-primary btn-lg btn-block mb-4">

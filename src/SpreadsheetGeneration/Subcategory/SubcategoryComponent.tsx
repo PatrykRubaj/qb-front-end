@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import SubcategoryForm from "./SubcategoryForm";
+import { RootState } from "../../Redux/reducers";
+import { connect } from "react-redux";
 
 interface Props {
   categories: Array<Category>;
@@ -239,4 +241,11 @@ const SubcategoryComponent: React.FC<Props> = ({
   );
 };
 
-export default SubcategoryComponent;
+const mapStateToProps = (state: RootState) => {
+  return {
+    categories: state.categories,
+    subcategories: state.subcategories
+  };
+};
+
+export default connect(mapStateToProps)(SubcategoryComponent);
