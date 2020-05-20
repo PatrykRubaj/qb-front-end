@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
 import NavigationBar from "./Common/NavigationBar";
-import getStore from "./Redux/getStore";
+import getStore from "./redux/getStore";
 import { Provider } from "react-redux";
 
 const store = getStore();

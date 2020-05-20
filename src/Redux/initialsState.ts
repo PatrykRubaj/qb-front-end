@@ -6,7 +6,7 @@ import {
   // Category,
   // Subcategory,
   EntityStatus
-} from ".././SpreadsheetGeneration/state";
+} from "../SpreadsheetGeneration/state";
 
 export const initialState: RootState = {
   incomes: [

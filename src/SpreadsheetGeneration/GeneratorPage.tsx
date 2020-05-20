@@ -3,13 +3,7 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
-import {
-  GeneratorState,
-  Income,
-  Category,
-  Subcategory,
-  EntityStatus
-} from "./state";
+import { GeneratorState, Category, Subcategory } from "./state";
 import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
 import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
@@ -18,51 +12,13 @@ const GeneratorPage: React.FC = () => {
     categories: [],
     subcategories: [],
     incomes: [],
-    locale: null
+    locale: null,
   });
-
-  const addIncome = (newIncome: Income): void => {
-    setState({
-      ...state,
-      incomes: [...state.incomes, newIncome]
-    });
-    console.log("Added income: ", newIncome);
-  };
-
-  const setIncomes = (incomes: Income[]): void => {
-    setState({
-      ...state,
-      incomes
-    });
-  };
-
-  const deleteIncome = (income: Income): void => {
-    setState({
-      ...state,
-      incomes: state.incomes.filter(x => x.id !== income.id)
-    });
-    console.log("Deleted income: ", income);
-  };
-
-  const editIncome = (income: Income): void => {
-    const newIncomes = state.incomes.map((stateIncome: Income) => {
-      if (stateIncome.id !== income.id) {
-        return stateIncome;
-      }
-
-      return income;
-    });
-    setState({
-      ...state,
-      incomes: [...newIncomes]
-    });
-    console.log("Edited income: ", income);
-  };
 
   const addCategory = (newCategory: Category): void => {
     setState({
       ...state,
-      categories: [...state.categories, newCategory]
+      categories: [...state.categories, newCategory],
     });
     console.log("Added category: ", newCategory);
   };
@@ -78,7 +34,7 @@ const GeneratorPage: React.FC = () => {
 
     setState({
       ...state,
-      categories: [...newCategories]
+      categories: [...newCategories],
     });
     console.log("Edited category: ", editedCategory);
   };
@@ -87,9 +43,9 @@ const GeneratorPage: React.FC = () => {
     setState({
       ...state,
       subcategories: state.subcategories.filter(
-        x => x.categoryId !== category.id
+        (x) => x.categoryId !== category.id
       ),
-      categories: state.categories.filter(x => x.id !== category.id)
+      categories: state.categories.filter((x) => x.id !== category.id),
     });
     console.log("Deleted category: ", category);
   };
@@ -97,7 +53,7 @@ const GeneratorPage: React.FC = () => {
   const addSubcategory = (newSubcategory: Subcategory): void => {
     setState({
       ...state,
-      subcategories: [...state.subcategories, newSubcategory]
+      subcategories: [...state.subcategories, newSubcategory],
     });
     console.log("Added subcategory: ", newSubcategory);
   };
@@ -105,7 +61,7 @@ const GeneratorPage: React.FC = () => {
   const deleteSubcategory = (subcategory: Subcategory): void => {
     setState({
       ...state,
-      subcategories: state.subcategories.filter(x => x.id !== subcategory.id)
+      subcategories: state.subcategories.filter((x) => x.id !== subcategory.id),
     });
     console.log("Deleted subcategory: ", subcategory);
   };
@@ -123,7 +79,7 @@ const GeneratorPage: React.FC = () => {
 
     setState({
       ...state,
-      subcategories: [...newSubcategories]
+      subcategories: [...newSubcategories],
     });
     console.log("Edited subcategory: ", editedSubcategory);
   };
@@ -134,16 +90,16 @@ const GeneratorPage: React.FC = () => {
   ): void => {
     setState({
       ...state,
-      subcategories: state.subcategories.map(sub => {
+      subcategories: state.subcategories.map((sub) => {
         if (sub.id !== subcategoryId) {
           return sub;
         }
 
         return {
           ...sub,
-          amount: amount
+          amount: amount,
         };
-      })
+      }),
     });
   };
 
@@ -151,21 +107,14 @@ const GeneratorPage: React.FC = () => {
     console.log("Locale set as", country);
     setState({
       ...state,
-      locale: country
+      locale: country,
     });
   };
 
   return (
     <>
       <LocaleSelectorComponent setLocale={setLocale} />
-      <IncomeComponent
-        // incomes={state.incomes}
-        setIncomes={setIncomes}
-        addIncome={addIncome}
-        editIncome={editIncome}
-        deleteIncome={deleteIncome}
-        locale={state.locale}
-      />
+      <IncomeComponent locale={state.locale} />
       <CategoryComponent
         // categories={state.categories}
         addCategory={addCategory}

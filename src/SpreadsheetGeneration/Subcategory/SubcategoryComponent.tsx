@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import SubcategoryForm from "./SubcategoryForm";
-import { RootState } from "../../Redux/reducers";
+import { RootState } from "../../redux/reducers";
 import { connect } from "react-redux";
 
 interface Props {
