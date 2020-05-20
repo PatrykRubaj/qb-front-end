@@ -3,7 +3,7 @@ import { Category, Subcategory } from "../state";
 import { Formik, Form, FieldArray, useFormikContext } from "formik";
 import * as Yup from "yup";
 import FormikFieldWithErrorMessage from "../../Common/FormikFieldWithErrorMessage";
-import { RootState } from "../../Redux/reducers";
+import { RootState } from "../../redux/reducers";
 import { connect } from "react-redux";
 
 interface Props {
