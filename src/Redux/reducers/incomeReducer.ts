@@ -1,26 +1,40 @@
-import { Income } from "../../SpreadsheetGeneration/state";
+import { Income, IncomeSection } from "../../SpreadsheetGeneration/state";
 import { IncomeActionTypes } from "../types/incomeTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/incomeTypes";
 
 export default function incomeReducer(
-  incomes: Income[] = initialState.incomes,
+  incomeSection: IncomeSection = initialState.incomeSection,
   action: IncomeActionTypes
-): Income[] {
+): IncomeSection {
   switch (action.type) {
     case types.DELETE_INCOME_FINISHED:
-      return incomes.filter(x => x.id !== action.id);
+      return {
+        ...incomeSection,
+        incomes: incomeSection.incomes.filter((x) => x.id !== action.id),
+      };
     case types.ADD_INCOME_FINISHED:
-      return [...incomes, action.payload];
+      return {
+        ...incomeSection,
+        incomes: [...incomeSection.incomes, action.payload],
+      };
     case types.EDIT_INCOME_FINISHED:
-      return incomes.map((stateIncome: Income) => {
-        if (stateIncome.id !== action.payload.id) {
-          return stateIncome;
-        }
+      return {
+        ...incomeSection,
+        incomes: incomeSection.incomes.map((stateIncome: Income) => {
+          if (stateIncome.id !== action.payload.id) {
+            return stateIncome;
+          }
 
-        return action.payload;
-      });
+          return action.payload;
+        }),
+      };
+    case types.SET_INCOME_FORM_FINISHED:
+      return {
+        ...incomeSection,
+        formValues: action.payload,
+      };
     default:
-      return incomes;
+      return incomeSection;
   }
 }

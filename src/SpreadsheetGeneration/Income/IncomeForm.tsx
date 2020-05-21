@@ -5,24 +5,17 @@ import * as Yup from "yup";
 
 interface Props {
   addSaveNewIncome: Function;
-  newIncome: Income;
+  initialValues: Income;
   incomeNameInputRef: React.RefObject<HTMLInputElement>;
   incomes: Income[];
 }
 
 const IncomeForm: React.FC<Props> = ({
-  newIncome,
+  initialValues,
   addSaveNewIncome,
   incomeNameInputRef,
   incomes
 }: Props) => {
-  const initialValues: Income = {
-    id: newIncome.id,
-    name: newIncome.name,
-    amount: newIncome.amount,
-    status: newIncome.status
-  };
-
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
@@ -90,7 +83,7 @@ const IncomeForm: React.FC<Props> = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {newIncome.status === EntityStatus.Editing ? "Save" : "+ Add"}
+            {initialValues.status === EntityStatus.Editing ? "Save" : "+ Add"}
           </button>
         </div>
       </div>

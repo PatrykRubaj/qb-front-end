@@ -22,3 +22,10 @@ export function* editIncome() {
     yield put(incomeActions.editIncomeFinished(payload));
   }
 }
+
+export function* setIncomeFormValues() {
+  while (true) {
+    const { payload } = yield take(incomeTypes.SET_INCOME_FORM);
+    yield put(incomeActions.setIncomeFormValuesFinished(payload));
+  }
+}
