@@ -11,7 +11,7 @@ export default function incomeReducer(
     case types.DELETE_INCOME_FINISHED:
       return {
         ...incomeSection,
-        incomes: incomeSection.incomes.filter((x) => x.id !== action.id),
+        incomes: incomeSection.incomes.filter(x => x.id !== action.id),
       };
     case types.ADD_INCOME_FINISHED:
       return {

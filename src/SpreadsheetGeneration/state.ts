@@ -11,7 +11,7 @@ export enum EntityStatus {
   New,
   Saved,
   Editing,
-  Deleted
+  Deleted,
 }
 
 export interface Category {
@@ -44,5 +44,5 @@ export const initialState: GeneratorState = {
   categories: [],
   subcategories: [],
   incomes: [],
-  locale: null
+  locale: null,
 };

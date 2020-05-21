@@ -5,7 +5,7 @@ import {
   // Income,
   // Category,
   // Subcategory,
-  EntityStatus
+  EntityStatus,
 } from "../SpreadsheetGeneration/state";
 
 export const initialState: RootState = {
@@ -14,34 +14,34 @@ export const initialState: RootState = {
       id: uuidv4(),
       name: "",
       amount: undefined,
-      status: EntityStatus.New
+      status: EntityStatus.New,
     },
     incomes: [
       {
         id: uuidv4(),
         amount: 1500,
         name: "Starbucks",
-        status: EntityStatus.Saved
+        status: EntityStatus.Saved,
       },
       {
         id: uuidv4(),
         amount: 500,
         name: "McDonald's",
-        status: EntityStatus.Saved
-      }
-    ]
+        status: EntityStatus.Saved,
+      },
+    ],
   },
   categories: [
     {
       id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
       name: "Food",
-      status: EntityStatus.Saved
+      status: EntityStatus.Saved,
     },
     {
       id: "1e987730-c0b1-4850-b06e-7c3612393254",
       name: "Utilities",
-      status: EntityStatus.Saved
-    }
+      status: EntityStatus.Saved,
+    },
   ],
   subcategories: [
     {
@@ -49,14 +49,14 @@ export const initialState: RootState = {
       name: "Home",
       categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
       amount: null,
-      status: EntityStatus.Saved
+      status: EntityStatus.Saved,
     },
     {
       id: "fb893109-860f-4f04-8319-3cab83812aab",
       name: "Takeout",
       categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
       amount: null,
-      status: EntityStatus.Saved
-    }
-  ]
+      status: EntityStatus.Saved,
+    },
+  ],
 };

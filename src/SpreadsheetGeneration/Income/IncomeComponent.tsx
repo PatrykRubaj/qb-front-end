@@ -124,7 +124,7 @@ const IncomeComponent: React.FC<Props> = ({
             </tr>
           </thead>
           <tbody>
-            {incomes.map((income) => (
+            {incomes.map(income => (
               <IncomeRowComponent
                 key={income.id}
                 income={income}
