@@ -34,6 +34,11 @@ export default function incomeReducer(
         ...incomeSection,
         formValues: action.payload,
       };
+    case types.SET_PROMPT_VISIBILITY_FINISHED:
+      return {
+        ...incomeSection,
+        onlyOneEditAllowedPrompt: action.isVisible,
+      };
     default:
       return incomeSection;
   }

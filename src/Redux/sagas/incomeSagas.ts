@@ -29,3 +29,10 @@ export function* setIncomeFormValues() {
     yield put(incomeActions.setIncomeFormValuesFinished(payload));
   }
 }
+
+export function* setPromptVisibility() {
+  while (true) {
+    const { isVisible } = yield take(incomeTypes.SET_PROMPT_VISIBILITY);
+    yield put(incomeActions.setPromptVisibilityFinished(isVisible));
+  }
+}

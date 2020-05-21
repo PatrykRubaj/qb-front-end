@@ -7,5 +7,6 @@ export default function* rootSaga() {
     incomeSagas.addIncome(),
     incomeSagas.editIncome(),
     incomeSagas.setIncomeFormValues(),
+    incomeSagas.setPromptVisibility(),
   ]);
 }

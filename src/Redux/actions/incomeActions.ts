@@ -4,7 +4,6 @@ import * as incomeTypes from "../types/incomeTypes";
 const deleteIncome = (
   incomeToDelete: Income
 ): incomeTypes.IncomeActionTypes => {
-  console.log(incomeToDelete);
   return {
     type: incomeTypes.DELETE_INCOME,
     id: incomeToDelete.id,
@@ -62,6 +61,24 @@ const setIncomeFormValuesFinished = (
   };
 };
 
+const setPromptVisibility = (
+  isVisible: boolean
+): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.SET_PROMPT_VISIBILITY,
+    isVisible,
+  };
+};
+
+const setPromptVisibilityFinished = (
+  isVisible: boolean
+): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.SET_PROMPT_VISIBILITY_FINISHED,
+    isVisible,
+  };
+};
+
 export default {
   deleteIncome,
   deleteIncomeFinished,
@@ -71,4 +88,6 @@ export default {
   editIncomeFinished,
   setIncomeFormValues,
   setIncomeFormValuesFinished,
+  setPromptVisibility,
+  setPromptVisibilityFinished,
 };

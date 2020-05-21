@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Income Component Test display element Should render div with warnging when there are 0 incomes 1`] = `
+<div
+  className="row"
+>
+  <div
+    className="col"
+  >
+    <h2>
+      Income sources
+    </h2>
+    <form
+      onSubmit={[Function]}
+    >
+      <div
+        className="form-row"
+      >
+        <div
+          className="col"
+        >
+          <input
+            autoFocus={true}
+            className="form-control "
+            name="name"
+            onBlur={[Function]}
+            onChange={[Function]}
+            placeholder="Source"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          className="col"
+        >
+          <input
+            className="form-control "
+            name="amount"
+            onBlur={[Function]}
+            onChange={[Function]}
+            placeholder="Amount"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          className="col-auto"
+        >
+          <button
+            className="btn btn-primary"
+            type="submit"
+          >
+            + Add
+          </button>
+        </div>
+      </div>
+    </form>
+    <table
+      className="table table-borderless table-sm mt-2 table-striped"
+    >
+      <thead
+        className="thead-light"
+      >
+        <tr>
+          <th>
+            Source
+          </th>
+          <th
+            className="text-center"
+          >
+            Amount
+          </th>
+          <th
+            className="text-center"
+            style={
+              Object {
+                "width": "10%",
+              }
+            }
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td
+            colSpan={3}
+          >
+            <div
+              className="alert alert-danger align-middle"
+              role="alert"
+            >
+              At least one income is required
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;

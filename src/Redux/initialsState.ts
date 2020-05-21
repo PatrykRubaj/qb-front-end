@@ -1,12 +1,6 @@
 import { RootState } from "./reducers";
 import { v4 as uuidv4 } from "uuid";
-import {
-  // GeneratorState,
-  // Income,
-  // Category,
-  // Subcategory,
-  EntityStatus,
-} from "../SpreadsheetGeneration/state";
+import { EntityStatus } from "../SpreadsheetGeneration/state";
 
 export const initialState: RootState = {
   incomeSection: {
@@ -30,6 +24,7 @@ export const initialState: RootState = {
         status: EntityStatus.Saved,
       },
     ],
+    onlyOneEditAllowedPrompt: false,
   },
   categories: [
     {

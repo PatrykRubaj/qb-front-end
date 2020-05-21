@@ -9,7 +9,7 @@ interface Props {
 
 const FormikFieldWithErrorMessage: React.FC<Props> = ({
   name,
-  placeholder
+  placeholder,
 }: Props) => {
   return (
     <Field name={name}>
