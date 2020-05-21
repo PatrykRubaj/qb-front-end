@@ -38,6 +38,7 @@ export interface Income {
 export interface IncomeSection {
   formValues: Income;
   incomes: Income[];
+  onlyOneEditAllowedPrompt: boolean;
 }
 
 export const initialState: GeneratorState = {

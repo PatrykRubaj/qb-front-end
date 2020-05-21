@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import * as React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Income, EntityStatus } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
@@ -18,6 +18,7 @@ interface OwnProps {
 interface StateProps {
   incomes: Array<Income>;
   formValues: Income;
+  onlyOneEditAllowedPrompt: boolean;
 }
 
 interface DispatchProps {
@@ -25,11 +26,12 @@ interface DispatchProps {
   addIncome: (income: Income) => void;
   editIncome: (income: Income) => void;
   setIncomeFormValues: (income: Income) => void;
+  setPromptVisibility: (isVisible: boolean) => void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const IncomeComponent: React.FC<Props> = ({
+export const IncomeComponent: React.FC<Props> = ({
   incomes,
   formValues,
   addIncome,
@@ -37,8 +39,9 @@ const IncomeComponent: React.FC<Props> = ({
   deleteIncome,
   locale,
   setIncomeFormValues,
+  setPromptVisibility,
+  onlyOneEditAllowedPrompt,
 }: Props) => {
-  const [showWarning, setShowWarning] = useState(false);
   const nameInput = React.createRef<HTMLInputElement>();
 
   const getCurrency = (currenciesString: string | null | undefined): string => {
@@ -93,7 +96,7 @@ const IncomeComponent: React.FC<Props> = ({
       editIncome(income);
       nameInput.current?.focus();
     } else {
-      setShowWarning(true);
+      setPromptVisibility(true);
     }
   };
 
@@ -104,8 +107,8 @@ const IncomeComponent: React.FC<Props> = ({
         <WarningDialog
           title="Finish editing entry"
           description="You can't edit entry when another is already edited"
-          show={showWarning}
-          onExit={(): void => setShowWarning(false)}
+          show={onlyOneEditAllowedPrompt}
+          onExit={(): void => setPromptVisibility(false)}
         />
         <IncomeForm
           initialValues={formValues}
@@ -124,15 +127,25 @@ const IncomeComponent: React.FC<Props> = ({
             </tr>
           </thead>
           <tbody>
-            {incomes.map(income => (
-              <IncomeRowComponent
-                key={income.id}
-                income={income}
-                onEditIncome={onEditIncome}
-                onDeleteIncome={onDeleteIncome}
-                formatter={formatter}
-              />
-            ))}
+            {incomes.length > 0 ? (
+              incomes.map(income => (
+                <IncomeRowComponent
+                  key={income.id}
+                  income={income}
+                  onEditIncome={onEditIncome}
+                  onDeleteIncome={onDeleteIncome}
+                  formatter={formatter}
+                />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3}>
+                  <div className="alert alert-danger align-middle" role="alert">
+                    At least one income is required
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -140,12 +153,13 @@ const IncomeComponent: React.FC<Props> = ({
   );
 };
 
-const mapState = (state: RootState): StateProps => ({
+export const mapStateToProps = (state: RootState): StateProps => ({
   incomes: state.incomeSection.incomes,
   formValues: state.incomeSection.formValues,
+  onlyOneEditAllowedPrompt: state.incomeSection.onlyOneEditAllowedPrompt,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     deleteIncome: (income: Income): IncomeActionTypes =>
       dispatch(incomeActions.deleteIncome(income)),
@@ -155,7 +169,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       dispatch(incomeActions.editIncome(income)),
     setIncomeFormValues: (income: Income): IncomeActionTypes =>
       dispatch(incomeActions.setIncomeFormValues(income)),
+    setPromptVisibility: (isVisible: boolean): IncomeActionTypes =>
+      dispatch(incomeActions.setPromptVisibility(isVisible)),
   };
 };
 
-export default connect(mapState, mapDispatchToProps)(IncomeComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(IncomeComponent);

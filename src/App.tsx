@@ -13,11 +13,13 @@ const App: React.FC = () => {
     <Provider store={store}>
       <Router>
         <NavigationBar />
-        <Switch>
-          <Route exact path="/" component={HomePageComponent} />
-          <Route path="/generator" component={GeneratorPage} />
-          <Route path="/about" />
-        </Switch>
+        <div className="container">
+          <Switch>
+            <Route exact path="/" component={HomePageComponent} />
+            <Route path="/generator" component={GeneratorPage} />
+            <Route path="/about" />
+          </Switch>
+        </div>
       </Router>
     </Provider>
   );
