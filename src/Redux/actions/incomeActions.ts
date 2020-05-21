@@ -7,42 +7,58 @@ const deleteIncome = (
   console.log(incomeToDelete);
   return {
     type: incomeTypes.DELETE_INCOME,
-    id: incomeToDelete.id
+    id: incomeToDelete.id,
   };
 };
 
 const deleteIncomeFinished = (id: string): incomeTypes.IncomeActionTypes => {
   return {
     type: incomeTypes.DELETE_INCOME_FINISHED,
-    id
+    id,
   };
 };
 
 const addIncome = (income: Income): incomeTypes.IncomeActionTypes => {
   return {
     type: incomeTypes.ADD_INCOME,
-    payload: income
+    payload: income,
   };
 };
 
 const addIncomeFinished = (income: Income): incomeTypes.IncomeActionTypes => {
   return {
     type: incomeTypes.ADD_INCOME_FINISHED,
-    payload: income
+    payload: income,
   };
 };
 
 const editIncome = (income: Income): incomeTypes.IncomeActionTypes => {
   return {
     type: incomeTypes.EDIT_INCOME,
-    payload: income
+    payload: income,
   };
 };
 
 const editIncomeFinished = (income: Income): incomeTypes.IncomeActionTypes => {
   return {
     type: incomeTypes.EDIT_INCOME_FINISHED,
-    payload: income
+    payload: income,
+  };
+};
+
+const setIncomeFormValues = (income: Income): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.SET_INCOME_FORM,
+    payload: income,
+  };
+};
+
+const setIncomeFormValuesFinished = (
+  income: Income
+): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.SET_INCOME_FORM_FINISHED,
+    payload: income,
   };
 };
 
@@ -52,5 +68,7 @@ export default {
   addIncome,
   addIncomeFinished,
   editIncome,
-  editIncomeFinished
+  editIncomeFinished,
+  setIncomeFormValues,
+  setIncomeFormValuesFinished,
 };

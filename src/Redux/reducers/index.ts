@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
-import incomes from "./incomeReducer";
+import incomeSection from "./incomeReducer";
 import categories from "./categoryReducer";
 import subcategories from "./subcategoryReducer";
 
 export const rootReducer = combineReducers({
-  incomes,
+  incomeSection,
   categories,
   subcategories
 });

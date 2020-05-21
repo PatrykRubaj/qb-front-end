@@ -9,20 +9,28 @@ import {
 } from "../SpreadsheetGeneration/state";
 
 export const initialState: RootState = {
-  incomes: [
-    {
+  incomeSection: {
+    formValues: {
       id: uuidv4(),
-      amount: 1500,
-      name: "Starbucks",
-      status: EntityStatus.Saved
+      name: "",
+      amount: undefined,
+      status: EntityStatus.New
     },
-    {
-      id: uuidv4(),
-      amount: 500,
-      name: "McDonald's",
-      status: EntityStatus.Saved
-    }
-  ],
+    incomes: [
+      {
+        id: uuidv4(),
+        amount: 1500,
+        name: "Starbucks",
+        status: EntityStatus.Saved
+      },
+      {
+        id: uuidv4(),
+        amount: 500,
+        name: "McDonald's",
+        status: EntityStatus.Saved
+      }
+    ]
+  },
   categories: [
     {
       id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",

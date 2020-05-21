@@ -35,6 +35,11 @@ export interface Income {
   status: EntityStatus;
 }
 
+export interface IncomeSection {
+  formValues: Income;
+  incomes: Income[];
+}
+
 export const initialState: GeneratorState = {
   categories: [],
   subcategories: [],

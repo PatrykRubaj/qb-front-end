@@ -5,6 +5,7 @@ export default function* rootSaga() {
   yield all([
     incomeSagas.deleteIncome(),
     incomeSagas.addIncome(),
-    incomeSagas.editIncome()
+    incomeSagas.editIncome(),
+    incomeSagas.setIncomeFormValues(),
   ]);
 }

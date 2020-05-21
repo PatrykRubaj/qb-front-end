@@ -12,44 +12,32 @@ import incomeActions from "../../redux/actions/incomeActions";
 import { IncomeActionTypes } from "../../redux/types/incomeTypes";
 
 interface OwnProps {
-  addIncome: Function;
-  editIncome: Function;
   locale: Country | null;
 }
 
 interface StateProps {
   incomes: Array<Income>;
+  formValues: Income;
 }
 
 interface DispatchProps {
   deleteIncome: (income: Income) => void;
   addIncome: (income: Income) => void;
   editIncome: (income: Income) => void;
+  setIncomeFormValues: (income: Income) => void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-interface SortableItemValue {
-  income: Income;
-  onEditIncome: Function;
-  onDeleteIncome: Function;
-  formatter: Intl.NumberFormat;
-}
-
 const IncomeComponent: React.FC<Props> = ({
   incomes,
+  formValues,
   addIncome,
   editIncome,
   deleteIncome,
   locale,
+  setIncomeFormValues,
 }: Props) => {
-  const [newIncome, setNewIncome] = useState<Income>({
-    id: uuidv4(),
-    name: "",
-    amount: undefined,
-    status: EntityStatus.New,
-  });
-
   const [showWarning, setShowWarning] = useState(false);
   const nameInput = React.createRef<HTMLInputElement>();
 
@@ -77,7 +65,7 @@ const IncomeComponent: React.FC<Props> = ({
       ? editIncome(incomeToSave)
       : addIncome(incomeToSave);
 
-    setNewIncome({
+    setIncomeFormValues({
       id: uuidv4(),
       name: "",
       amount: undefined,
@@ -100,8 +88,8 @@ const IncomeComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
     income = { ...income, status: EntityStatus.Editing };
-    if (newIncome.status !== EntityStatus.Editing) {
-      setNewIncome({ ...income });
+    if (formValues.status !== EntityStatus.Editing) {
+      setIncomeFormValues({ ...income });
       editIncome(income);
       nameInput.current?.focus();
     } else {
@@ -120,7 +108,7 @@ const IncomeComponent: React.FC<Props> = ({
           onExit={(): void => setShowWarning(false)}
         />
         <IncomeForm
-          newIncome={newIncome}
+          initialValues={formValues}
           addSaveNewIncome={onAddSaveNewIncome}
           incomeNameInputRef={nameInput}
           incomes={incomes}
@@ -153,7 +141,8 @@ const IncomeComponent: React.FC<Props> = ({
 };
 
 const mapState = (state: RootState): StateProps => ({
-  incomes: state.incomes,
+  incomes: state.incomeSection.incomes,
+  formValues: state.incomeSection.formValues,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
@@ -164,9 +153,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       dispatch(incomeActions.addIncome(income)),
     editIncome: (income: Income): IncomeActionTypes =>
       dispatch(incomeActions.editIncome(income)),
+    setIncomeFormValues: (income: Income): IncomeActionTypes =>
+      dispatch(incomeActions.setIncomeFormValues(income)),
   };
 };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(IncomeComponent);
 
 export default connect(mapState, mapDispatchToProps)(IncomeComponent);
