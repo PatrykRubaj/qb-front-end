@@ -14,7 +14,7 @@ const IncomeForm: React.FC<Props> = ({
   initialValues,
   addSaveNewIncome,
   incomeNameInputRef,
-  incomes
+  incomes,
 }: Props) => {
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -27,7 +27,7 @@ const IncomeForm: React.FC<Props> = ({
     amount: Yup.number()
       .typeError("Amount must be a number")
       .required("Amount is required")
-      .min(0, "Amount must be >= 0")
+      .min(0, "Amount must be >= 0"),
   });
 
   const formik = useFormik({
@@ -37,7 +37,7 @@ const IncomeForm: React.FC<Props> = ({
       addSaveNewIncome(values);
     },
     enableReinitialize: true,
-    validateOnBlur: false
+    validateOnBlur: false,
   });
 
   return (

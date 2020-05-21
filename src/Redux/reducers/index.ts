@@ -6,7 +6,7 @@ import subcategories from "./subcategoryReducer";
 export const rootReducer = combineReducers({
   incomeSection,
   categories,
-  subcategories
+  subcategories,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
