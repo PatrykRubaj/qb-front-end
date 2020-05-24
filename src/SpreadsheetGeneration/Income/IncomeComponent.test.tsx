@@ -2,9 +2,10 @@ import React from "react";
 import renderer from "react-test-renderer";
 import { IncomeComponent, mapStateToProps } from "./IncomeComponent";
 import { RootState } from "../../redux/reducers";
-import { EntityStatus } from "../state";
+import { EntityStatus, Income } from "../state";
 import * as ReactTestUtils from "react-dom/test-utils";
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
+import { Country } from "../LocaleSelector/Country";
 
 describe("Income Component", () => {
   describe("mapStateToProps", () => {
@@ -91,7 +92,7 @@ describe("Income Component", () => {
       container = null;
     });
 
-    it("can render and update the Income Component", () => {
+    it("can render the Income Component", () => {
       // Test first render and componentDidMount
       ReactTestUtils.act(() => {
         ReactDOM.render(
@@ -118,6 +119,284 @@ describe("Income Component", () => {
       expect(div?.textContent).toBe("At least one income is required");
 
       expect(div?.getAttribute("role")).toBe("alert");
+    });
+
+    it("Given 3 incomes in the array, 3 rows should be rendered with correct names and amounts", () => {
+      const incomes: Income[] = [
+        {
+          id: "income1",
+          amount: 100,
+          name: "Income 1",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "income2",
+          amount: 200,
+          name: "Income 2",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "income3",
+          amount: 300,
+          name: "Income 3",
+          status: EntityStatus.Saved,
+        },
+      ];
+
+      ReactTestUtils.act(() => {
+        ReactDOM.render(
+          <IncomeComponent
+            incomes={incomes}
+            formValues={{
+              id: "",
+              amount: undefined,
+              name: "",
+              status: EntityStatus.New,
+            }}
+            onlyOneEditAllowedPrompt={false}
+            addIncome={() => {}}
+            editIncome={() => {}}
+            deleteIncome={() => {}}
+            setIncomeFormValues={() => {}}
+            setPromptVisibility={() => {}}
+            locale={null}
+          />,
+          container
+        );
+      });
+
+      const rows = container?.querySelectorAll("tr td");
+
+      //For TypeScript
+      if (rows === undefined) {
+        fail("There are no rows");
+      }
+
+      expect(rows).toBeDefined();
+      expect(rows[0].textContent).toBe("Income 1");
+      expect(rows[3].textContent).toBe("Income 2");
+      expect(rows[6].textContent).toBe("Income 3");
+
+      expect(rows[1].textContent).toBe("$100.00");
+      expect(rows[4].textContent).toBe("$200.00");
+      expect(rows[7].textContent).toBe("$300.00");
+    });
+
+    it("Should format amount in PLN if locale is set to PL, eg. 1500,00 zł", () => {
+      const incomes: Income[] = [
+        {
+          id: "income1",
+          amount: 100,
+          name: "Income 1",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "income2",
+          amount: 3000,
+          name: "Income 2",
+          status: EntityStatus.Saved,
+        },
+      ];
+
+      const country: Country = {
+        key: "PL",
+        name: "PLN - Poland",
+        currency: "PLN",
+        emojiU: "U+1F1F5 U+1F1F1",
+      };
+
+      ReactTestUtils.act(() => {
+        ReactDOM.render(
+          <IncomeComponent
+            incomes={incomes}
+            formValues={{
+              id: "",
+              amount: undefined,
+              name: "",
+              status: EntityStatus.New,
+            }}
+            onlyOneEditAllowedPrompt={false}
+            addIncome={() => {}}
+            editIncome={() => {}}
+            deleteIncome={() => {}}
+            setIncomeFormValues={() => {}}
+            setPromptVisibility={() => {}}
+            locale={country}
+          />,
+          container
+        );
+      });
+
+      const rows = container?.querySelectorAll("tr td");
+
+      //For TypeScript
+      if (rows === undefined) {
+        fail("There are no rows");
+      }
+
+      expect(rows).toBeDefined();
+      expect(rows[1].textContent).toEqual("100,00\xa0zł");
+      expect(rows[4].textContent).toEqual("3000,00\xa0zł");
+    });
+
+    it("Should format amount in USD if locale set to null", () => {
+      const incomes: Income[] = [
+        {
+          id: "income1",
+          amount: 100,
+          name: "Income 1",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "income2",
+          amount: 3000,
+          name: "Income 2",
+          status: EntityStatus.Saved,
+        },
+      ];
+
+      const locale = null;
+
+      ReactTestUtils.act(() => {
+        ReactDOM.render(
+          <IncomeComponent
+            incomes={incomes}
+            formValues={{
+              id: "",
+              amount: undefined,
+              name: "",
+              status: EntityStatus.New,
+            }}
+            onlyOneEditAllowedPrompt={false}
+            addIncome={() => {}}
+            editIncome={() => {}}
+            deleteIncome={() => {}}
+            setIncomeFormValues={() => {}}
+            setPromptVisibility={() => {}}
+            locale={locale}
+          />,
+          container
+        );
+      });
+
+      const rows = container?.querySelectorAll("tr td");
+
+      //For TypeScript
+      if (rows === undefined) {
+        fail("There are no rows");
+      }
+
+      expect(rows).toBeDefined();
+      expect(rows[1].textContent).toEqual("$100.00");
+      expect(rows[4].textContent).toEqual("$3,000.00");
+    });
+
+    it("After clicking edit button once, I should see that it was in fact clicked with income passed", () => {
+      const incomes: Income[] = [
+        {
+          id: "income1",
+          amount: 100,
+          name: "Income 1",
+          status: EntityStatus.Saved,
+        },
+      ];
+      const editIncome = jest.fn().mockImplementation((income: Income) => {
+        return income;
+      });
+
+      ReactTestUtils.act(() => {
+        ReactDOM.render(
+          <IncomeComponent
+            incomes={incomes}
+            formValues={{
+              id: "",
+              amount: undefined,
+              name: "",
+              status: EntityStatus.New,
+            }}
+            onlyOneEditAllowedPrompt={false}
+            addIncome={() => {}}
+            editIncome={editIncome}
+            deleteIncome={() => {}}
+            setIncomeFormValues={() => {}}
+            setPromptVisibility={() => {}}
+            locale={null}
+          />,
+          container
+        );
+      });
+
+      const buttons = container?.querySelectorAll("td button");
+      expect(buttons).toBeDefined();
+      expect(buttons).toHaveLength(2);
+      //For TypeScript
+      if (buttons === undefined) {
+        fail("There are no rows");
+      }
+      buttons[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      expect(editIncome).toHaveBeenCalledTimes(1);
+      expect(editIncome).toHaveReturnedWith<Income>({
+        ...incomes[0],
+        status: EntityStatus.Editing,
+      });
+    });
+
+    it("Shouldn't fire editAction after clicking edit button when status is EntityStatus.Editing", () => {
+      const incomes: Income[] = [
+        {
+          id: "income1",
+          amount: 100,
+          name: "Income 1",
+          status: EntityStatus.Editing,
+        },
+        {
+          id: "income2",
+          amount: 200,
+          name: "Income 2",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "income3",
+          amount: 300,
+          name: "Income 3",
+          status: EntityStatus.Saved,
+        },
+      ];
+      const editAction = jest.fn();
+
+      ReactTestUtils.act(() => {
+        ReactDOM.render(
+          <IncomeComponent
+            incomes={incomes}
+            formValues={{
+              id: "",
+              amount: undefined,
+              name: "",
+              status: EntityStatus.New,
+            }}
+            onlyOneEditAllowedPrompt={false}
+            addIncome={() => {}}
+            editIncome={editAction}
+            deleteIncome={() => {}}
+            setIncomeFormValues={() => {}}
+            setPromptVisibility={() => {}}
+            locale={null}
+          />,
+          container
+        );
+      });
+
+      const buttons = container?.querySelectorAll("td button");
+
+      expect(buttons).toBeDefined();
+      expect(buttons).toHaveLength(6);
+      //For TypeScript
+      if (buttons === undefined) {
+        fail("There are no buttons");
+      }
+
+      buttons[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      expect(editAction).toBeCalledTimes(0);
     });
   });
 });

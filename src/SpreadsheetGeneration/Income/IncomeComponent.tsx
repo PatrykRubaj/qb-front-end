@@ -44,7 +44,9 @@ export const IncomeComponent: React.FC<Props> = ({
 }: Props) => {
   const nameInput = React.createRef<HTMLInputElement>();
 
-  const getCurrency = (currenciesString: string | null | undefined): string => {
+  const getCurrencyFromCommaString = (
+    currenciesString: string | null | undefined
+  ): string => {
     if (currenciesString === undefined || currenciesString === null) {
       return "USD";
     }
@@ -57,10 +59,13 @@ export const IncomeComponent: React.FC<Props> = ({
     return currenciesString || "USD";
   };
 
-  const formatter = new Intl.NumberFormat(locale?.key || "en-US", {
-    style: "currency",
-    currency: getCurrency(locale?.currency),
-  });
+  const formatter: Intl.NumberFormat = new Intl.NumberFormat(
+    locale?.key || "en-US",
+    {
+      style: "currency",
+      currency: getCurrencyFromCommaString(locale?.currency),
+    }
+  );
 
   const onAddSaveNewIncome = (income: Income): void => {
     const incomeToSave = { ...income, status: EntityStatus.Saved };
