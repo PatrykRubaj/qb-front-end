@@ -43,9 +43,9 @@ const GeneratorPage: React.FC = () => {
     setState({
       ...state,
       subcategories: state.subcategories.filter(
-        (x) => x.categoryId !== category.id
+        x => x.categoryId !== category.id
       ),
-      categories: state.categories.filter((x) => x.id !== category.id),
+      categories: state.categories.filter(x => x.id !== category.id),
     });
     console.log("Deleted category: ", category);
   };
@@ -61,7 +61,7 @@ const GeneratorPage: React.FC = () => {
   const deleteSubcategory = (subcategory: Subcategory): void => {
     setState({
       ...state,
-      subcategories: state.subcategories.filter((x) => x.id !== subcategory.id),
+      subcategories: state.subcategories.filter(x => x.id !== subcategory.id),
     });
     console.log("Deleted subcategory: ", subcategory);
   };
@@ -90,7 +90,7 @@ const GeneratorPage: React.FC = () => {
   ): void => {
     setState({
       ...state,
-      subcategories: state.subcategories.map((sub) => {
+      subcategories: state.subcategories.map(sub => {
         if (sub.id !== subcategoryId) {
           return sub;
         }
