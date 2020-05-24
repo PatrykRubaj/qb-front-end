@@ -1,4 +1,8 @@
-import { Income, IncomeSection } from "../../SpreadsheetGeneration/state";
+import {
+  Income,
+  IncomeSection,
+  EntityStatus,
+} from "../../SpreadsheetGeneration/state";
 import { IncomeActionTypes } from "../types/incomeTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/incomeTypes";
@@ -26,7 +30,7 @@ export default function incomeReducer(
             return stateIncome;
           }
 
-          return action.payload;
+          return { ...action.payload, status: EntityStatus.Saved };
         }),
       };
     case types.SET_INCOME_FORM_FINISHED:
