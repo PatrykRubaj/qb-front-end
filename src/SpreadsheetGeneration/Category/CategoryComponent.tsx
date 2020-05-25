@@ -7,28 +7,37 @@ import WarngingDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import CategoryForm from "./CategoryForm";
 import { RootState } from "../../redux/reducers";
+import { Dispatch } from "redux";
 import { connect } from "react-redux";
+import categoryActions from "../../redux/actions/categoryActions";
+import * as categoryTypes from "../../redux/types/categoryTypes";
 
-interface Props {
+interface StateProps {
   categories: Array<Category>;
-  addCategory: Function;
-  editCategory: Function;
-  deleteCategory: Function;
+  formValues: Category;
+  onlyOneEditAllowedPrompt: boolean;
 }
+
+interface DispatchProps {
+  addCategory: (category: Category) => void;
+  editCategory: (category: Category) => void;
+  deleteCategory: (category: Category) => void;
+  setCategoryFormValues: (category: Category) => void;
+  setCategoryPromptVisibility: (isVisible: boolean) => void;
+}
+
+type Props = StateProps & DispatchProps;
 
 const CategoryComponent: React.FC<Props> = ({
   categories,
+  formValues,
+  setCategoryFormValues,
   addCategory,
   editCategory,
-  deleteCategory
+  deleteCategory,
+  onlyOneEditAllowedPrompt,
+  setCategoryPromptVisibility,
 }: Props) => {
-  const [newCategory, setNewCategory] = useState<Category>({
-    id: uuidv4(),
-    name: "",
-    status: EntityStatus.New
-  });
-  const [showWarning, setShowWarning] = useState(false);
-
   const categoryInput = React.createRef<HTMLInputElement>();
 
   const onEditClick = (
@@ -41,12 +50,12 @@ const CategoryComponent: React.FC<Props> = ({
       categories.filter(x => x.status === EntityStatus.Editing).length === 0
     ) {
       category = { ...category, status: EntityStatus.Editing };
-      setNewCategory(category);
+      setCategoryFormValues(category);
       editCategory(category);
 
       categoryInput.current?.focus();
     } else {
-      setShowWarning(true);
+      setCategoryPromptVisibility(true);
     }
   };
 
@@ -64,10 +73,10 @@ const CategoryComponent: React.FC<Props> = ({
     category.status === EntityStatus.Editing
       ? editCategory(categoryToSave)
       : addCategory(categoryToSave);
-    setNewCategory({
+    setCategoryFormValues({
       id: uuidv4(),
       name: "",
-      status: EntityStatus.New
+      status: EntityStatus.New,
     });
 
     categoryInput.current?.focus();
@@ -76,15 +85,15 @@ const CategoryComponent: React.FC<Props> = ({
   return (
     <div className="row">
       <WarngingDialog
-        show={showWarning}
-        onExit={(): void => setShowWarning(false)}
+        show={onlyOneEditAllowedPrompt}
+        onExit={(): void => setCategoryPromptVisibility(false)}
         title="Edit already in progress"
         description="Save entry before editing a new one"
       />
       <div className="col">
         <h2>Categories</h2>
         <CategoryForm
-          newCategory={newCategory}
+          newCategory={formValues}
           addSaveCategory={onFormSubmit}
           categoryNameInputRef={categoryInput}
           categories={categories}
@@ -140,10 +149,31 @@ const CategoryComponent: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
-    categories: state.categories
+    categories: state.categoriesSection.categories,
+    formValues: state.categoriesSection.formValues,
+    onlyOneEditAllowedPrompt: state.categoriesSection.onlyOneEditAllowedPrompt,
   };
 };
 
-export default connect(mapStateToProps)(CategoryComponent);
+export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    deleteCategory: (category: Category): categoryTypes.CategoryActionTypes =>
+      dispatch(categoryActions.deleteCategory(category)),
+    addCategory: (category: Category): categoryTypes.CategoryActionTypes =>
+      dispatch(categoryActions.addCategory(category)),
+    editCategory: (category: Category): categoryTypes.CategoryActionTypes =>
+      dispatch(categoryActions.editCategory(category)),
+    setCategoryFormValues: (
+      category: Category
+    ): categoryTypes.CategoryActionTypes =>
+      dispatch(categoryActions.setCategoryFormValues(category)),
+    setCategoryPromptVisibility: (
+      isVisible: boolean
+    ): categoryTypes.CategoryActionTypes =>
+      dispatch(categoryActions.setCategoryPromptVisibility(isVisible)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryComponent);

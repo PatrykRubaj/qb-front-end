@@ -20,7 +20,10 @@ export default function incomeReducer(
     case types.ADD_INCOME_FINISHED:
       return {
         ...incomeSection,
-        incomes: [...incomeSection.incomes, action.payload],
+        incomes: [
+          ...incomeSection.incomes,
+          { ...action.payload, status: EntityStatus.Saved },
+        ],
       };
     case types.EDIT_INCOME_FINISHED:
       return {
@@ -37,6 +40,13 @@ export default function incomeReducer(
       return {
         ...incomeSection,
         formValues: action.payload,
+        incomes: incomeSection.incomes.map((stateIncome: Income) => {
+          if (stateIncome.id !== action.payload.id) {
+            return stateIncome;
+          }
+
+          return { ...action.payload, status: EntityStatus.Editing };
+        }),
       };
     case types.SET_PROMPT_VISIBILITY_FINISHED:
       return {

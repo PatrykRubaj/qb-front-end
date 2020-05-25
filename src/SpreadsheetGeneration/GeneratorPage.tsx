@@ -115,15 +115,8 @@ const GeneratorPage: React.FC = () => {
     <>
       <LocaleSelectorComponent setLocale={setLocale} />
       <IncomeComponent locale={state.locale} />
-      <CategoryComponent
-        // categories={state.categories}
-        addCategory={addCategory}
-        editCategory={editCategory}
-        deleteCategory={deleteCategory}
-      />
+      <CategoryComponent />
       <SubcategoryComponent
-        // categories={state.categories}
-        // subcategories={state.subcategories}
         addSubcategory={addSubcategory}
         editSubcategory={editSubcategory}
         deleteSubcategory={deleteSubcategory}

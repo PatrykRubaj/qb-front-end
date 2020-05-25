@@ -19,7 +19,7 @@ interface FormFields {
 const SpendingPredictionComponent: React.FC<Props> = ({
   categories,
   subcategories,
-  enterSubcategoryAmount
+  enterSubcategoryAmount,
 }: Props) => {
   const schema = Yup.object().shape({
     subcategories: Yup.array()
@@ -28,10 +28,10 @@ const SpendingPredictionComponent: React.FC<Props> = ({
           amount: Yup.number()
             .typeError("Amount must be a number")
             .required("Amount is required")
-            .min(0, "Amount must be >= 0")
+            .min(0, "Amount must be >= 0"),
         })
       )
-      .required("Must have subcategories") // these constraints are shown if and only if inner constraints are satisfied
+      .required("Must have subcategories"), // these constraints are shown if and only if inner constraints are satisfied
   });
 
   const SaveDataToState = (): null => {
@@ -68,7 +68,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
           const initialValues: FormFields = {
             subcategories: subcategories.filter(
               x => x.categoryId === category.id
-            )
+            ),
           };
 
           return (
@@ -118,8 +118,8 @@ const SpendingPredictionComponent: React.FC<Props> = ({
 
 const mapStateToProps = (state: RootState) => {
   return {
-    categories: state.categories,
-    subcategories: state.subcategories
+    categories: state.categoriesSection.categories,
+    subcategories: state.subcategories,
   };
 };
 
