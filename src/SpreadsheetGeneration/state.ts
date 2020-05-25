@@ -41,6 +41,12 @@ export interface IncomeSection {
   onlyOneEditAllowedPrompt: boolean;
 }
 
+export interface CategorySection {
+  formValues: Category;
+  categories: Category[];
+  onlyOneEditAllowedPrompt: boolean;
+}
+
 export const initialState: GeneratorState = {
   categories: [],
   subcategories: [],

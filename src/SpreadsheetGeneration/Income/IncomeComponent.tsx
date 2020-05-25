@@ -43,7 +43,6 @@ export const IncomeComponent: React.FC<Props> = ({
   onlyOneEditAllowedPrompt,
 }: Props) => {
   const nameInput = React.createRef<HTMLInputElement>();
-
   const getCurrencyFromCommaString = (
     currenciesString: string | null | undefined
   ): string => {
@@ -68,10 +67,12 @@ export const IncomeComponent: React.FC<Props> = ({
   );
 
   const onAddSaveNewIncome = (income: Income): void => {
-    const incomeToSave = { ...income, status: EntityStatus.Saved };
-    income.status === EntityStatus.Editing
-      ? editIncome(incomeToSave)
-      : addIncome(incomeToSave);
+    const incomeToSave: Income = { ...income, status: EntityStatus.Saved };
+    if (income.status === EntityStatus.Editing) {
+      editIncome(incomeToSave);
+    } else {
+      addIncome(incomeToSave);
+    }
 
     setIncomeFormValues({
       id: uuidv4(),
@@ -98,7 +99,7 @@ export const IncomeComponent: React.FC<Props> = ({
     income = { ...income, status: EntityStatus.Editing };
     if (formValues.status !== EntityStatus.Editing) {
       setIncomeFormValues({ ...income });
-      editIncome(income);
+      // editIncome(income);
       nameInput.current?.focus();
     } else {
       setPromptVisibility(true);

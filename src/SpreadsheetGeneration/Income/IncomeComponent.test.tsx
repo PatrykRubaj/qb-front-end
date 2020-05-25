@@ -34,7 +34,15 @@ describe("Income Component", () => {
             },
           ],
         },
-        categories: [],
+        categoriesSection: {
+          categories: [],
+          formValues: {
+            id: "",
+            name: "",
+            status: EntityStatus.New,
+          },
+          onlyOneEditAllowedPrompt: false,
+        },
         subcategories: [],
       };
 
@@ -291,7 +299,7 @@ describe("Income Component", () => {
       expect(rows[4].textContent).toEqual("$3,000.00");
     });
 
-    it("After clicking edit button once, I should see that it was in fact clicked with income passed", () => {
+    it("After clicking edit button once, I should see that it was in fact clicked with income passed if form passes validation", async () => {
       const incomes: Income[] = [
         {
           id: "income1",
@@ -299,8 +307,17 @@ describe("Income Component", () => {
           name: "Income 1",
           status: EntityStatus.Saved,
         },
+        {
+          id: "income2",
+          amount: 100,
+          name: "Income 2",
+          status: EntityStatus.Editing,
+        },
       ];
       const editIncome = jest.fn().mockImplementation((income: Income) => {
+        return income;
+      });
+      const addIncome = jest.fn().mockImplementation((income: Income) => {
         return income;
       });
 
@@ -309,13 +326,13 @@ describe("Income Component", () => {
           <IncomeComponent
             incomes={incomes}
             formValues={{
-              id: "",
-              amount: undefined,
-              name: "",
-              status: EntityStatus.New,
+              id: "income2",
+              amount: 100,
+              name: "Income 2",
+              status: EntityStatus.Editing,
             }}
             onlyOneEditAllowedPrompt={false}
-            addIncome={() => {}}
+            addIncome={addIncome}
             editIncome={editIncome}
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
@@ -326,18 +343,22 @@ describe("Income Component", () => {
         );
       });
 
-      const buttons = container?.querySelectorAll("td button");
+      const buttons = container?.querySelectorAll("div.form-row button");
       expect(buttons).toBeDefined();
-      expect(buttons).toHaveLength(2);
+      expect(buttons).toHaveLength(1);
       //For TypeScript
       if (buttons === undefined) {
         fail("There are no rows");
       }
-      buttons[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
-      expect(editIncome).toHaveBeenCalledTimes(1);
+
+      await ReactTestUtils.act(async () => {
+        buttons[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      });
+      expect(addIncome).toHaveBeenCalledTimes(0);
+      expect(editIncome).toHaveBeenCalledTimes(1); // because event didn't finish, use act() to simulate browser
       expect(editIncome).toHaveReturnedWith<Income>({
-        ...incomes[0],
-        status: EntityStatus.Editing,
+        ...incomes[1],
+        status: EntityStatus.Saved,
       });
     });
 

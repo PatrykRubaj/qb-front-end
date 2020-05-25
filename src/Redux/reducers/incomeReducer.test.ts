@@ -33,7 +33,10 @@ describe("Income reducer", () => {
 
     expect(state).toEqual({
       ...initialIncomeSectionState,
-      incomes: [...initialIncomeSectionState.incomes, income],
+      incomes: [
+        ...initialIncomeSectionState.incomes,
+        { ...income, status: EntityStatus.Saved },
+      ],
     });
   });
 
@@ -83,7 +86,7 @@ describe("Income reducer", () => {
     const editedIncome: Income = {
       id: "id2",
       name: "Starbucks",
-      status: EntityStatus.Editing,
+      status: EntityStatus.Saved,
       amount: 500,
     };
 

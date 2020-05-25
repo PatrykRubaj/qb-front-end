@@ -22,14 +22,14 @@ const SubcategoryComponent: React.FC<Props> = ({
   subcategories,
   addSubcategory,
   editSubcategory,
-  deleteSubcategory
+  deleteSubcategory,
 }: Props) => {
   const [newSubcategory, setNewSubcategory] = useState<Subcategory>({
     id: uuidv4(),
     name: "",
     categoryId: "",
     amount: null,
-    status: EntityStatus.New
+    status: EntityStatus.New,
   });
   const [showWarning, setShowWarning] = useState(false);
 
@@ -46,7 +46,7 @@ const SubcategoryComponent: React.FC<Props> = ({
 
     subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
-      block: "start"
+      block: "start",
     });
     subcategoryInput.current?.focus();
   };
@@ -67,12 +67,12 @@ const SubcategoryComponent: React.FC<Props> = ({
       id: uuidv4(),
       name: "",
       amount: null,
-      status: EntityStatus.New
+      status: EntityStatus.New,
     });
 
     subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
-      block: "start"
+      block: "start",
     });
     subcategoryInput.current?.focus();
   };
@@ -98,7 +98,7 @@ const SubcategoryComponent: React.FC<Props> = ({
       editSubcategory(subcategory);
       subcategoriesHeader.current?.scrollIntoView({
         behavior: "smooth",
-        block: "start"
+        block: "start",
       });
       subcategoryInput.current?.focus();
     } else {
@@ -243,8 +243,8 @@ const SubcategoryComponent: React.FC<Props> = ({
 
 const mapStateToProps = (state: RootState) => {
   return {
-    categories: state.categories,
-    subcategories: state.subcategories
+    categories: state.categoriesSection.categories,
+    subcategories: state.subcategories,
   };
 };
 

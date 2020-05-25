@@ -26,18 +26,26 @@ export const initialState: RootState = {
     ],
     onlyOneEditAllowedPrompt: false,
   },
-  categories: [
-    {
-      id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-      name: "Food",
-      status: EntityStatus.Saved,
+  categoriesSection: {
+    formValues: {
+      id: uuidv4(),
+      name: "",
+      status: EntityStatus.New,
     },
-    {
-      id: "1e987730-c0b1-4850-b06e-7c3612393254",
-      name: "Utilities",
-      status: EntityStatus.Saved,
-    },
-  ],
+    categories: [
+      {
+        id: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        name: "Food",
+        status: EntityStatus.Saved,
+      },
+      {
+        id: "1e987730-c0b1-4850-b06e-7c3612393254",
+        name: "Utilities",
+        status: EntityStatus.Saved,
+      },
+    ],
+    onlyOneEditAllowedPrompt: false,
+  },
   subcategories: [
     {
       id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
