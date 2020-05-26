@@ -1,6 +1,7 @@
 import { all } from "redux-saga/effects";
 import * as incomeSagas from "./incomeSagas";
 import * as categorySagas from "./categorySagas";
+import * as subcategorySagas from "./subcategorySagas";
 
 export default function* rootSaga() {
   yield all([
@@ -14,5 +15,10 @@ export default function* rootSaga() {
     categorySagas.editCategory(),
     categorySagas.setCategoryFormValues(),
     categorySagas.setPromptVisibility(),
+    subcategorySagas.deleteSubcategory(),
+    subcategorySagas.addSubcategory(),
+    subcategorySagas.editSubcategory(),
+    subcategorySagas.setSubcategoryFormValues(),
+    subcategorySagas.setSubcategoryPromptVisibility(),
   ]);
 }

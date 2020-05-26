@@ -3,7 +3,7 @@ import IncomeComponent from "./Income/IncomeComponent";
 import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
-import { GeneratorState, Category, Subcategory } from "./state";
+import { GeneratorState } from "./state";
 import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
 import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
 
@@ -14,75 +14,6 @@ const GeneratorPage: React.FC = () => {
     incomes: [],
     locale: null,
   });
-
-  const addCategory = (newCategory: Category): void => {
-    setState({
-      ...state,
-      categories: [...state.categories, newCategory],
-    });
-    console.log("Added category: ", newCategory);
-  };
-
-  const editCategory = (editedCategory: Category): void => {
-    const newCategories = state.categories.map((stateCategory: Category) => {
-      if (stateCategory.id !== editedCategory.id) {
-        return stateCategory;
-      }
-
-      return editedCategory;
-    });
-
-    setState({
-      ...state,
-      categories: [...newCategories],
-    });
-    console.log("Edited category: ", editedCategory);
-  };
-
-  const deleteCategory = (category: Category): void => {
-    setState({
-      ...state,
-      subcategories: state.subcategories.filter(
-        x => x.categoryId !== category.id
-      ),
-      categories: state.categories.filter(x => x.id !== category.id),
-    });
-    console.log("Deleted category: ", category);
-  };
-
-  const addSubcategory = (newSubcategory: Subcategory): void => {
-    setState({
-      ...state,
-      subcategories: [...state.subcategories, newSubcategory],
-    });
-    console.log("Added subcategory: ", newSubcategory);
-  };
-
-  const deleteSubcategory = (subcategory: Subcategory): void => {
-    setState({
-      ...state,
-      subcategories: state.subcategories.filter(x => x.id !== subcategory.id),
-    });
-    console.log("Deleted subcategory: ", subcategory);
-  };
-
-  const editSubcategory = (editedSubcategory: Subcategory): void => {
-    const newSubcategories = state.subcategories.map(
-      (stateSubcategory: Subcategory) => {
-        if (stateSubcategory.id !== editedSubcategory.id) {
-          return stateSubcategory;
-        }
-
-        return editedSubcategory;
-      }
-    );
-
-    setState({
-      ...state,
-      subcategories: [...newSubcategories],
-    });
-    console.log("Edited subcategory: ", editedSubcategory);
-  };
 
   const enterSubcategoryAmount = (
     subcategoryId: string,
@@ -116,11 +47,7 @@ const GeneratorPage: React.FC = () => {
       <LocaleSelectorComponent setLocale={setLocale} />
       <IncomeComponent locale={state.locale} />
       <CategoryComponent />
-      <SubcategoryComponent
-        addSubcategory={addSubcategory}
-        editSubcategory={editSubcategory}
-        deleteSubcategory={deleteSubcategory}
-      />
+      <SubcategoryComponent />
       <SpendingPredictionComponent
         // categories={state.categories}
         // subcategories={state.subcategories}

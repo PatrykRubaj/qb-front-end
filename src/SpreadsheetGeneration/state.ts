@@ -47,6 +47,12 @@ export interface CategorySection {
   onlyOneEditAllowedPrompt: boolean;
 }
 
+export interface SubcategorySection {
+  formValues: Subcategory;
+  subcategories: Subcategory[];
+  onlyOneEditAllowedPrompt: boolean;
+}
+
 export const initialState: GeneratorState = {
   categories: [],
   subcategories: [],

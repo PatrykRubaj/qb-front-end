@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import incomeSection from "./incomeReducer";
 import categoriesSection from "./categoryReducer";
-import subcategories from "./subcategoryReducer";
+import subcategorySection from "./subcategoryReducer";
 
 export const rootReducer = combineReducers({
   incomeSection,
   categoriesSection,
-  subcategories,
+  subcategorySection,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

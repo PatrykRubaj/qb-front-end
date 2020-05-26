@@ -34,7 +34,7 @@ export default function categoryReducer(
               return stateCategory;
             }
 
-            return { ...action.payload, status: EntityStatus.Editing };
+            return { ...action.payload, status: EntityStatus.Saved };
           }
         ),
       };
@@ -42,6 +42,15 @@ export default function categoryReducer(
       return {
         ...categorySection,
         formValues: action.payload,
+        categories: categorySection.categories.map(
+          (stateCategory: Category) => {
+            if (stateCategory.id !== action.payload.id) {
+              return stateCategory;
+            }
+
+            return { ...action.payload, status: EntityStatus.Editing };
+          }
+        ),
       };
     case types.SET_CATEGORY_PROMPT_VISIBILITY_FINISHED:
       return {
