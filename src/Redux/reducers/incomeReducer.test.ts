@@ -4,7 +4,6 @@ import {
   EntityStatus,
   Income,
 } from "../../SpreadsheetGeneration/state";
-import * as actionTypes from "../types/incomeTypes";
 import actions from "../actions/incomeActions";
 
 describe("Income reducer", () => {
