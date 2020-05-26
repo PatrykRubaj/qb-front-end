@@ -46,20 +46,30 @@ export const initialState: RootState = {
     ],
     onlyOneEditAllowedPrompt: false,
   },
-  subcategories: [
-    {
-      id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
-      name: "Home",
-      categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+  subcategorySection: {
+    formValues: {
+      id: uuidv4(),
+      categoryId: "",
+      name: "",
+      status: EntityStatus.New,
       amount: null,
-      status: EntityStatus.Saved,
     },
-    {
-      id: "fb893109-860f-4f04-8319-3cab83812aab",
-      name: "Takeout",
-      categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
-      amount: null,
-      status: EntityStatus.Saved,
-    },
-  ],
+    subcategories: [
+      {
+        id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
+        name: "Home",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null,
+        status: EntityStatus.Saved,
+      },
+      {
+        id: "fb893109-860f-4f04-8319-3cab83812aab",
+        name: "Takeout",
+        categoryId: "ae1f9c34-6e8e-43a9-a194-68c80bb939fe",
+        amount: null,
+        status: EntityStatus.Saved,
+      },
+    ],
+    onlyOneEditAllowedPrompt: false,
+  },
 };

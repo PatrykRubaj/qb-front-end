@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import * as React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, Subcategory, EntityStatus } from "../state";
@@ -7,15 +7,27 @@ import WarningDialog from "../../Common/WarningDialog";
 import ConfirmationDialog from "../../Common/ConfirmationDialog";
 import SubcategoryForm from "./SubcategoryForm";
 import { RootState } from "../../redux/reducers";
+import { Dispatch } from "redux";
 import { connect } from "react-redux";
+import subcategoryActions from "../../redux/actions/subcategoryActions";
+import * as subcategoryTypes from "../../redux/types/subcategoryTypes";
 
-interface Props {
+interface DispatchProps {
+  addSubcategory: (subcategory: Subcategory) => void;
+  editSubcategory: (subcategory: Subcategory) => void;
+  deleteSubcategory: (subcategory: Subcategory) => void;
+  setSubcategoryFormValues: (subcategory: Subcategory) => void;
+  setSubcategoryPromptVisibility: (isVisible: boolean) => void;
+}
+
+interface StateProps {
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
-  addSubcategory: Function;
-  editSubcategory: Function;
-  deleteSubcategory: Function;
+  formValues: Subcategory;
+  onlyOneEditAllowedPrompt: boolean;
 }
+
+type Props = StateProps & DispatchProps;
 
 const SubcategoryComponent: React.FC<Props> = ({
   categories,
@@ -23,16 +35,11 @@ const SubcategoryComponent: React.FC<Props> = ({
   addSubcategory,
   editSubcategory,
   deleteSubcategory,
+  setSubcategoryFormValues,
+  formValues,
+  onlyOneEditAllowedPrompt,
+  setSubcategoryPromptVisibility,
 }: Props) => {
-  const [newSubcategory, setNewSubcategory] = useState<Subcategory>({
-    id: uuidv4(),
-    name: "",
-    categoryId: "",
-    amount: null,
-    status: EntityStatus.New,
-  });
-  const [showWarning, setShowWarning] = useState(false);
-
   const subcategoryInput = React.createRef<HTMLInputElement>();
   const subcategoriesHeader = React.createRef<HTMLHeadingElement>();
 
@@ -42,7 +49,7 @@ const SubcategoryComponent: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    setNewSubcategory({ ...newSubcategory, categoryId: category.id });
+    setSubcategoryFormValues({ ...formValues, categoryId: category.id });
 
     subcategoriesHeader.current?.scrollIntoView({
       behavior: "smooth",
@@ -62,7 +69,7 @@ const SubcategoryComponent: React.FC<Props> = ({
       ? editSubcategory(subcategoryToSave)
       : addSubcategory(subcategoryToSave);
 
-    setNewSubcategory({
+    setSubcategoryFormValues({
       ...subcategory,
       id: uuidv4(),
       name: "",
@@ -94,15 +101,14 @@ const SubcategoryComponent: React.FC<Props> = ({
       subcategories.filter(x => x.status === EntityStatus.Editing).length === 0
     ) {
       subcategory = { ...subcategory, status: EntityStatus.Editing };
-      setNewSubcategory(subcategory);
-      editSubcategory(subcategory);
+      setSubcategoryFormValues(subcategory);
       subcategoriesHeader.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
       subcategoryInput.current?.focus();
     } else {
-      setShowWarning(true);
+      setSubcategoryPromptVisibility(true);
     }
   };
 
@@ -111,8 +117,8 @@ const SubcategoryComponent: React.FC<Props> = ({
       <WarningDialog
         title="Finish editing entry"
         description="You can't edit entry when another is already edited"
-        show={showWarning}
-        onExit={(): void => setShowWarning(false)}
+        show={onlyOneEditAllowedPrompt}
+        onExit={(): void => setSubcategoryPromptVisibility(false)}
       />
       <div className="col">
         <h2 ref={subcategoriesHeader}>Subcategories</h2>
@@ -121,11 +127,11 @@ const SubcategoryComponent: React.FC<Props> = ({
           <>
             <SubcategoryForm
               addSaveNewSubcategory={onSubcategorySubmit}
-              newSubcategory={newSubcategory}
+              newSubcategory={formValues}
               subcategoryNameInputRef={subcategoryInput}
               categories={categories}
               subcategories={subcategories.filter(
-                x => x.categoryId === newSubcategory.categoryId
+                x => x.categoryId === formValues.categoryId
               )}
             />
 
@@ -241,11 +247,41 @@ const SubcategoryComponent: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
     categories: state.categoriesSection.categories,
-    subcategories: state.subcategories,
+    subcategories: state.subcategorySection.subcategories,
+    formValues: state.subcategorySection.formValues,
+    onlyOneEditAllowedPrompt: state.subcategorySection.onlyOneEditAllowedPrompt,
   };
 };
 
-export default connect(mapStateToProps)(SubcategoryComponent);
+export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    deleteSubcategory: (
+      subcategory: Subcategory
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.deleteSubcategory(subcategory)),
+    addSubcategory: (
+      subcategory: Subcategory
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.addSubcategory(subcategory)),
+    editSubcategory: (
+      subcategory: Subcategory
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.editSubcategory(subcategory)),
+    setSubcategoryFormValues: (
+      subcategory: Subcategory
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.setSubcategoryFormValues(subcategory)),
+    setSubcategoryPromptVisibility: (
+      isVisible: boolean
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.setSubcategoryPromptVisibility(isVisible)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SubcategoryComponent);

@@ -119,7 +119,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
 const mapStateToProps = (state: RootState) => {
   return {
     categories: state.categoriesSection.categories,
-    subcategories: state.subcategories,
+    subcategories: state.subcategorySection.subcategories,
   };
 };
 

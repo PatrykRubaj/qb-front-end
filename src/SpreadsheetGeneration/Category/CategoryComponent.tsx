@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import * as React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, EntityStatus } from "../state";
@@ -51,7 +51,6 @@ const CategoryComponent: React.FC<Props> = ({
     ) {
       category = { ...category, status: EntityStatus.Editing };
       setCategoryFormValues(category);
-      editCategory(category);
 
       categoryInput.current?.focus();
     } else {
@@ -63,8 +62,6 @@ const CategoryComponent: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement>,
     category: Category
   ): void => {
-    // e.preventDefault();
-
     deleteCategory(category);
   };
 
