@@ -72,4 +72,5 @@ export const initialState: RootState = {
     ],
     onlyOneEditAllowedPrompt: false,
   },
+  country: null,
 };

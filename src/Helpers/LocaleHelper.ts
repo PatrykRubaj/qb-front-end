@@ -1,6 +1,6 @@
 import { getUserLocale } from "get-user-locale";
 import { countries } from "countries-list";
-import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
+import { Country } from "../SpreadsheetGeneration/state";
 
 export const countriesList = (): Country[] => {
   const tmpCountryList: Country[] = [];
@@ -23,7 +23,7 @@ export const getUsersCountry = (): Country => {
       name: "United States",
       currency: "USD",
       emojiU: "",
-      key: "US"
+      key: "US",
     }
   );
 };

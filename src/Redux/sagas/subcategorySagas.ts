@@ -40,3 +40,12 @@ export function* setSubcategoryPromptVisibility() {
     );
   }
 }
+
+export function* enterSubcategoryAmountVisibility() {
+  while (true) {
+    const { id, amount } = yield take(
+      subcategoryTypes.ENTER_SUBCATEGORY_AMOUNT
+    );
+    yield put(subcategoryActions.enterSubcategoryAmountFinished(id, amount));
+  }
+}

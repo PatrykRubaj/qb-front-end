@@ -59,6 +59,19 @@ export default function subcategoryReducer(
         ...subcategorySection,
         onlyOneEditAllowedPrompt: action.isVisible,
       };
+    case types.ENTER_SUBCATEGORY_AMOUNT_FINISHED:
+      return {
+        ...subcategorySection,
+        subcategories: subcategorySection.subcategories.map(
+          (stateSubcategory: Subcategory) => {
+            if (stateSubcategory.id !== action.id) {
+              return stateSubcategory;
+            }
+
+            return { ...stateSubcategory, amount: action.amount };
+          }
+        ),
+      };
     default:
       return subcategorySection;
   }

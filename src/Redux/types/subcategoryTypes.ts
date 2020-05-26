@@ -11,6 +11,9 @@ export const EDIT_SUBCATEGORY = "EDIT_SUBCATEGORY";
 export const EDIT_SUBCATEGORY_FINISHED = "EDIT_SUBCATEGORY_FINISHED";
 export const DELETE_SUBCATEGORY = "DELETE_SUBCATEGORY";
 export const DELETE_SUBCATEGORY_FINISHED = "DELETE_SUBCATEGORY_FINISHED";
+export const ENTER_SUBCATEGORY_AMOUNT = "ENTER_SUBCATEGORY_AMOUNT";
+export const ENTER_SUBCATEGORY_AMOUNT_FINISHED =
+  "ENTER_SUBCATEGORY_AMOUNT_FINISHED";
 
 interface SetSubcategoryPromptVisibilityAction {
   type: typeof SET_SUBCATEGORY_PROMPT_VISIBILITY;
@@ -62,6 +65,18 @@ interface EditSubcategoryFinishedAction {
   payload: Subcategory;
 }
 
+interface EnterSubcategoryAmountAction {
+  type: typeof ENTER_SUBCATEGORY_AMOUNT;
+  id: string;
+  amount: number;
+}
+
+interface EnterSubcategoryAmountFinishedAction {
+  type: typeof ENTER_SUBCATEGORY_AMOUNT_FINISHED;
+  id: string;
+  amount: number;
+}
+
 export type SubcategoryActionTypes =
   | SetSubcategoryPromptVisibilityAction
   | SetSubcategoryPromptVisibilityFinishedAction
@@ -72,4 +87,6 @@ export type SubcategoryActionTypes =
   | DeleteSubcategoryAction
   | DeleteSubcategoryFinishedAction
   | EditSubcategoryAction
-  | EditSubcategoryFinishedAction;
+  | EditSubcategoryFinishedAction
+  | EnterSubcategoryAmountAction
+  | EnterSubcategoryAmountFinishedAction;

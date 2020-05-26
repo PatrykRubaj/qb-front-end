@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { Country } from "./Country";
+import { Country } from "../state";
 import Select, { ValueType } from "react-select";
 import {
   getUsersCountry,
   countriesList,
-  findCountryBasedOnKey
+  findCountryBasedOnKey,
 } from "../../Helpers/LocaleHelper";
+import { RootState } from "../../redux/reducers";
+import { Dispatch } from "redux";
+import countryActions from "../../redux/actions/countryActions";
+import { connect } from "react-redux";
+import { CountryActionTypes } from "../../redux/types/countryTypes";
 interface SelectOption {
   value: string;
   label: string;
 }
 
-interface Props {
-  setLocale: Function;
+interface StateProps {
+  country: Country | null;
 }
+
+interface DispatchProps {
+  setLocale: (country: Country) => CountryActionTypes;
+}
+
+type Props = StateProps & DispatchProps;
 
 const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
     value: "",
-    label: ""
+    label: "",
   });
 
   useEffect(() => {
@@ -27,7 +38,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
       const country: Country = getUsersCountry();
       setSelectedCountry({
         value: country.key,
-        label: `${country.currency} - ${country.name}`
+        label: `${country.currency} - ${country.name}`,
       });
 
       if (country !== undefined) {
@@ -35,7 +46,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
           key: country.key,
           name: country.name,
           currency: country.currency,
-          emojiU: country.emojiU
+          emojiU: country.emojiU,
         });
       }
     };
@@ -47,7 +58,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
         tmpCountriesList.map(country => {
           return {
             value: country.key,
-            label: `${country.currency} - ${country.name}`
+            label: `${country.currency} - ${country.name}`,
           };
         })
       );
@@ -65,7 +76,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
 
     setSelectedCountry({
       value: country?.key || "",
-      label: (selection as SelectOption)?.label || ""
+      label: (selection as SelectOption)?.label || "",
     });
 
     if (country !== null) {
@@ -73,7 +84,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
         key: country.key,
         name: `${country.currency} - ${country.name}`,
         currency: country.currency,
-        emojiU: country.emojiU
+        emojiU: country.emojiU,
       });
     }
   };
@@ -95,4 +106,20 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
   );
 };
 
-export default LocaleSelectorComponent;
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    country: state.country,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    setLocale: (country: Country): CountryActionTypes =>
+      dispatch(countryActions.setCountry(country)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LocaleSelectorComponent);
