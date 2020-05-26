@@ -91,6 +91,28 @@ const setSubcategoryPromptVisibilityFinished = (
   };
 };
 
+const enterSubcategoryAmount = (
+  id: string,
+  amount: number
+): subcategoryTypes.SubcategoryActionTypes => {
+  return {
+    type: subcategoryTypes.ENTER_SUBCATEGORY_AMOUNT,
+    id,
+    amount,
+  };
+};
+
+const enterSubcategoryAmountFinished = (
+  id: string,
+  amount: number
+): subcategoryTypes.SubcategoryActionTypes => {
+  return {
+    type: subcategoryTypes.ENTER_SUBCATEGORY_AMOUNT_FINISHED,
+    id,
+    amount,
+  };
+};
+
 export default {
   deleteSubcategory,
   deleteSubcategoryFinished,
@@ -102,4 +124,6 @@ export default {
   setSubcategoryFormValuesFinished,
   setSubcategoryPromptVisibility,
   setSubcategoryPromptVisibilityFinished,
+  enterSubcategoryAmount,
+  enterSubcategoryAmountFinished,
 };

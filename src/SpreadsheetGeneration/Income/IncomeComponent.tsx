@@ -1,8 +1,7 @@
 import * as React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Income, EntityStatus } from "../state";
+import { Income, EntityStatus, Country } from "../state";
 import WarningDialog from "../../Common/WarningDialog";
-import { Country } from "../LocaleSelector/Country";
 import IncomeForm from "./IncomeForm";
 import IncomeRowComponent from "./IncomeRowComponent";
 import { RootState } from "../../redux/reducers";
@@ -11,14 +10,11 @@ import { connect } from "react-redux";
 import incomeActions from "../../redux/actions/incomeActions";
 import { IncomeActionTypes } from "../../redux/types/incomeTypes";
 
-interface OwnProps {
-  locale: Country | null;
-}
-
 interface StateProps {
   incomes: Array<Income>;
   formValues: Income;
   onlyOneEditAllowedPrompt: boolean;
+  locale: Country | null;
 }
 
 interface DispatchProps {
@@ -29,7 +25,7 @@ interface DispatchProps {
   setPromptVisibility: (isVisible: boolean) => void;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps;
 
 export const IncomeComponent: React.FC<Props> = ({
   incomes,
@@ -163,6 +159,7 @@ export const mapStateToProps = (state: RootState): StateProps => ({
   incomes: state.incomeSection.incomes,
   formValues: state.incomeSection.formValues,
   onlyOneEditAllowedPrompt: state.incomeSection.onlyOneEditAllowedPrompt,
+  locale: state.country,
 });
 
 export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {

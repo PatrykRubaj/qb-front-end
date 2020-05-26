@@ -5,12 +5,20 @@ import * as Yup from "yup";
 import FormikFieldWithErrorMessage from "../../Common/FormikFieldWithErrorMessage";
 import { RootState } from "../../redux/reducers";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import subcategoryActions from "../../redux/actions/subcategoryActions";
+import * as subcategoryTypes from "../../redux/types/subcategoryTypes";
 
-interface Props {
+interface DispatchProps {
+  enterSubcategoryAmount: (id: string, amount: number) => void;
+}
+
+interface StateProps {
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
-  enterSubcategoryAmount: Function;
 }
+
+type Props = DispatchProps & StateProps;
 
 interface FormFields {
   subcategories: Subcategory[];
@@ -116,11 +124,26 @@ const SpendingPredictionComponent: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
     categories: state.categoriesSection.categories,
     subcategories: state.subcategorySection.subcategories,
   };
 };
 
-export default connect(mapStateToProps)(SpendingPredictionComponent);
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    enterSubcategoryAmount: (
+      subcategoryId: string,
+      amount: number
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(
+        subcategoryActions.enterSubcategoryAmount(subcategoryId, amount)
+      ),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SpendingPredictionComponent);

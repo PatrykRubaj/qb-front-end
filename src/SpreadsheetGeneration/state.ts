@@ -1,17 +1,14 @@
-import { Country } from "../SpreadsheetGeneration/LocaleSelector/Country";
-
-export interface GeneratorState {
-  categories: Array<Category>;
-  subcategories: Array<Subcategory>;
-  incomes: Array<Income>;
-  locale: Country | null;
-}
-
 export enum EntityStatus {
   New,
   Saved,
   Editing,
-  Deleted,
+}
+
+export interface Country {
+  name: string;
+  currency: string;
+  emojiU: string;
+  key: string;
 }
 
 export interface Category {
@@ -52,10 +49,3 @@ export interface SubcategorySection {
   subcategories: Subcategory[];
   onlyOneEditAllowedPrompt: boolean;
 }
-
-export const initialState: GeneratorState = {
-  categories: [],
-  subcategories: [],
-  incomes: [],
-  locale: null,
-};
