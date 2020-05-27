@@ -22,7 +22,11 @@ export default function incomeReducer(
         ...incomeSection,
         incomes: [
           ...incomeSection.incomes,
-          { ...action.payload, status: EntityStatus.Saved },
+          {
+            ...action.payload,
+            status: EntityStatus.Saved,
+            name: action.payload.name.trim(),
+          },
         ],
       };
     case types.EDIT_INCOME_FINISHED:
@@ -33,7 +37,11 @@ export default function incomeReducer(
             return stateIncome;
           }
 
-          return { ...action.payload, status: EntityStatus.Saved };
+          return {
+            ...action.payload,
+            status: EntityStatus.Saved,
+            name: action.payload.name.trim(),
+          };
         }),
       };
     case types.SET_INCOME_FORM_FINISHED:

@@ -24,7 +24,11 @@ export default function subcategoryReducer(
         ...subcategorySection,
         subcategories: [
           ...subcategorySection.subcategories,
-          { ...action.payload, status: EntityStatus.Saved },
+          {
+            ...action.payload,
+            status: EntityStatus.Saved,
+            name: action.payload.name.trim(),
+          },
         ],
       };
     case types.EDIT_SUBCATEGORY_FINISHED:
@@ -36,7 +40,11 @@ export default function subcategoryReducer(
               return stateSubcategory;
             }
 
-            return { ...action.payload, status: EntityStatus.Saved };
+            return {
+              ...action.payload,
+              status: EntityStatus.Saved,
+              name: action.payload.name.trim(),
+            };
           }
         ),
       };

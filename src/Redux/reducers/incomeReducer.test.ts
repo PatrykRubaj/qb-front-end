@@ -157,4 +157,73 @@ describe("Income reducer", () => {
       formValues: newFormValues,
     });
   });
+
+  it("Should return trimmed name property when adding new income", () => {
+    const initIncome: IncomeSection = {
+      formValues: {
+        id: "",
+        amount: undefined,
+        name: "",
+        status: EntityStatus.New,
+      },
+      incomes: [],
+      onlyOneEditAllowedPrompt: false,
+    };
+
+    const newIncome: Income = {
+      id: "id1",
+      name: " Lidl ",
+      status: EntityStatus.New,
+      amount: 1000,
+    };
+
+    const state = incomeReducer(
+      initIncome,
+      actions.addIncomeFinished(newIncome)
+    );
+
+    expect(state.incomes[0]).toEqual({
+      ...newIncome,
+      name: "Lidl",
+      status: EntityStatus.Saved,
+    });
+  });
+
+  it("Should return trimmed name property when saving existing income", () => {
+    const initIncome: IncomeSection = {
+      formValues: {
+        id: "",
+        amount: undefined,
+        name: "",
+        status: EntityStatus.New,
+      },
+      incomes: [
+        {
+          id: "id1",
+          name: " Lidl ",
+          status: EntityStatus.Editing,
+          amount: 1000,
+        },
+      ],
+      onlyOneEditAllowedPrompt: false,
+    };
+
+    const changedIncome: Income = {
+      id: "id1",
+      name: " Lidl ",
+      status: EntityStatus.Editing,
+      amount: 1000,
+    };
+
+    const state = incomeReducer(
+      initIncome,
+      actions.editIncomeFinished(changedIncome)
+    );
+
+    expect(state.incomes[0]).toEqual({
+      ...changedIncome,
+      name: "Lidl",
+      status: EntityStatus.Saved,
+    });
+  });
 });
