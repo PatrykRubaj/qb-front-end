@@ -22,7 +22,11 @@ export default function categoryReducer(
         ...categorySection,
         categories: [
           ...categorySection.categories,
-          { ...action.payload, status: EntityStatus.Saved },
+          {
+            ...action.payload,
+            status: EntityStatus.Saved,
+            name: action.payload.name.trim(),
+          },
         ],
       };
     case types.EDIT_CATEGORY_FINISHED:
@@ -34,7 +38,11 @@ export default function categoryReducer(
               return stateCategory;
             }
 
-            return { ...action.payload, status: EntityStatus.Saved };
+            return {
+              ...action.payload,
+              status: EntityStatus.Saved,
+              name: action.payload.name.trim(),
+            };
           }
         ),
       };
