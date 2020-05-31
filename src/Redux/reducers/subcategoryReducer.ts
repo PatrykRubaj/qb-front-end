@@ -6,6 +6,7 @@ import {
 import { SubcategoryActionTypes } from "../types/subcategoryTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/subcategoryTypes";
+import arrayMove from "array-move";
 
 export default function subcategoryReducer(
   subcategorySection: SubcategorySection = initialState.subcategorySection,
@@ -80,6 +81,30 @@ export default function subcategoryReducer(
           }
         ),
       };
+    case types.MOVE_SUBCATEGORY_FINISHED: {
+      const subcategory = subcategorySection.subcategories.find(
+        x => x.id === action.id
+      );
+
+      const subcategoriesFromDifferentCategory = subcategorySection.subcategories.filter(
+        x => x.categoryId !== subcategory?.categoryId
+      );
+      const subcategoriesFromSametCategory = subcategorySection.subcategories.filter(
+        x => x.categoryId === subcategory?.categoryId
+      );
+
+      return {
+        ...subcategorySection,
+        subcategories: [
+          ...subcategoriesFromDifferentCategory,
+          ...arrayMove(
+            subcategoriesFromSametCategory,
+            action.startIndex,
+            action.endIndex
+          ),
+        ],
+      };
+    }
     default:
       return subcategorySection;
   }

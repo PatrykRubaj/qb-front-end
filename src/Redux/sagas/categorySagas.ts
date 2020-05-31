@@ -38,3 +38,12 @@ export function* setPromptVisibility() {
     yield put(categoryActions.setCategoryPromptVisibilityFinished(isVisible));
   }
 }
+
+export function* moveCategory() {
+  while (true) {
+    const { startIndex, endIndex, id } = yield take(
+      categoryTypes.MOVE_CATEGORY
+    );
+    yield put(categoryActions.moveCategoryFinished(startIndex, endIndex, id));
+  }
+}

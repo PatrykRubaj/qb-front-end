@@ -6,6 +6,7 @@ import {
 import { CategoryActionTypes } from "../types/categoryTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/categoryTypes";
+import arrayMove from "array-move";
 
 export default function categoryReducer(
   categorySection: CategorySection = initialState.categoriesSection,
@@ -64,6 +65,15 @@ export default function categoryReducer(
       return {
         ...categorySection,
         onlyOneEditAllowedPrompt: action.isVisible,
+      };
+    case types.MOVE_CATEGORY_FINISHED:
+      return {
+        ...categorySection,
+        categories: arrayMove(
+          categorySection.categories,
+          action.startIndex,
+          action.endIndex
+        ),
       };
     default:
       return categorySection;

@@ -49,3 +49,14 @@ export function* enterSubcategoryAmountVisibility() {
     yield put(subcategoryActions.enterSubcategoryAmountFinished(id, amount));
   }
 }
+
+export function* moveSubcategory() {
+  while (true) {
+    const { startIndex, endIndex, id } = yield take(
+      subcategoryTypes.MOVE_SUBCATEGORY
+    );
+    yield put(
+      subcategoryActions.moveSubcategoryFinished(startIndex, endIndex, id)
+    );
+  }
+}

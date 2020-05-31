@@ -14,12 +14,12 @@ const CategoryForm: React.FC<Props> = ({
   newCategory,
   addSaveCategory,
   categoryNameInputRef,
-  categories
+  categories,
 }: Props) => {
   const initialValues: Category = {
     id: newCategory.id,
     name: newCategory.name,
-    status: newCategory.status
+    status: newCategory.status,
   };
 
   const validationSchema = Yup.object({
@@ -31,7 +31,7 @@ const CategoryForm: React.FC<Props> = ({
           .filter(x => x.status === EntityStatus.Saved)
           .map(x => x.name),
         "Category must be unique"
-      )
+      ),
   });
 
   const formik = useFormik({
@@ -41,7 +41,7 @@ const CategoryForm: React.FC<Props> = ({
       addSaveCategory(values);
     },
     enableReinitialize: true,
-    validateOnBlur: false
+    validateOnBlur: false,
   });
 
   return (

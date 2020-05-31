@@ -11,6 +11,12 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import subcategoryActions from "../../redux/actions/subcategoryActions";
 import * as subcategoryTypes from "../../redux/types/subcategoryTypes";
+import {
+  DragDropContext,
+  DropResult,
+  Droppable,
+  Draggable,
+} from "react-beautiful-dnd";
 
 interface DispatchProps {
   addSubcategory: (subcategory: Subcategory) => void;
@@ -18,6 +24,7 @@ interface DispatchProps {
   deleteSubcategory: (subcategory: Subcategory) => void;
   setSubcategoryFormValues: (subcategory: Subcategory) => void;
   setSubcategoryPromptVisibility: (isVisible: boolean) => void;
+  moveSubcategory: (startIndex: number, endIndex: number, id: string) => void;
 }
 
 interface StateProps {
@@ -39,6 +46,7 @@ const SubcategoryComponent: React.FC<Props> = ({
   formValues,
   onlyOneEditAllowedPrompt,
   setSubcategoryPromptVisibility,
+  moveSubcategory,
 }: Props) => {
   const subcategoryInput = React.createRef<HTMLInputElement>();
   const subcategoriesHeader = React.createRef<HTMLHeadingElement>();
@@ -112,6 +120,23 @@ const SubcategoryComponent: React.FC<Props> = ({
     }
   };
 
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    moveSubcategory(source.index, destination.index, draggableId);
+  };
+
   return (
     <div className="row">
       <WarningDialog
@@ -163,76 +188,111 @@ const SubcategoryComponent: React.FC<Props> = ({
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {filteredSubcategories.length > 0 ? (
-                      filteredSubcategories.map(subcategory => (
-                        <tr key={subcategory.id}>
-                          <td className="align-middle">{subcategory.name}</td>
-                          <td className="align-middle text-center">
-                            <div className="btn-group" role="group">
-                              <button
-                                disabled={
-                                  subcategory.status === EntityStatus.Editing
-                                }
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={(e): void =>
-                                  onSubcategoryEditClick(e, subcategory)
-                                }
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="droppable-categories">
+                      {provided => (
+                        <tbody
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                        >
+                          {filteredSubcategories.length > 0 ? (
+                            filteredSubcategories.map((subcategory, index) => (
+                              <Draggable
+                                draggableId={subcategory.id}
+                                index={index}
+                                key={subcategory.id}
                               >
-                                <EditIcon />
-                              </button>
-                              <ConfirmationDialog
-                                title="Delete subcategory?"
-                                description="Do You want to delete subcategory?"
-                              >
-                                {confirm => {
-                                  return (
-                                    <button
-                                      disabled={
-                                        subcategory.status ===
-                                        EntityStatus.Editing
-                                      }
-                                      type="button"
-                                      className="btn btn-secondary"
-                                      onClick={confirm(
-                                        onSubcategoryDeleteClick,
-                                        subcategory
-                                      )}
+                                {prov => (
+                                  <tr
+                                    {...prov.draggableProps}
+                                    {...prov.dragHandleProps}
+                                    // eslint-disable-next-line @typescript-eslint/unbound-method
+                                    ref={prov.innerRef}
+                                  >
+                                    <td
+                                      className="align-middle"
+                                      style={{ width: "90%" }}
                                     >
-                                      <DeleteIcon />
+                                      {subcategory.name}
+                                    </td>
+                                    <td
+                                      className="align-middle text-center"
+                                      style={{ width: "10%" }}
+                                    >
+                                      <div className="btn-group" role="group">
+                                        <button
+                                          disabled={
+                                            subcategory.status ===
+                                            EntityStatus.Editing
+                                          }
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          onClick={(e): void =>
+                                            onSubcategoryEditClick(
+                                              e,
+                                              subcategory
+                                            )
+                                          }
+                                        >
+                                          <EditIcon />
+                                        </button>
+                                        <ConfirmationDialog
+                                          title="Delete subcategory?"
+                                          description="Do You want to delete subcategory?"
+                                        >
+                                          {confirm => {
+                                            return (
+                                              <button
+                                                disabled={
+                                                  subcategory.status ===
+                                                  EntityStatus.Editing
+                                                }
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={confirm(
+                                                  onSubcategoryDeleteClick,
+                                                  subcategory
+                                                )}
+                                              >
+                                                <DeleteIcon />
+                                              </button>
+                                            );
+                                          }}
+                                        </ConfirmationDialog>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </Draggable>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={2}>
+                                <div
+                                  className="alert alert-warning align-middle"
+                                  role="alert"
+                                >
+                                  <span>
+                                    No subcategories -{" "}
+                                    <button
+                                      type="button"
+                                      className="btn btn-link p-0 alert-link border-0 align-baseline"
+                                      onClick={(e): void =>
+                                        onSelectCategoryClick(e, category)
+                                      }
+                                    >
+                                      add subcategory
                                     </button>
-                                  );
-                                }}
-                              </ConfirmationDialog>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={2}>
-                          <div
-                            className="alert alert-warning align-middle"
-                            role="alert"
-                          >
-                            <span>
-                              No subcategories -{" "}
-                              <button
-                                type="button"
-                                className="btn btn-link p-0 alert-link border-0 align-baseline"
-                                onClick={(e): void =>
-                                  onSelectCategoryClick(e, category)
-                                }
-                              >
-                                add subcategory
-                              </button>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                          {provided.placeholder}
+                        </tbody>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 </table>
               );
             })}
@@ -278,6 +338,12 @@ export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       isVisible: boolean
     ): subcategoryTypes.SubcategoryActionTypes =>
       dispatch(subcategoryActions.setSubcategoryPromptVisibility(isVisible)),
+    moveSubcategory: (
+      startIndex: number,
+      endIndex: number,
+      id: string
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.moveSubcategory(startIndex, endIndex, id)),
   };
 };
 

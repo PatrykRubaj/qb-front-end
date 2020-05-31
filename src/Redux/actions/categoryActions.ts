@@ -87,6 +87,31 @@ const setCategoryPromptVisibilityFinished = (
   };
 };
 
+const moveCategory = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): categoryTypes.CategoryActionTypes => {
+  return {
+    type: categoryTypes.MOVE_CATEGORY,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+const moveCategoryFinished = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): categoryTypes.CategoryActionTypes => {
+  return {
+    type: categoryTypes.MOVE_CATEGORY_FINISHED,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+
 export default {
   deleteCategory,
   deleteCategoryFinished,
@@ -98,4 +123,6 @@ export default {
   setCategoryFormValuesFinished,
   setCategoryPromptVisibility,
   setCategoryPromptVisibilityFinished,
+  moveCategory,
+  moveCategoryFinished,
 };

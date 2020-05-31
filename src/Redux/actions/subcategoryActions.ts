@@ -113,6 +113,32 @@ const enterSubcategoryAmountFinished = (
   };
 };
 
+const moveSubcategory = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): subcategoryTypes.SubcategoryActionTypes => {
+  return {
+    type: subcategoryTypes.MOVE_SUBCATEGORY,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+
+const moveSubcategoryFinished = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): subcategoryTypes.SubcategoryActionTypes => {
+  return {
+    type: subcategoryTypes.MOVE_SUBCATEGORY_FINISHED,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+
 export default {
   deleteSubcategory,
   deleteSubcategoryFinished,
@@ -126,4 +152,6 @@ export default {
   setSubcategoryPromptVisibilityFinished,
   enterSubcategoryAmount,
   enterSubcategoryAmountFinished,
+  moveSubcategory,
+  moveSubcategoryFinished,
 };

@@ -226,4 +226,100 @@ describe("Income reducer", () => {
       status: EntityStatus.Saved,
     });
   });
+
+  it("Should return incomes in order id2, id1, id3", () => {
+    const initIncome: IncomeSection = {
+      formValues: {
+        id: "",
+        amount: undefined,
+        name: "",
+        status: EntityStatus.New,
+      },
+      incomes: [
+        {
+          id: "id1",
+          name: "Income 1",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+        {
+          id: "id2",
+          name: "Income 2",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+        {
+          id: "id3",
+          name: "Income 3",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+      ],
+      onlyOneEditAllowedPrompt: false,
+    };
+
+    const movedIncome: Income = {
+      id: "id1",
+      name: "Income 1",
+      status: EntityStatus.Saved,
+      amount: 1000,
+    };
+
+    const state = incomeReducer(
+      initIncome,
+      actions.moveIncomeFinished(0, 1, movedIncome.id)
+    );
+
+    expect(state.incomes[0].id).toEqual("id2");
+    expect(state.incomes[1].id).toEqual("id1");
+    expect(state.incomes[2].id).toEqual("id3");
+  });
+
+  it("Should return incomes in order id2, id3, id1", () => {
+    const initIncome: IncomeSection = {
+      formValues: {
+        id: "",
+        amount: undefined,
+        name: "",
+        status: EntityStatus.New,
+      },
+      incomes: [
+        {
+          id: "id1",
+          name: "Income 1",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+        {
+          id: "id2",
+          name: "Income 2",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+        {
+          id: "id3",
+          name: "Income 3",
+          status: EntityStatus.Saved,
+          amount: 1000,
+        },
+      ],
+      onlyOneEditAllowedPrompt: false,
+    };
+
+    const movedIncome: Income = {
+      id: "id1",
+      name: "Income 1",
+      status: EntityStatus.Saved,
+      amount: 1000,
+    };
+
+    const state = incomeReducer(
+      initIncome,
+      actions.moveIncomeFinished(0, 2, movedIncome.id)
+    );
+
+    expect(state.incomes[0].id).toEqual("id2");
+    expect(state.incomes[1].id).toEqual("id3");
+    expect(state.incomes[2].id).toEqual("id1");
+  });
 });

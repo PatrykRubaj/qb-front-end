@@ -46,6 +46,6 @@ export interface CategorySection {
 
 export interface SubcategorySection {
   formValues: Subcategory;
-  subcategories: Subcategory[];
   onlyOneEditAllowedPrompt: boolean;
+  subcategories: Subcategory[];
 }

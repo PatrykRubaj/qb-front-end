@@ -11,6 +11,12 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import categoryActions from "../../redux/actions/categoryActions";
 import * as categoryTypes from "../../redux/types/categoryTypes";
+import {
+  DragDropContext,
+  DropResult,
+  Droppable,
+  Draggable,
+} from "react-beautiful-dnd";
 
 interface StateProps {
   categories: Array<Category>;
@@ -24,6 +30,7 @@ interface DispatchProps {
   deleteCategory: (category: Category) => void;
   setCategoryFormValues: (category: Category) => void;
   setCategoryPromptVisibility: (isVisible: boolean) => void;
+  moveElement: (startIndex: number, endIndex: number, id: string) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -37,6 +44,7 @@ const CategoryComponent: React.FC<Props> = ({
   deleteCategory,
   onlyOneEditAllowedPrompt,
   setCategoryPromptVisibility,
+  moveElement,
 }: Props) => {
   const categoryInput = React.createRef<HTMLInputElement>();
 
@@ -79,6 +87,23 @@ const CategoryComponent: React.FC<Props> = ({
     categoryInput.current?.focus();
   };
 
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    moveElement(source.index, destination.index, draggableId);
+  };
+
   return (
     <div className="row">
       <WarngingDialog
@@ -98,48 +123,75 @@ const CategoryComponent: React.FC<Props> = ({
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
-              <th>Category</th>
+              <th style={{ width: "90%" }}>Category</th>
               <th className="text-center" style={{ width: "10%" }}>
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody>
-            {categories.map(category => (
-              <tr key={category.id}>
-                <td className="align-middle">{category.name}</td>
-                <td className="align-middle text-center">
-                  <div className="btn-group" role="group">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={(e): void => onEditClick(e, category)}
-                      disabled={category.status === EntityStatus.Editing}
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable-categories">
+              {provided => (
+                <tbody {...provided.droppableProps} ref={provided.innerRef}>
+                  {categories.map((category, index) => (
+                    <Draggable
+                      draggableId={category.id}
+                      index={index}
+                      key={category.id}
                     >
-                      <EditIcon />
-                    </button>
-                    <ConfirmationDialog
-                      title="Delete category?"
-                      description="Do You want to delete category?"
-                    >
-                      {confirm => {
-                        return (
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={confirm(onDeleteClick, category)}
-                            disabled={category.status === EntityStatus.Editing}
+                      {prov => (
+                        <tr
+                          {...prov.draggableProps}
+                          {...prov.dragHandleProps}
+                          // eslint-disable-next-line @typescript-eslint/unbound-method
+                          ref={prov.innerRef}
+                        >
+                          <td className="align-middle" style={{ width: "90%" }}>
+                            {category.name}
+                          </td>
+                          <td
+                            className="align-middle text-center"
+                            style={{ width: "10%" }}
                           >
-                            <DeleteIcon />
-                          </button>
-                        );
-                      }}
-                    </ConfirmationDialog>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+                            <div className="btn-group" role="group">
+                              <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={(e): void => onEditClick(e, category)}
+                                disabled={
+                                  category.status === EntityStatus.Editing
+                                }
+                              >
+                                <EditIcon />
+                              </button>
+                              <ConfirmationDialog
+                                title="Delete category?"
+                                description="Do You want to delete category?"
+                              >
+                                {confirm => (
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={confirm(onDeleteClick, category)}
+                                    disabled={
+                                      category.status === EntityStatus.Editing
+                                    }
+                                  >
+                                    <DeleteIcon />
+                                  </button>
+                                )}
+                              </ConfirmationDialog>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </tbody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </table>
       </div>
     </div>
@@ -170,6 +222,8 @@ export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       isVisible: boolean
     ): categoryTypes.CategoryActionTypes =>
       dispatch(categoryActions.setCategoryPromptVisibility(isVisible)),
+    moveElement: (startIndex: number, endIndex: number, id: string) =>
+      dispatch(categoryActions.moveCategory(startIndex, endIndex, id)),
   };
 };
 

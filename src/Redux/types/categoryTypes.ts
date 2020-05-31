@@ -10,6 +10,8 @@ export const EDIT_CATEGORY = "EDIT_CATEGORY";
 export const EDIT_CATEGORY_FINISHED = "EDIT_CATEGORY_FINISHED";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const DELETE_CATEGORY_FINISHED = "DELETE_CATEGORY_FINISHED";
+export const MOVE_CATEGORY = "MOVE_CATEGORY";
+export const MOVE_CATEGORY_FINISHED = "MOVE_CATEGORY_FINISHED";
 
 interface SetCategoryPromptVisibilityAction {
   type: typeof SET_CATEGORY_PROMPT_VISIBILITY;
@@ -61,6 +63,20 @@ interface EditCategoryFinishedAction {
   payload: Category;
 }
 
+interface MoveCategoryAction {
+  type: typeof MOVE_CATEGORY;
+  startIndex: number;
+  endIndex: number;
+  id: string;
+}
+
+interface MoveCategoryFinishedAction {
+  type: typeof MOVE_CATEGORY_FINISHED;
+  startIndex: number;
+  endIndex: number;
+  id: string;
+}
+
 export type CategoryActionTypes =
   | SetCategoryPromptVisibilityAction
   | SetCategoryPromptVisibilityFinishedAction
@@ -71,4 +87,6 @@ export type CategoryActionTypes =
   | DeleteCategoryAction
   | DeleteCategoryFinishedAction
   | EditCategoryAction
-  | EditCategoryFinishedAction;
+  | EditCategoryFinishedAction
+  | MoveCategoryAction
+  | MoveCategoryFinishedAction;
