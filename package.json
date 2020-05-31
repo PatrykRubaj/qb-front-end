@@ -49,7 +49,7 @@
     "build": "react-scripts build",
     "test": "cross-env NODE_ICU_DATA=node_modules/full-icu jest",
     "test:watch": "cross-env NODE_ICU_DATA=node_modules/full-icu jest --watch",
-    "test-ci": "cross-env NODE_ICU_DATA=node_modules/full-icu jest --ci --reporters=jest-junit",
+    "test-ci": "node --icu-data-dir=node_modules/full-icu node_modules/jest/bin/jest.js --ci --reporters=jest-junit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
