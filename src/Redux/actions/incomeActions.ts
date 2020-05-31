@@ -79,6 +79,32 @@ const setPromptVisibilityFinished = (
   };
 };
 
+const moveIncome = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.MOVE_INCOME,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+
+const moveIncomeFinished = (
+  startIndex: number,
+  endIndex: number,
+  id: string
+): incomeTypes.IncomeActionTypes => {
+  return {
+    type: incomeTypes.MOVE_INCOME_FINISHED,
+    startIndex,
+    endIndex,
+    id,
+  };
+};
+
 export default {
   deleteIncome,
   deleteIncomeFinished,
@@ -90,4 +116,6 @@ export default {
   setIncomeFormValuesFinished,
   setPromptVisibility,
   setPromptVisibilityFinished,
+  moveIncome,
+  moveIncomeFinished,
 };

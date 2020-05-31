@@ -54,6 +54,7 @@ export const initialState: RootState = {
       status: EntityStatus.New,
       amount: null,
     },
+    onlyOneEditAllowedPrompt: false,
     subcategories: [
       {
         id: "d6fe654c-3976-4e16-8b25-e4c4a03b5e72",
@@ -70,7 +71,6 @@ export const initialState: RootState = {
         status: EntityStatus.Saved,
       },
     ],
-    onlyOneEditAllowedPrompt: false,
   },
   country: null,
 };

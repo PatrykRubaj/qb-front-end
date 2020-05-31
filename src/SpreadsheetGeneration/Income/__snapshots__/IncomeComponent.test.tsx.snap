@@ -62,11 +62,22 @@ exports[`Income Component Test display element Should render div with warnging w
         className="thead-light"
       >
         <tr>
-          <th>
+          <th
+            style={
+              Object {
+                "width": "60%",
+              }
+            }
+          >
             Source
           </th>
           <th
             className="text-center"
+            style={
+              Object {
+                "width": "30%",
+              }
+            }
           >
             Amount
           </th>
@@ -82,7 +93,10 @@ exports[`Income Component Test display element Should render div with warnging w
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody
+        data-rbd-droppable-context-id="0"
+        data-rbd-droppable-id="droppable-incomes"
+      >
         <tr>
           <td
             colSpan={3}

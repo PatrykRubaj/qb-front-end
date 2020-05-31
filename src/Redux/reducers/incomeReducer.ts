@@ -6,6 +6,7 @@ import {
 import { IncomeActionTypes } from "../types/incomeTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/incomeTypes";
+import arrayMove from "array-move";
 
 export default function incomeReducer(
   incomeSection: IncomeSection = initialState.incomeSection,
@@ -60,6 +61,15 @@ export default function incomeReducer(
       return {
         ...incomeSection,
         onlyOneEditAllowedPrompt: action.isVisible,
+      };
+    case types.MOVE_INCOME_FINISHED:
+      return {
+        ...incomeSection,
+        incomes: arrayMove(
+          incomeSection.incomes,
+          action.startIndex,
+          action.endIndex
+        ),
       };
     default:
       return incomeSection;

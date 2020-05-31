@@ -73,4 +73,51 @@ describe("Category reducer", () => {
       status: EntityStatus.Saved,
     });
   });
+
+  it("Should return categories in new order id2, id3, id1", () => {
+    const initState: CategorySection = {
+      formValues: {
+        id: "e45c447f-2fab-4b18-97a8-c720ca3ef6bb",
+        name: "",
+        status: EntityStatus.New,
+      },
+      categories: [
+        {
+          id: "id1",
+          name: "Category 1",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "id2",
+          name: "Category 2",
+          status: EntityStatus.Saved,
+        },
+        {
+          id: "id3",
+          name: "Category 3",
+          status: EntityStatus.Saved,
+        },
+      ],
+      onlyOneEditAllowedPrompt: false,
+    };
+
+    expect(initState.categories[0].id).toEqual("id1");
+    expect(initState.categories[1].id).toEqual("id2");
+    expect(initState.categories[2].id).toEqual("id3");
+
+    const movedCategory: Category = {
+      id: "id1",
+      name: "Category 1",
+      status: EntityStatus.Saved,
+    };
+
+    const state = categoryReducer(
+      initState,
+      categoryActions.moveCategoryFinished(0, 2, movedCategory.id)
+    );
+
+    expect(state.categories[0].id).toEqual("id2");
+    expect(state.categories[1].id).toEqual("id3");
+    expect(state.categories[2].id).toEqual("id1");
+  });
 });

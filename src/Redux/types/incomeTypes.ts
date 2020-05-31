@@ -9,6 +9,8 @@ export const EDIT_INCOME = "EDIT_INCOME";
 export const EDIT_INCOME_FINISHED = "EDIT_INCOME_FINISHED";
 export const DELETE_INCOME = "DELETE_INCOME";
 export const DELETE_INCOME_FINISHED = "DELETE_INCOME_FINISHED";
+export const MOVE_INCOME = "MOVE_INCOME";
+export const MOVE_INCOME_FINISHED = "MOVE_INCOME_FINISHED";
 
 interface SetPromptVisibilityAction {
   type: typeof SET_PROMPT_VISIBILITY;
@@ -60,6 +62,20 @@ interface EditIncomeFinishedAction {
   payload: Income;
 }
 
+interface MoveIncomeAction {
+  type: typeof MOVE_INCOME;
+  startIndex: number;
+  endIndex: number;
+  id: string;
+}
+
+interface MoveIncomeFinishedAction {
+  type: typeof MOVE_INCOME_FINISHED;
+  startIndex: number;
+  endIndex: number;
+  id: string;
+}
+
 export type IncomeActionTypes =
   | SetPromptVisibilityAction
   | SetPromptVisibilityFinishedAction
@@ -70,4 +86,6 @@ export type IncomeActionTypes =
   | DeleteIncomeAction
   | DeleteIncomeFinishedAction
   | EditIncomeAction
-  | EditIncomeFinishedAction;
+  | EditIncomeFinishedAction
+  | MoveIncomeAction
+  | MoveIncomeFinishedAction;

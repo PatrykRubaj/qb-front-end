@@ -2,15 +2,15 @@ import React from "react";
 import renderer from "react-test-renderer";
 import { IncomeComponent, mapStateToProps } from "./IncomeComponent";
 import { RootState } from "../../redux/reducers";
-import { EntityStatus, Income } from "../state";
+import { EntityStatus, Income, Country } from "../state";
 import * as ReactTestUtils from "react-dom/test-utils";
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
-import { Country } from "../LocaleSelector/Country";
 
 describe("Income Component", () => {
   describe("mapStateToProps", () => {
     it("should pass incomes and onlyOneEditAllowedPrompt", () => {
       const appState: RootState = {
+        country: null,
         incomeSection: {
           formValues: {
             id: "",
@@ -43,7 +43,17 @@ describe("Income Component", () => {
           },
           onlyOneEditAllowedPrompt: false,
         },
-        subcategories: [],
+        subcategorySection: {
+          subcategories: [],
+          formValues: {
+            id: "",
+            amount: null,
+            categoryId: "",
+            name: "",
+            status: EntityStatus.New,
+          },
+          onlyOneEditAllowedPrompt: false,
+        },
       };
 
       const mappedValues = mapStateToProps(appState);
@@ -70,6 +80,7 @@ describe("Income Component", () => {
           deleteIncome={() => {}}
           setIncomeFormValues={() => {}}
           setPromptVisibility={() => {}}
+          moveElement={() => {}}
           locale={null}
         />
       );
@@ -118,6 +129,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={null}
           />,
           container
@@ -167,6 +179,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={null}
           />,
           container
@@ -229,6 +242,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={country}
           />,
           container
@@ -281,6 +295,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={locale}
           />,
           container
@@ -337,6 +352,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={null}
           />,
           container
@@ -401,6 +417,7 @@ describe("Income Component", () => {
             deleteIncome={() => {}}
             setIncomeFormValues={() => {}}
             setPromptVisibility={() => {}}
+            moveElement={() => {}}
             locale={null}
           />,
           container

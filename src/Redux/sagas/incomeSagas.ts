@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { take, put } from "redux-saga/effects";
 import incomeActions from "../actions/incomeActions";
 import * as incomeTypes from "../types/incomeTypes";
@@ -34,5 +35,12 @@ export function* setPromptVisibility() {
   while (true) {
     const { isVisible } = yield take(incomeTypes.SET_PROMPT_VISIBILITY);
     yield put(incomeActions.setPromptVisibilityFinished(isVisible));
+  }
+}
+
+export function* moveIncome() {
+  while (true) {
+    const { startIndex, endIndex, id } = yield take(incomeTypes.MOVE_INCOME);
+    yield put(incomeActions.moveIncomeFinished(startIndex, endIndex, id));
   }
 }

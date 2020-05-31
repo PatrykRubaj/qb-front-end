@@ -9,6 +9,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import incomeActions from "../../redux/actions/incomeActions";
 import { IncomeActionTypes } from "../../redux/types/incomeTypes";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 
 interface StateProps {
   incomes: Array<Income>;
@@ -23,6 +24,7 @@ interface DispatchProps {
   editIncome: (income: Income) => void;
   setIncomeFormValues: (income: Income) => void;
   setPromptVisibility: (isVisible: boolean) => void;
+  moveElement: (startIndex: number, endIndex: number, id: string) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -37,6 +39,7 @@ export const IncomeComponent: React.FC<Props> = ({
   setIncomeFormValues,
   setPromptVisibility,
   onlyOneEditAllowedPrompt,
+  moveElement,
 }: Props) => {
   const nameInput = React.createRef<HTMLInputElement>();
   const getCurrencyFromCommaString = (
@@ -102,6 +105,23 @@ export const IncomeComponent: React.FC<Props> = ({
     }
   };
 
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    moveElement(source.index, destination.index, draggableId);
+  };
+
   return (
     <div className="row">
       <div className="col">
@@ -121,34 +141,47 @@ export const IncomeComponent: React.FC<Props> = ({
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
-              <th>Source</th>
-              <th className="text-center">Amount</th>
+              <th style={{ width: "60%" }}>Source</th>
+              <th className="text-center" style={{ width: "30%" }}>
+                Amount
+              </th>
               <th className="text-center" style={{ width: "10%" }}>
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody>
-            {incomes.length > 0 ? (
-              incomes.map(income => (
-                <IncomeRowComponent
-                  key={income.id}
-                  income={income}
-                  onEditIncome={onEditIncome}
-                  onDeleteIncome={onDeleteIncome}
-                  formatter={formatter}
-                />
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3}>
-                  <div className="alert alert-danger align-middle" role="alert">
-                    At least one income is required
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable-incomes">
+              {provided => (
+                <tbody {...provided.droppableProps} ref={provided.innerRef}>
+                  {incomes.length > 0 ? (
+                    incomes.map((income, index) => (
+                      <IncomeRowComponent
+                        key={income.id}
+                        income={income}
+                        onEditIncome={onEditIncome}
+                        onDeleteIncome={onDeleteIncome}
+                        formatter={formatter}
+                        index={index}
+                      />
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>
+                        <div
+                          className="alert alert-danger align-middle"
+                          role="alert"
+                        >
+                          At least one income is required
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {provided.placeholder}
+                </tbody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </table>
       </div>
     </div>
@@ -174,6 +207,12 @@ export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       dispatch(incomeActions.setIncomeFormValues(income)),
     setPromptVisibility: (isVisible: boolean): IncomeActionTypes =>
       dispatch(incomeActions.setPromptVisibility(isVisible)),
+    moveElement: (
+      startIndex: number,
+      endIndex: number,
+      id: string
+    ): IncomeActionTypes =>
+      dispatch(incomeActions.moveIncome(startIndex, endIndex, id)),
   };
 };
 
