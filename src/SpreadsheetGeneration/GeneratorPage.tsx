@@ -4,6 +4,7 @@ import CategoryComponent from "./Category/CategoryComponent";
 import SubcategoryComponent from "./Subcategory/SubcategoryComponent";
 import SpendingPredictionComponent from "./SpendingPrediction/SpendingPredictionComponent";
 import LocaleSelectorComponent from "./LocaleSelector/LocaleSelectorComponent";
+import SaveComponent from "./Save/SaveComponent";
 
 const GeneratorPage: React.FC = () => {
   return (
@@ -13,9 +14,7 @@ const GeneratorPage: React.FC = () => {
       <CategoryComponent />
       <SubcategoryComponent />
       <SpendingPredictionComponent />
-      <button className="btn btn-primary btn-lg btn-block mb-4">
-        Generate budget
-      </button>
+      <SaveComponent />
     </>
   );
 };
