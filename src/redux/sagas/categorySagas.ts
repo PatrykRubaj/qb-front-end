@@ -47,3 +47,12 @@ export function* moveCategory() {
     yield put(categoryActions.moveCategoryFinished(startIndex, endIndex, id));
   }
 }
+
+export default [
+  deleteCategory,
+  addCategory,
+  editCategory,
+  setCategoryFormValues,
+  setPromptVisibility,
+  moveCategory,
+]

@@ -73,4 +73,15 @@ export const initialState: RootState = {
     ],
   },
   country: null,
+  userSection: {
+    isLoading: false,
+    user: {
+      idToken: "",
+      accessToken: "",
+      givenName: "",
+      imageUrl: "",
+      email: "",
+      emailVerified: false,
+    },
+  },
 };

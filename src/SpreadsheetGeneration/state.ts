@@ -49,3 +49,17 @@ export interface SubcategorySection {
   onlyOneEditAllowedPrompt: boolean;
   subcategories: Subcategory[];
 }
+
+export interface User {
+  idToken: string;
+  accessToken: string;
+  givenName: string;
+  imageUrl: string;
+  email: string;
+  emailVerified: boolean;
+}
+
+export interface UserSection {
+  user: User;
+  isLoading: boolean;
+}

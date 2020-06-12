@@ -1,8 +1,9 @@
-import { all } from "redux-saga/effects";
+import { all, fork } from "redux-saga/effects";
 import * as incomeSagas from "./incomeSagas";
-import * as categorySagas from "./categorySagas";
+import categorySagas from "./categorySagas";
 import * as subcategorySagas from "./subcategorySagas";
 import * as countrySagas from "./countrySagas";
+import authSagas from "./authSagas";
 
 export default function* rootSaga() {
   yield all([
@@ -12,12 +13,7 @@ export default function* rootSaga() {
     incomeSagas.setIncomeFormValues(),
     incomeSagas.setPromptVisibility(),
     incomeSagas.moveIncome(),
-    categorySagas.deleteCategory(),
-    categorySagas.addCategory(),
-    categorySagas.editCategory(),
-    categorySagas.setCategoryFormValues(),
-    categorySagas.setPromptVisibility(),
-    categorySagas.moveCategory(),
+    ...categorySagas.map(cs => fork(cs)),
     subcategorySagas.deleteSubcategory(),
     subcategorySagas.addSubcategory(),
     subcategorySagas.editSubcategory(),
@@ -26,5 +22,6 @@ export default function* rootSaga() {
     subcategorySagas.enterSubcategoryAmountVisibility(),
     subcategorySagas.moveSubcategory(),
     countrySagas.setCountry(),
+    ...authSagas.map(as => fork(as)),
   ]);
 }

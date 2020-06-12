@@ -1,7 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import { User } from "../SpreadsheetGeneration/state";
+import { RootState } from "../redux/reducers";
 
-const NavigationBar: React.FC = () => (
+interface StateProps {
+  user: User;
+}
+
+type Props = StateProps;
+
+const NavigationBar: React.FC<Props> = (props: Props) => (
   <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
     <NavLink to="/" className="navbar-brand">
       Quantum Budget
@@ -13,9 +22,18 @@ const NavigationBar: React.FC = () => (
             Generator
           </NavLink>
         </li>
+        {props.user.givenName.length > 0 ? (
+          <li className="nav-item">Hi {props.user.givenName}</li>
+        ) : null}
       </ul>
     </div>
   </nav>
 );
 
-export default NavigationBar;
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    user: state.userSection.user,
+  };
+};
+
+export default connect(mapStateToProps)(NavigationBar);
