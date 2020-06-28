@@ -4,6 +4,8 @@ import categorySagas from "./categorySagas";
 import * as subcategorySagas from "./subcategorySagas";
 import * as countrySagas from "./countrySagas";
 import authSagas from "./authSagas";
+import budgetSagas from "./budgetSagas";
+import appSagas from "./appSagas";
 
 export default function* rootSaga() {
   yield all([
@@ -23,5 +25,7 @@ export default function* rootSaga() {
     subcategorySagas.moveSubcategory(),
     countrySagas.setCountry(),
     ...authSagas.map(as => fork(as)),
+    ...budgetSagas.map(as => fork(as)),
+    ...appSagas.map(as => fork(as)),
   ]);
 }

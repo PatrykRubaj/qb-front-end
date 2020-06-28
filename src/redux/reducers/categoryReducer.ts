@@ -7,10 +7,11 @@ import { CategoryActionTypes } from "../types/categoryTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/categoryTypes";
 import arrayMove from "array-move";
+import * as appTypes from "../types/appTypes";
 
 export default function categoryReducer(
   categorySection: CategorySection = initialState.categoriesSection,
-  action: CategoryActionTypes
+  action: CategoryActionTypes | appTypes.AppActionTypes
 ): CategorySection {
   switch (action.type) {
     case types.DELETE_CATEGORY_FINISHED:
@@ -75,6 +76,8 @@ export default function categoryReducer(
           action.endIndex
         ),
       };
+    case appTypes.REQUEST_STATE_LOAD_FINISHED:
+      return action.state.categoriesSection;
     default:
       return categorySection;
   }
