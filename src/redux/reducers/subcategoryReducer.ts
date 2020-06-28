@@ -7,10 +7,11 @@ import { SubcategoryActionTypes } from "../types/subcategoryTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/subcategoryTypes";
 import arrayMove from "array-move";
+import * as appTypes from "../types/appTypes";
 
 export default function subcategoryReducer(
   subcategorySection: SubcategorySection = initialState.subcategorySection,
-  action: SubcategoryActionTypes
+  action: SubcategoryActionTypes | appTypes.AppActionTypes
 ): SubcategorySection {
   switch (action.type) {
     case types.DELETE_SUBCATEGORY_FINISHED:
@@ -105,6 +106,8 @@ export default function subcategoryReducer(
         ],
       };
     }
+    case appTypes.REQUEST_STATE_LOAD_FINISHED:
+      return action.state.subcategorySection;
     default:
       return subcategorySection;
   }

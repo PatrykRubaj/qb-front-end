@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
@@ -6,9 +6,22 @@ import NavigationBar from "./Common/NavigationBar";
 import Login from "./auth0/Components/Login";
 import Callback from "./auth0/Components/Callback";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { AppActionTypes } from "./redux/types/appTypes";
+import appActions from "./redux/actions/appActions";
 
-const App: React.FC = () => {
+interface DispatchProps {
+  loadState: () => AppActionTypes;
+}
+
+type Props = DispatchProps;
+
+const App: React.FC<Props> = ({ loadState }: Props) => {
   const history = useHistory();
+  useEffect(() => {
+    loadState();
+  }, [loadState]);
 
   return (
     <>
@@ -28,4 +41,10 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    loadState: (): AppActionTypes => dispatch(appActions.requestLoadState()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);

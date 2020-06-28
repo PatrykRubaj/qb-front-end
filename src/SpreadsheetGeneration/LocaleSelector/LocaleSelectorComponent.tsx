@@ -26,7 +26,10 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
+const LocaleSelectorComponent: React.FC<Props> = ({
+  setLocale,
+  country,
+}: Props) => {
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
     value: "",
@@ -35,18 +38,18 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
 
   useEffect(() => {
     const setDefaultLocale = (): void => {
-      const country: Country = getUsersCountry();
+      const userCountry: Country = getUsersCountry();
       setSelectedCountry({
-        value: country.key,
-        label: `${country.currency} - ${country.name}`,
+        value: userCountry.key,
+        label: `${userCountry.currency} - ${userCountry.name}`,
       });
 
-      if (country !== undefined) {
+      if (userCountry !== undefined) {
         setLocale({
-          key: country.key,
-          name: country.name,
-          currency: country.currency,
-          emojiU: country.emojiU,
+          key: userCountry.key,
+          name: userCountry.name,
+          currency: userCountry.currency,
+          emojiU: userCountry.emojiU,
         });
       }
     };
@@ -63,10 +66,17 @@ const LocaleSelectorComponent: React.FC<Props> = ({ setLocale }: Props) => {
         })
       );
 
-      setDefaultLocale();
+      if (country === null) {
+        setDefaultLocale();
+      } else {
+        setSelectedCountry({
+          value: country.key,
+          label: `${country.name}`,
+        });
+      }
     }
     // eslint-disable-next-line
-  }, []);
+  }, [country]);
 
   const onCountryChange = (
     selection?: ValueType<SelectOption> | null | undefined

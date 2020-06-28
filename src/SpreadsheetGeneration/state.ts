@@ -63,3 +63,10 @@ export interface UserSection {
   user: User;
   isLoading: boolean;
 }
+
+export interface BudgetToGenerate {
+  country: Country;
+  incomes: Array<Income>;
+  categories: Array<Category>;
+  subcategories: Array<Subcategory>;
+}

@@ -7,10 +7,11 @@ import { IncomeActionTypes } from "../types/incomeTypes";
 import { initialState } from "../initialsState";
 import * as types from "../types/incomeTypes";
 import arrayMove from "array-move";
+import * as appTypes from "../types/appTypes";
 
 export default function incomeReducer(
   incomeSection: IncomeSection = initialState.incomeSection,
-  action: IncomeActionTypes
+  action: IncomeActionTypes | appTypes.AppActionTypes
 ): IncomeSection {
   switch (action.type) {
     case types.DELETE_INCOME_FINISHED:
@@ -71,6 +72,8 @@ export default function incomeReducer(
           action.endIndex
         ),
       };
+    case appTypes.REQUEST_STATE_LOAD_FINISHED:
+      return action.state.incomeSection;
     default:
       return incomeSection;
   }

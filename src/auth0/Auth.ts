@@ -13,12 +13,19 @@ export default class Auth {
       clientID: process.env.REACT_APP_AUTH0_CLIENT_ID || "",
       redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL || "",
       responseType: "token id_token",
-      scope: "openid profile email",
+      scope: "openid profile email offline_access",
     });
   }
 
   login = (): void => {
-    this.auth0.authorize();
+    this.auth0.authorize({
+      connection: "google-oauth2",
+      accessType: "offline",
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      connection_scope: "https://www.googleapis.com/auth/spreadsheets",
+      scope: "openid profile email offline_access",
+      // approvalPrompt: "force",
+    });
   };
 
   handleAuthentication = async (): Promise<User | null> => {
