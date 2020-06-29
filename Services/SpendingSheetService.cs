@@ -13,7 +13,7 @@ namespace Services
 
         public SpendingSheetService(Budget budget)
         {
-            _googleSheetService = new GoogleSheetService();
+            _googleSheetService = new GoogleSheetService(budget.Incomes.Count, budget.Categories.Count, budget.Subcategories.Count);
             _budget = budget;
         }
 
@@ -24,10 +24,9 @@ namespace Services
             {
                 UserEnteredValue = new ExtendedValue()
                 {
-                    StringValue = "Budget"
+                    StringValue = "Spending"
                 }
             });
-
             _googleSheetService.AddRow(cells);
 
             cells = new List<CellData>();
@@ -39,10 +38,536 @@ namespace Services
                 }
             });
             _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Planned income"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = Convert.ToDouble(_budget.Incomes.Sum(x => x.Amount))
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Planned spending"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = Convert.ToDouble(_budget.Subcategories.Sum(x => x.Amount))
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "To allocate"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = Convert.ToDouble(_budget.Incomes.Sum(x => x.Amount) - _budget.Subcategories.Sum(x => x.Amount))
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            _googleSheetService.AddEmptyRow();
+
+            //Budget Realisation
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Budget Realisation"
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Actual income"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Actual spending"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Still available"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+            _googleSheetService.AddEmptyRow();
+
+            //Header table
+            cells = new List<CellData>();
+            cells.Add(new CellData());
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Planned"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Actual"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Difference"
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            //Income sum:
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Income sum:"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            //Spending sum:
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Spending sum:"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+            _googleSheetService.AddEmptyRow();
+        }
+
+        private void AddIncomeHeader()
+        {
+            var cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Income"
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Name"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Planned income"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Actual income"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Difference"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Realisation"
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Sum:"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "PERCENT"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
+        }
+
+        private void AddCategoryHeader(string categoryName)
+        {
+            var cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = categoryName
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Name"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Planned spending"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Actual spending"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Difference"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Realisation"
+                }
+            });
+            _googleSheetService.AddRow(cells);
+
+            cells = new List<CellData>();
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Sum:"
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "CURRENCY"
+                    }
+                }
+            });
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    NumberValue = 0
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    NumberFormat = new NumberFormat()
+                    {
+                        Type = "PERCENT"
+                    }
+                }
+            });
+            _googleSheetService.AddRow(cells);
         }
 
         private void AddIncomesSection(IList<Income> incomes)
         {
+            AddIncomeHeader();
             foreach (var income in incomes)
             {
                 var cells = new List<CellData>();
@@ -67,8 +592,51 @@ namespace Services
                         }
                     }
                 });
+                cells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY"
+                        }
+                    }
+                });
+                cells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY"
+                        }
+                    }
+                });
+                cells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "PERCENT"
+                        }
+                    }
+                });
                 _googleSheetService.AddRow(cells);
             }
+            _googleSheetService.AddEmptyRow();
         }
 
         private void AddCategoriesSections(IList<Category> categories, IList<Subcategory> subcategories)
@@ -81,15 +649,7 @@ namespace Services
 
         private void AddCategorySection(string categoryName, IEnumerable<Subcategory> subcategories)
         {
-            var cells = new List<CellData>();
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = categoryName
-                }
-            });
-            _googleSheetService.AddRow(cells);
+            AddCategoryHeader(categoryName);
 
             foreach (var sub in subcategories)
             {
@@ -115,8 +675,52 @@ namespace Services
                         }
                     }
                 });
+                subCells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY"
+                        }
+                    }
+                });
+                subCells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY"
+                        }
+                    }
+                });
+                subCells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        NumberValue = 0
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "PERCENT"
+                        }
+                    }
+                });
                 _googleSheetService.AddRow(subCells);
             }
+
+            _googleSheetService.AddEmptyRow();
         }
 
         public Sheet GetSheet()

@@ -12,7 +12,7 @@ namespace Services
         private readonly Sheet _sheet;
         private readonly GridData _gridData;
 
-        public GoogleSheetService()
+        public GoogleSheetService(int incomesCount, int categoriesCount, int subcategoriesCount)
         {
             _sheet = new Sheet();
             _currentRowIndex = 0;
@@ -26,7 +26,7 @@ namespace Services
                 RowData = new List<RowData>()
             };
             _sheet.Data.Add(_gridData);
-            SetDefaults();
+            SetDefaults(incomesCount, categoriesCount, subcategoriesCount);
         }
 
         private void SetDefaults(int incomesCount = 1, int categoriesCount = 2, int subcategoriesCount = 3)
@@ -53,12 +53,6 @@ namespace Services
             _sheet.Properties = sheetProperties;
         }
 
-        public void AddGridData(GridData gridData)
-        {
-
-            // _sheet.Data.Add(gridData);
-        }
-
         public void AddRow(IList<CellData> cellData)
         {
             var rowData = new RowData()
@@ -70,6 +64,24 @@ namespace Services
             _currentRowIndex++;
         }
 
+        public void AddEmptyRow()
+        {
+            IList<CellData> cellData = new List<CellData>();
+            cellData.Add(new CellData());
+            var rowData = new RowData()
+            {
+                Values = cellData
+            };
+
+            _gridData.RowData.Add(rowData);
+            _currentRowIndex++;
+        }
+
         public Sheet GetSheet() => _sheet;
+
+        public static string GetColumnLetterFromNumber(int colNumber)
+        {
+
+        }
     }
 }
