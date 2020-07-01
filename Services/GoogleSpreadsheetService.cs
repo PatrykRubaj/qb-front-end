@@ -7,7 +7,6 @@ namespace Services
 {
     public class GoogleSpreadsheetService
     {
-        private readonly List<RowData> _gridData;
         private readonly Spreadsheet _spreadsheet;
         private readonly Budget _budget;
 

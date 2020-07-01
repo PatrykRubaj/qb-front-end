@@ -133,6 +133,7 @@ namespace QuantumBudget.Auth
 
         private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle()
         {
+            _budget.Month = DateTime.Now;
             var service = new SpreadsheetGeneratingService(_budget);
 
             return service.Generate();

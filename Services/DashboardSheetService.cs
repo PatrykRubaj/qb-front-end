@@ -6,14 +6,14 @@ using Google.Apis.Sheets.v4.Data;
 
 namespace Services
 {
-    public class SpendingSheetService
+    public class DashboardSheetService
     {
         private readonly Budget _budget;
         private readonly GoogleSheetService _googleSheetService;
         private readonly IList<int> _subcategoriesRowsIndexes;
         private readonly List<CellData> _subcategoriesRows;
 
-        public SpendingSheetService(Budget budget)
+        public DashboardSheetService(Budget budget)
         {
             _budget = budget;
             _googleSheetService = new GoogleSheetService(_budget.Incomes.Count, _budget.Categories.Count, _budget.Subcategories.Count, DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month));
@@ -21,7 +21,7 @@ namespace Services
             _subcategoriesRows = new List<CellData>();
         }
 
-        private void AddSpendingHeader()
+        private void AddDashboardHeader()
         {
             var cells = new List<CellData>();
             cells.Add(new CellData()
@@ -336,190 +336,6 @@ namespace Services
             _googleSheetService.AddEmptyRow();
         }
 
-        private void AddIncomeHeader()
-        {
-            var cells = new List<CellData>();
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Income"
-                }
-            });
-            _googleSheetService.AddRow(cells);
-
-            cells = new List<CellData>();
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Name"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetTopBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Planned income"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetTopBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Actual income"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetTopBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Difference"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetTopBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Realisation"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetTopBorder()
-                }
-            });
-            cells.Add(new CellData());
-
-            for (int i = 0; i < DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month); i++)
-            {
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        FormulaValue = $"=SUM({GoogleSheetService.GetCellAddress(6 + i, _googleSheetService.CurrentRow + 2)}:{GoogleSheetService.GetCellAddress(6 + i, _googleSheetService.CurrentRow + 2 + _budget.Incomes.Count - 1)})"
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        NumberFormat = new NumberFormat()
-                        {
-                            Type = "CURRENCY"
-                        },
-                        Borders = GoogleSheetService.GetTopBorder()
-                    }
-                });
-            }
-            _googleSheetService.AddRow(cells);
-
-            cells = new List<CellData>();
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    StringValue = "Sum:"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    Borders = GoogleSheetService.GetBottomBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    FormulaValue = $"=SUM({GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow + 1)}:{GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow + _budget.Incomes.Count)})"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    NumberFormat = new NumberFormat()
-                    {
-                        Type = "CURRENCY"
-                    },
-                    Borders = GoogleSheetService.GetBottomBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    FormulaValue = $"=SUM({GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow + 1)}:{GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow + _budget.Incomes.Count)})"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    NumberFormat = new NumberFormat()
-                    {
-                        Type = "CURRENCY"
-                    },
-                    Borders = GoogleSheetService.GetBottomBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    FormulaValue = $"={GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow)}-{GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow)}"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    NumberFormat = new NumberFormat()
-                    {
-                        Type = "CURRENCY"
-                    },
-                    Borders = GoogleSheetService.GetBottomBorder()
-                }
-            });
-            cells.Add(new CellData()
-            {
-                UserEnteredValue = new ExtendedValue()
-                {
-                    FormulaValue = $"=IFERROR({GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow)}/{GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow)}; \"-\")"
-                },
-                UserEnteredFormat = new CellFormat()
-                {
-                    NumberFormat = new NumberFormat()
-                    {
-                        Type = "PERCENT",
-                        Pattern = "0.00%"
-                    },
-                    Borders = GoogleSheetService.GetBottomBorder()
-                }
-            });
-            cells.Add(new CellData());
-            DateTime columnDate = new DateTime(_budget.Month.Year, _budget.Month.Month, 1);
-            for (int i = 0; i < DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month); i++)
-            {
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        StringValue = $"{columnDate.ToString("yyyy-MM-dd")}"
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        Borders = GoogleSheetService.GetBottomBorder()
-                    }
-                });
-                columnDate = columnDate.AddDays(1);
-            }
-
-            _googleSheetService.AddRow(cells);
-        }
-
         private void AddCategoryHeader(string categoryName, int subcategoriesCount)
         {
             var cells = new List<CellData>();
@@ -704,95 +520,6 @@ namespace Services
             _googleSheetService.AddRow(cells);
         }
 
-        private void AddIncomesSection(IList<Income> incomes)
-        {
-            AddIncomeHeader();
-            foreach (var income in incomes)
-            {
-                var cells = new List<CellData>();
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        StringValue = income.Name
-                    }
-                });
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        NumberValue = Convert.ToDouble(income.Amount)
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        NumberFormat = new NumberFormat()
-                        {
-                            Type = "CURRENCY"
-                        }
-                    }
-                });
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        FormulaValue = $"=SUM({GoogleSheetService.GetCellAddress(6, _googleSheetService.CurrentRow)}:{GoogleSheetService.GetCellAddress(6 + DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month) - 1, _googleSheetService.CurrentRow)})"
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        NumberFormat = new NumberFormat()
-                        {
-                            Type = "CURRENCY"
-                        }
-                    }
-                });
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        FormulaValue = $"={GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow)}-{GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow)}"
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        NumberFormat = new NumberFormat()
-                        {
-                            Type = "CURRENCY"
-                        }
-                    }
-                });
-                cells.Add(new CellData()
-                {
-                    UserEnteredValue = new ExtendedValue()
-                    {
-                        FormulaValue = $"=IFERROR({GoogleSheetService.GetCellAddress(2, _googleSheetService.CurrentRow)}/{GoogleSheetService.GetCellAddress(1, _googleSheetService.CurrentRow)}; \"-\")"
-                    },
-                    UserEnteredFormat = new CellFormat()
-                    {
-                        NumberFormat = new NumberFormat()
-                        {
-                            Type = "PERCENT",
-                            Pattern = "0.00%"
-                        }
-                    }
-                });
-                cells.Add(new CellData());
-                for (int i = 0; i < DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month); i++)
-                {
-                    cells.Add(new CellData()
-                    {
-                        UserEnteredFormat = new CellFormat()
-                        {
-                            NumberFormat = new NumberFormat()
-                            {
-                                Type = "CURRENCY"
-                            }
-                        }
-                    });
-                }
-                _googleSheetService.AddRow(cells);
-            }
-            _googleSheetService.AddEmptyRow();
-        }
-
         private void AddCategoriesSections(IList<Category> categories, IList<Subcategory> subcategories)
         {
             foreach (var category in categories)
@@ -910,8 +637,7 @@ namespace Services
 
         public Sheet GetSheet()
         {
-            AddSpendingHeader();
-            AddIncomesSection(_budget.Incomes);
+            AddDashboardHeader();
             AddCategoriesSections(_budget.Categories, _budget.Subcategories);
             return _googleSheetService.GetSheet();
         }
