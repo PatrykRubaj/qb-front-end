@@ -16,10 +16,21 @@ namespace Services
         public SpendingSheetService(Budget budget)
         {
             _budget = budget;
-            _googleSheetService = new GoogleSheetService(_budget.Incomes.Count, _budget.Categories.Count, _budget.Subcategories.Count, DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month));
+            int rowsNumber = 15 + (_budget.Incomes.Count + 4) + (_budget.Categories.Count * 4) + _budget.Subcategories.Count;
+            int colsNumber = 6 + DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month);
+            _googleSheetService = new GoogleSheetService("Spending", 1, rowsNumber, colsNumber, 5, 0, false, GetSheetsColor());
             _subcategoriesRowsIndexes = new List<int>();
             _subcategoriesRows = new List<CellData>();
+            _googleSheetService.SetRowHeight(0, 50);
         }
+
+        private Color GetSheetsColor() => new Color()
+        {
+            Alpha = 1,
+            Red = (float)207 / 256,
+            Green = (float)224 / 256,
+            Blue = (float)227 / 256
+        };
 
         private void AddSpendingHeader()
         {
@@ -29,6 +40,18 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Spending"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    BackgroundColor = GetSheetsColor(),
+                    TextFormat = new TextFormat()
+                    {
+                        FontSize = 18,
+                        Bold = true,
+                        FontFamily = "Verdana",
+                    },
+                    VerticalAlignment = "MIDDLE",
+                    HorizontalAlignment = "CENTER"
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -39,7 +62,8 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Budget Plan"
-                }
+                },
+                UserEnteredFormat = SubHeaderFormat(),
             });
             _googleSheetService.AddRow(cells);
 
@@ -62,7 +86,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting()
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -86,7 +111,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -110,7 +136,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -123,8 +150,9 @@ namespace Services
             {
                 UserEnteredValue = new ExtendedValue()
                 {
-                    StringValue = "Budget Realisation"
-                }
+                    StringValue = "Budget Realization"
+                },
+                UserEnteredFormat = SubHeaderFormat(),
             });
             _googleSheetService.AddRow(cells);
 
@@ -147,7 +175,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -171,7 +200,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -195,7 +225,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -209,6 +240,11 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Planned"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT",
                 }
             });
             cells.Add(new CellData()
@@ -216,6 +252,11 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Actual"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT",
                 }
             });
             cells.Add(new CellData()
@@ -223,6 +264,11 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Difference"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT",
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -234,6 +280,11 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Income sum:"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT"
                 }
             });
             cells.Add(new CellData()
@@ -247,7 +298,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             cells.Add(new CellData()
@@ -261,7 +313,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             cells.Add(new CellData()
@@ -287,6 +340,11 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Spending sum:"
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT"
                 }
             });
             cells.Add(new CellData()
@@ -300,7 +358,8 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             cells.Add(new CellData()
@@ -314,14 +373,15 @@ namespace Services
                     NumberFormat = new NumberFormat()
                     {
                         Type = "CURRENCY"
-                    }
+                    },
+                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                 }
             });
             cells.Add(new CellData()
             {
                 UserEnteredValue = new ExtendedValue()
                 {
-                    FormulaValue = "=B14-C14"
+                    FormulaValue = "=C14-B14"
                 },
                 UserEnteredFormat = new CellFormat()
                 {
@@ -334,6 +394,13 @@ namespace Services
             cells.ForEach(x => _subcategoriesRows.Add(x));
             _googleSheetService.AddRow(cells);
             _googleSheetService.AddEmptyRow();
+            _googleSheetService.MergeRange(new GridRange()
+            {
+                StartRowIndex = 0,
+                EndRowIndex = 1,
+                StartColumnIndex = 0,
+                EndColumnIndex = 5
+            });
         }
 
         private void AddIncomeHeader()
@@ -344,7 +411,8 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = "Income"
-                }
+                },
+                UserEnteredFormat = SubHeaderFormat(),
             });
             _googleSheetService.AddRow(cells);
 
@@ -357,7 +425,10 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -368,7 +439,11 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -379,7 +454,11 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -390,18 +469,26 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
             {
                 UserEnteredValue = new ExtendedValue()
                 {
-                    StringValue = "Realisation"
+                    StringValue = "Realization"
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "CENTER",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData());
@@ -420,7 +507,9 @@ namespace Services
                         {
                             Type = "CURRENCY"
                         },
-                        Borders = GoogleSheetService.GetTopBorder()
+                        Borders = GoogleSheetService.GetTopBorder(),
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                        VerticalAlignment = "MIDDLE",
                     }
                 });
             }
@@ -435,7 +524,9 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -450,7 +541,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -465,7 +558,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -480,7 +575,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -496,7 +593,10 @@ namespace Services
                         Type = "PERCENT",
                         Pattern = "0.00%"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "CENTER",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData());
@@ -511,7 +611,10 @@ namespace Services
                     },
                     UserEnteredFormat = new CellFormat()
                     {
-                        Borders = GoogleSheetService.GetBottomBorder()
+                        Borders = GoogleSheetService.GetBottomBorder(),
+                        TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                        HorizontalAlignment = "CENTER",
+                        VerticalAlignment = "MIDDLE",
                     }
                 });
                 columnDate = columnDate.AddDays(1);
@@ -528,8 +631,10 @@ namespace Services
                 UserEnteredValue = new ExtendedValue()
                 {
                     StringValue = categoryName
-                }
+                },
+                UserEnteredFormat = SubHeaderFormat(),
             });
+            _budget.Categories.FirstOrDefault(x => x.Name.ToLower() == categoryName.ToLower()).RowIndex = _googleSheetService.CurrentRow;
             _googleSheetService.AddRow(cells);
 
             cells = new List<CellData>();
@@ -541,7 +646,10 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -552,7 +660,11 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -563,7 +675,11 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -574,18 +690,26 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "RIGHT",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
             {
                 UserEnteredValue = new ExtendedValue()
                 {
-                    StringValue = "Realisation"
+                    StringValue = "Realization"
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetTopBorder()
+                    Borders = GoogleSheetService.GetTopBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    WrapStrategy = "WRAP",
+                    HorizontalAlignment = "CENTER",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
 
@@ -604,7 +728,9 @@ namespace Services
                         {
                             Type = "CURRENCY"
                         },
-                        Borders = GoogleSheetService.GetTopBorder()
+                        Borders = GoogleSheetService.GetTopBorder(),
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                        VerticalAlignment = "MIDDLE",
                     }
                 });
             }
@@ -619,7 +745,9 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -634,7 +762,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -649,7 +779,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -664,7 +796,9 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    VerticalAlignment = "MIDDLE",
                 }
             });
             cells.Add(new CellData()
@@ -680,7 +814,10 @@ namespace Services
                         Type = "PERCENT",
                         Pattern = "0.00%"
                     },
-                    Borders = GoogleSheetService.GetBottomBorder()
+                    Borders = GoogleSheetService.GetBottomBorder(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "CENTER",
+                    VerticalAlignment = "MIDDLE",
                 }
             });
 
@@ -696,7 +833,10 @@ namespace Services
                     },
                     UserEnteredFormat = new CellFormat()
                     {
-                        Borders = GoogleSheetService.GetBottomBorder()
+                        Borders = GoogleSheetService.GetBottomBorder(),
+                        TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                        HorizontalAlignment = "CENTER",
+                        VerticalAlignment = "MIDDLE",
                     }
                 });
                 columnDate = columnDate.AddDays(1);
@@ -771,7 +911,8 @@ namespace Services
                         {
                             Type = "PERCENT",
                             Pattern = "0.00%"
-                        }
+                        },
+                        HorizontalAlignment = "CENTER",
                     }
                 });
                 cells.Add(new CellData());
@@ -813,6 +954,10 @@ namespace Services
                     UserEnteredValue = new ExtendedValue()
                     {
                         StringValue = sub.Name
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                     }
                 });
                 subCells.Add(new CellData()
@@ -826,7 +971,8 @@ namespace Services
                         NumberFormat = new NumberFormat()
                         {
                             Type = "CURRENCY"
-                        }
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                     }
                 });
                 subCells.Add(new CellData()
@@ -840,7 +986,8 @@ namespace Services
                         NumberFormat = new NumberFormat()
                         {
                             Type = "CURRENCY"
-                        }
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                     }
                 });
                 subCells.Add(new CellData()
@@ -854,7 +1001,8 @@ namespace Services
                         NumberFormat = new NumberFormat()
                         {
                             Type = "CURRENCY"
-                        }
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                     }
                 });
                 subCells.Add(new CellData()
@@ -869,7 +1017,9 @@ namespace Services
                         {
                             Type = "PERCENT",
                             Pattern = "0.00%"
-                        }
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                        HorizontalAlignment = "CENTER",
                     }
                 });
                 subCells.Add(new CellData());
@@ -882,10 +1032,12 @@ namespace Services
                             NumberFormat = new NumberFormat()
                             {
                                 Type = "CURRENCY"
-                            }
+                            },
+                            TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
                         }
                     });
                 }
+                sub.RowIndex = _googleSheetService.CurrentRow;
                 _subcategoriesRowsIndexes.Add(_googleSheetService.CurrentRow);
                 _googleSheetService.AddRow(subCells);
             }
@@ -906,6 +1058,21 @@ namespace Services
                 FormulaValue = $"={string.Join('+', listOfActualAddresses)}"
             };
             _googleSheetService.AddEmptyRow();
+        }
+
+        private CellFormat SubHeaderFormat()
+        {
+            return new CellFormat()
+            {
+                TextFormat = new TextFormat()
+                {
+                    FontSize = 14,
+                    Bold = true,
+                    FontFamily = "Verdana",
+                },
+                VerticalAlignment = "MIDDLE",
+                HorizontalAlignment = "LEFT"
+            };
         }
 
         public Sheet GetSheet()

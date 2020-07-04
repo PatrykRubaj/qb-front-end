@@ -7,5 +7,6 @@ namespace DTO.BudgetData
         public Guid Id { get; set; }
         public string Name { get; set; }
         public EntityStatus Status { get; set; }
+        public int RowIndex { get; set; }
     }
 }

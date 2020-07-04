@@ -21,6 +21,8 @@ namespace Services
 
             SetDefaults();
             AddSpendingSheet();
+            AddDashboardSheet();
+            AddChartsSheet();
         }
 
         private void SetDefaults()
@@ -41,6 +43,20 @@ namespace Services
             var spendingSheetService = new SpendingSheetService(_budget);
             var spendingSheet = spendingSheetService.GetSheet();
             this.AddSheet(spendingSheet);
+        }
+
+        private void AddDashboardSheet()
+        {
+            var dashboardSheetService = new DashboardSheetService(_budget);
+            var dashboardSheet = dashboardSheetService.GetSheet();
+            this.AddSheet(dashboardSheet);
+        }
+
+        private void AddChartsSheet()
+        {
+            var chartsSheetService = new ChartsSheetService(_budget);
+            var dashboardSheet = chartsSheetService.GetSheet();
+            this.AddSheet(dashboardSheet);
         }
 
         public Spreadsheet GetSpreadsheet() => _spreadsheet;

@@ -9,5 +9,6 @@ namespace DTO.BudgetData
         public string Name { get; set; }
         public decimal? Amount { get; set; }
         public EntityStatus Status { get; set; }
+        public int RowIndex { get; set; }
     }
 }
