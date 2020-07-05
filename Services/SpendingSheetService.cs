@@ -16,12 +16,17 @@ namespace Services
         public SpendingSheetService(Budget budget)
         {
             _budget = budget;
-            int rowsNumber = 15 + (_budget.Incomes.Count + 4) + (_budget.Categories.Count * 4) + _budget.Subcategories.Count;
+            int rowsNumber = 16 + (_budget.Incomes.Count + 4) + (_budget.Categories.Count * 4) + _budget.Subcategories.Count;
             int colsNumber = 6 + DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month);
             _googleSheetService = new GoogleSheetService("Spending", 1, rowsNumber, colsNumber, 5, 0, false, GetSheetsColor());
             _subcategoriesRowsIndexes = new List<int>();
             _subcategoriesRows = new List<CellData>();
             _googleSheetService.SetRowHeight(0, 50);
+            _googleSheetService.SetColumnWidth(0, 180);
+            _googleSheetService.SetColumnWidth(1, 110);
+            _googleSheetService.SetColumnWidth(2, 110);
+            _googleSheetService.SetColumnWidth(3, 110);
+            _googleSheetService.SetColumnWidth(4, 100);
         }
 
         private Color GetSheetsColor() => new Color()
@@ -938,11 +943,157 @@ namespace Services
         {
             foreach (var category in categories)
             {
-                AddCategorySection(category.Name, subcategories.Where(x => x.CategoryId == category.Id));
+                if (!categories.Last().Equals(category))
+                {
+                    AddCategorySection(category.Name, subcategories.Where(x => x.CategoryId == category.Id));
+                }
+                else
+                {
+                    AddCategorySection(category.Name, subcategories.Where(x => x.CategoryId == category.Id), true);
+                }
             }
+
+            AddTotalSumRow();
+            AddCumulativeSumRow();
         }
 
-        private void AddCategorySection(string categoryName, IEnumerable<Subcategory> subcategories)
+        private void AddTotalSumRow()
+        {
+            var emptyCellWithTopBorder = new CellData()
+            {
+                UserEnteredFormat = new CellFormat()
+                {
+                    Borders = GoogleSheetService.GetTopBorder(),
+                }
+            };
+
+            //Add Total sum row
+            var cells = new List<CellData>();
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Total sum:",
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = new TextFormat()
+                    {
+                        FontFamily = "Verdana",
+                        Bold = true,
+                    },
+                    HorizontalAlignment = "RIGHT",
+                    Borders = GoogleSheetService.GetTopBorder(),
+                }
+            });
+            for (int i = 0; i < DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month); i++)
+            {
+                int COLUMN_SHIFT = 6;
+                string formula = "=SUM(";
+                foreach (var subcategoryIndex in _subcategoriesRowsIndexes)
+                {
+                    string address = GoogleSheetService.GetCellAddress(i + COLUMN_SHIFT, subcategoryIndex);
+                    if (!_subcategoriesRowsIndexes.Last().Equals(subcategoryIndex))
+                    {
+                        formula += $"{address}+";
+                    }
+                    else
+                    {
+                        formula += $"{address})";
+                    }
+                }
+                cells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        FormulaValue = formula
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY"
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                        Borders = GoogleSheetService.GetTopBorder(),
+                    }
+                });
+            }
+            _googleSheetService.AddRow(cells);
+        }
+        private void AddCumulativeSumRow()
+        {
+            var emptyCellWithTopBorder = new CellData()
+            {
+                UserEnteredFormat = new CellFormat()
+                {
+                }
+            };
+
+            //Add Cumulative sum row
+            var cells = new List<CellData>();
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(emptyCellWithTopBorder);
+            cells.Add(new CellData()
+            {
+                UserEnteredValue = new ExtendedValue()
+                {
+                    StringValue = "Cumulative sum:",
+                },
+                UserEnteredFormat = new CellFormat()
+                {
+                    TextFormat = new TextFormat()
+                    {
+                        FontFamily = "Verdana",
+                        Bold = true,
+                    },
+                    HorizontalAlignment = "RIGHT",
+                    WrapStrategy = "WRAP",
+                }
+            });
+            for (int i = 0; i < DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month); i++)
+            {
+                int COLUMN_SHIFT = 6;
+                string formula = "";
+
+                if (i == 0)
+                {
+                    formula = $"={GoogleSheetService.GetCellAddress(i + COLUMN_SHIFT, _googleSheetService.CurrentRow - 1)}";
+                }
+                else
+                {
+                    formula = $"={GoogleSheetService.GetCellAddress(i + COLUMN_SHIFT - 1, _googleSheetService.CurrentRow)}+{GoogleSheetService.GetCellAddress(i + COLUMN_SHIFT, _googleSheetService.CurrentRow - 1)}";
+                }
+
+                cells.Add(new CellData()
+                {
+                    UserEnteredValue = new ExtendedValue()
+                    {
+                        FormulaValue = formula,
+                    },
+                    UserEnteredFormat = new CellFormat()
+                    {
+                        NumberFormat = new NumberFormat()
+                        {
+                            Type = "CURRENCY",
+                        },
+                        TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                        VerticalAlignment = "MIDDLE",
+                    }
+                });
+            }
+            _googleSheetService.AddRow(cells);
+        }
+
+        private void AddCategorySection(string categoryName, IEnumerable<Subcategory> subcategories, bool isLast = false)
         {
             AddCategoryHeader(categoryName, subcategories.Count());
 
@@ -1039,7 +1190,9 @@ namespace Services
                 }
                 sub.RowIndex = _googleSheetService.CurrentRow;
                 _subcategoriesRowsIndexes.Add(_googleSheetService.CurrentRow);
+
                 _googleSheetService.AddRow(subCells);
+
             }
 
             List<string> listOfPlannedAddresses = new List<string>();
@@ -1057,7 +1210,11 @@ namespace Services
             {
                 FormulaValue = $"={string.Join('+', listOfActualAddresses)}"
             };
-            _googleSheetService.AddEmptyRow();
+
+            if (isLast == false)
+            {
+                _googleSheetService.AddEmptyRow();
+            }
         }
 
         private CellFormat SubHeaderFormat()

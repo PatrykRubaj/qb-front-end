@@ -23,7 +23,11 @@ namespace Services
 
         public GoogleSheetService(string sheetName, int sheetId, int rowsNumber, int colsNumber, int frozenColumnCount, int fronzenRowCount, bool hideGridLines, Color tabColor)
         {
-            _sheet = new Sheet();
+            _sheet = new Sheet()
+            {
+                Data = new List<GridData>(),
+                ProtectedRanges = new List<ProtectedRange>()
+            };
             _sheetName = sheetName;
             _sheetId = sheetId;
             _rowsNumber = rowsNumber;
@@ -34,10 +38,6 @@ namespace Services
             _tabColor = tabColor;
             _currentRowIndex = 0;
 
-            if (_sheet.Data == null)
-            {
-                _sheet.Data = new List<GridData>();
-            }
             _gridData = new GridData()
             {
                 RowData = new List<RowData>(),
@@ -117,6 +117,33 @@ namespace Services
             else
             {
                 modifiedRow.PixelSize = height;
+            }
+        }
+
+        public void SetColumnWidth(int column, int width)
+        {
+            for (int i = 0; i < column; i++)
+            {
+                var columnMetadata = _gridData.ColumnMetadata.ElementAtOrDefault(i);
+
+                if (columnMetadata == null)
+                {
+                    _gridData.ColumnMetadata.Add(new DimensionProperties());
+                }
+            }
+
+            var modifiedColumn = _gridData.ColumnMetadata.ElementAtOrDefault(column);
+            if (modifiedColumn == null)
+            {
+                var dimensionProperties = new DimensionProperties()
+                {
+                    PixelSize = width
+                };
+                _gridData.ColumnMetadata.Add(dimensionProperties);
+            }
+            else
+            {
+                modifiedColumn.PixelSize = width;
             }
         }
 
@@ -250,6 +277,20 @@ namespace Services
             };
 
             return textFormat;
+        }
+
+        public void AddProtectedRanges(int startColumn, int endColumn, int startRow, int endRow)
+        {
+            var protectedRange = new ProtectedRange();
+            protectedRange.WarningOnly = true;
+            protectedRange.Range = new GridRange()
+            {
+                StartColumnIndex = startColumn,
+                EndColumnIndex = endColumn,
+                StartRowIndex = startRow,
+                EndRowIndex = endRow,
+            };
+            _sheet.ProtectedRanges.Add(protectedRange);
         }
 
         public int CurrentRow => _currentRowIndex;

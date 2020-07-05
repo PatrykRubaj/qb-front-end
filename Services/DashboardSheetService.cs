@@ -22,6 +22,7 @@ namespace Services
             _googleSheetService = new GoogleSheetService("Dashboard", 0, rowsNumber, colsNumber, 0, 2, true, GetSheetsColor());
             _subcategoriesRows = new List<CellData>();
             _googleSheetService.SetRowHeight(0, 50);
+            _googleSheetService.AddProtectedRanges(0, 4, 1, rowsNumber);
         }
 
         private Color GetSheetsColor() => new Color()
