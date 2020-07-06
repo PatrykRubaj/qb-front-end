@@ -18,8 +18,9 @@ namespace Services
             int rowsNumber = 5 + _budget.Categories.Count + 54;
             int colsNumber = 10;
 
-            _googleSheetService = new GoogleSheetService("Charts", 2, rowsNumber, colsNumber, 0, 2, true, GetSheetsColor());
+            _googleSheetService = new GoogleSheetService("Charts", 2, rowsNumber, colsNumber, 0, 0, true, GetSheetsColor());
             _googleSheetService.SetRowHeight(0, 50);
+            _googleSheetService.AddProtectedRanges(0, 2, 1, 3 + _budget.Categories.Count);
         }
 
         private Color GetSheetsColor() => new Color()
@@ -63,8 +64,8 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetBottomBorder(),
-                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    Borders = GoogleSheetService.GetAllBorders(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                 }
             });
             cells.Add(new CellData()
@@ -75,8 +76,9 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    Borders = GoogleSheetService.GetBottomBorder(),
-                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    Borders = GoogleSheetService.GetAllBorders(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    HorizontalAlignment = "RIGHT",
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -102,6 +104,7 @@ namespace Services
                 UserEnteredFormat = new CellFormat()
                 {
                     TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    Borders = GoogleSheetService.GetAllBorders(),
                 }
 
             });
@@ -118,6 +121,7 @@ namespace Services
                         Type = "CURRENCY"
                     },
                     TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    Borders = GoogleSheetService.GetAllBorders(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -138,7 +142,9 @@ namespace Services
                 },
                 UserEnteredFormat = new CellFormat()
                 {
-                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    Borders = GoogleSheetService.GetTopMediumBorder(),
+                    HorizontalAlignment = "RIGHT",
                 }
             });
             cells.Add(new CellData()
@@ -153,7 +159,8 @@ namespace Services
                     {
                         Type = "CURRENCY"
                     },
-                    TextFormat = GoogleSheetService.GetDefaultCellFormatting(),
+                    TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
+                    Borders = GoogleSheetService.GetTopMediumBorder(),
                 }
             });
             _googleSheetService.AddRow(cells);
@@ -162,10 +169,69 @@ namespace Services
 
         }
 
+        private void AddCharts()
+        {
+            AddPieChart();
+        }
+
+        private void AddPieChart()
+        {
+            var anchorRow = 5 + _budget.Categories.Count;
+            var chartSpec = new ChartSpec()
+            {
+                Title = "Categories share",
+                // BackgroundColor = new Color()
+                // {
+                //     Alpha = 1,
+                //     Red = (float)0xf3 / 256,
+                //     Green = (float)0xf3 / 256,
+                //     Blue = (float)0xf3 / 256,
+                // },
+                PieChart = new PieChartSpec()
+                {
+                    LegendPosition = "LABELED_LEGEND",
+                    PieHole = 0.65,
+                    Series = new ChartData()
+                    {
+                        SourceRange = new ChartSourceRange()
+                        {
+                            Sources = new List<GridRange>() {
+                                new GridRange() {
+                                    StartColumnIndex = 1,
+                                    EndColumnIndex = 2,
+                                    StartRowIndex = 1,
+                                    EndRowIndex = 2 + _budget.Categories.Count,
+                                    SheetId = 2,
+                                }
+                            }
+                        }
+                    },
+                    Domain = new ChartData()
+                    {
+                        SourceRange = new ChartSourceRange()
+                        {
+                            Sources = new List<GridRange>() {
+                                new GridRange() {
+                                    StartColumnIndex = 0,
+                                    EndColumnIndex = 1,
+                                    StartRowIndex = 1,
+                                    EndRowIndex = 2 + _budget.Categories.Count,
+                                    SheetId = 2,
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _googleSheetService.AddChart(0, anchorRow, chartSpec);
+        }
+
         public Sheet GetSheet()
         {
             AddChartsHeader();
             AddCategoriesTable(_budget.Categories, _budget.Subcategories);
+            AddCharts();
             return _googleSheetService.GetSheet();
         }
     }

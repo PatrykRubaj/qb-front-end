@@ -26,7 +26,8 @@ namespace Services
             _sheet = new Sheet()
             {
                 Data = new List<GridData>(),
-                ProtectedRanges = new List<ProtectedRange>()
+                ProtectedRanges = new List<ProtectedRange>(),
+                Charts = new List<EmbeddedChart>(),
             };
             _sheetName = sheetName;
             _sheetId = sheetId;
@@ -214,6 +215,25 @@ namespace Services
 
             return borders;
         }
+
+        public static Borders GetAllBorders()
+        {
+            var border = new Border()
+            {
+                Style = "SOLID"
+            };
+
+            var borders = new Borders()
+            {
+                Bottom = border,
+                Top = border,
+                Left = border,
+                Right = border,
+            };
+
+            return borders;
+        }
+
         public static Borders GetBottomMediumBorder()
         {
             var borders = new Borders()
@@ -289,8 +309,28 @@ namespace Services
                 EndColumnIndex = endColumn,
                 StartRowIndex = startRow,
                 EndRowIndex = endRow,
+                SheetId = _sheet.Properties.SheetId,
             };
             _sheet.ProtectedRanges.Add(protectedRange);
+        }
+
+        public void AddChart(int anchorCol, int anchorRow, ChartSpec chartSpec)
+        {
+            var embededChart = new EmbeddedChart();
+            embededChart.Position = new EmbeddedObjectPosition()
+            {
+                OverlayPosition = new OverlayPosition()
+                {
+                    AnchorCell = new GridCoordinate()
+                    {
+                        SheetId = _sheet.Properties.SheetId,
+                        ColumnIndex = anchorCol,
+                        RowIndex = anchorRow,
+                    }
+                }
+            };
+            embededChart.Spec = chartSpec;
+            _sheet.Charts.Add(embededChart);
         }
 
         public int CurrentRow => _currentRowIndex;
