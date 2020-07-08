@@ -54,6 +54,17 @@ describe("Income Component", () => {
           },
           onlyOneEditAllowedPrompt: false,
         },
+        userSection: {
+          isLoading: false,
+          user: {
+            accessToken: "",
+            email: "",
+            emailVerified: false,
+            givenName: "",
+            idToken: "",
+            imageUrl: "",
+          },
+        },
       };
 
       const mappedValues = mapStateToProps(appState);
