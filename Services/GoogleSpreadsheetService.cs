@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DTO.BudgetData;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Services
 {
@@ -9,11 +10,13 @@ namespace Services
     {
         private readonly Spreadsheet _spreadsheet;
         private readonly Budget _budget;
+        private readonly ILogger _log;
 
-        public GoogleSpreadsheetService(Budget budget)
+        public GoogleSpreadsheetService(Budget budget, ILogger log)
         {
             _spreadsheet = new Spreadsheet();
             _budget = budget;
+            _log = log;
             if (_spreadsheet.Sheets == null)
             {
                 _spreadsheet.Sheets = new List<Sheet>();
@@ -54,7 +57,7 @@ namespace Services
 
         private void AddChartsSheet()
         {
-            var chartsSheetService = new ChartsSheetService(_budget);
+            var chartsSheetService = new ChartsSheetService(_budget, _log);
             var dashboardSheet = chartsSheetService.GetSheet();
             this.AddSheet(dashboardSheet);
         }

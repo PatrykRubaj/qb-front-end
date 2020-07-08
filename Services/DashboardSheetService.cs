@@ -10,7 +10,7 @@ namespace Services
     {
         private readonly Budget _budget;
         private readonly GoogleSheetService _googleSheetService;
-        private readonly List<CellData> _subcategoriesRows;
+        private readonly List<DTO.GoogleSpreadsheet.DashboardSubcategoryRow> _subcategoryRows;
 
         public DashboardSheetService(Budget budget)
         {
@@ -20,7 +20,7 @@ namespace Services
             int colsNumber = 4;
 
             _googleSheetService = new GoogleSheetService("Dashboard", 0, rowsNumber, colsNumber, 0, 2, true, GetSheetsColor());
-            _subcategoriesRows = new List<CellData>();
+            _subcategoryRows = new List<DTO.GoogleSpreadsheet.DashboardSubcategoryRow>();
             _googleSheetService.SetRowHeight(0, 50);
             _googleSheetService.AddProtectedRanges(0, 4, 1, rowsNumber);
         }
@@ -238,6 +238,7 @@ namespace Services
                     }
                 });
 
+                _subcategoryRows.Add(new DTO.GoogleSpreadsheet.DashboardSubcategoryRow(sub.Id, sub.CategoryId, _googleSheetService.CurrentRow));
                 _googleSheetService.AddRow(subCells);
             }
         }
@@ -367,11 +368,40 @@ namespace Services
             _googleSheetService.AddRow(cells);
         }
 
+        private void AddAlternatingRows()
+        {
+            var firstColor = new Color()
+            {
+                Alpha = 1,
+                Red = 1,
+                Green = 1,
+                Blue = 1,
+            };
+            var secondColor = new Color()
+            {
+                Alpha = 1,
+                Red = (float)0xe8 / 256,
+                Green = (float)0xe7 / 256,
+                Blue = (float)0xfc / 256,
+            };
+            foreach (var category in _budget.Categories)
+            {
+                var subcategoriesInCategory = _budget.Subcategories.Where(x => x.CategoryId == category.Id);
+                Subcategory firstSubcategory = subcategoriesInCategory.FirstOrDefault();
+                Subcategory lastsSubcategory = subcategoriesInCategory.LastOrDefault();
+                int firstRow = _subcategoryRows.FirstOrDefault(x => x.Id == firstSubcategory.Id)?.RowIndex ?? 0;
+                int lastRow = _subcategoryRows.FirstOrDefault(x => x.Id == lastsSubcategory.Id)?.RowIndex + 1 ?? 1;
+
+                _googleSheetService.AddBandedRange(0, 4, firstRow, lastRow, firstColor, secondColor);
+            }
+        }
+
         public Sheet GetSheet()
         {
             AddDashboardHeader();
             AddCategoriesSections(_budget.Categories, _budget.Subcategories);
             AddSummarySection();
+            AddAlternatingRows();
             return _googleSheetService.GetSheet();
         }
     }

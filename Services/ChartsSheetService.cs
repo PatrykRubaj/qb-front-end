@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DTO.BudgetData;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Services
 {
@@ -10,13 +11,15 @@ namespace Services
     {
         private readonly Budget _budget;
         private readonly GoogleSheetService _googleSheetService;
+        private readonly ILogger _log;
 
-        public ChartsSheetService(Budget budget)
+        public ChartsSheetService(Budget budget, ILogger log)
         {
             _budget = budget ?? throw new ArgumentNullException(nameof(budget));
+            _log = log;
 
             int rowsNumber = 5 + _budget.Categories.Count + 54;
-            int colsNumber = 10;
+            int colsNumber = 7;
 
             _googleSheetService = new GoogleSheetService("Charts", 2, rowsNumber, colsNumber, 0, 0, true, GetSheetsColor());
             _googleSheetService.SetRowHeight(0, 50);
@@ -172,6 +175,8 @@ namespace Services
         private void AddCharts()
         {
             AddPieChart();
+            SmootheLineChart();
+            AddBarChart();
         }
 
         private void AddPieChart()
@@ -180,13 +185,6 @@ namespace Services
             var chartSpec = new ChartSpec()
             {
                 Title = "Categories share",
-                // BackgroundColor = new Color()
-                // {
-                //     Alpha = 1,
-                //     Red = (float)0xf3 / 256,
-                //     Green = (float)0xf3 / 256,
-                //     Blue = (float)0xf3 / 256,
-                // },
                 PieChart = new PieChartSpec()
                 {
                     LegendPosition = "LABELED_LEGEND",
@@ -219,6 +217,169 @@ namespace Services
                                     SheetId = 2,
                                 }
                             }
+                        }
+                    }
+                }
+            };
+
+            _googleSheetService.AddChart(0, anchorRow, chartSpec);
+        }
+
+        private void SmootheLineChart()
+        {
+            var anchorRow = 5 + _budget.Categories.Count + 18;
+            int lastCategoryRowIndex = _budget.Categories.Last().RowIndex;
+            _log.LogInformation($"Last Category index: {lastCategoryRowIndex}");
+            var chartSpec = new ChartSpec()
+            {
+                Title = "Cumulative spending",
+                BasicChart = new BasicChartSpec()
+                {
+                    ChartType = "LINE",
+                    LegendPosition = "NO_LEGEND",
+                    LineSmoothing = true,
+                    Axis = new List<BasicChartAxis>()
+                    {
+                        new BasicChartAxis()
+                        {
+                            Position = "BOTTOM_AXIS",
+                            Title = "Day",
+                            TitleTextPosition = new TextPosition()
+                            {
+                                HorizontalAlignment = "CENTER"
+                            }
+                        },
+                        new BasicChartAxis()
+                        {
+                            Position = "LEFT_AXIS",
+                            Title = "Total spent",
+                            TitleTextPosition = new TextPosition()
+                            {
+                                HorizontalAlignment = "CENTER"
+                            },
+                        },
+                    },
+                    Series = new List<BasicChartSeries>()
+                    {
+                        new BasicChartSeries()
+                        {
+                            Series = new ChartData()
+                            {
+                                SourceRange = new ChartSourceRange()
+                                {
+                                    Sources = new List<GridRange>()
+                                    {
+                                        new GridRange()
+                                        {
+                                            StartColumnIndex = 6,
+                                            EndColumnIndex = 6 + DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month),
+                                            StartRowIndex = lastCategoryRowIndex + 2 + _budget.Subcategories.Where( x=> x.CategoryId == _budget.Categories.Last().Id).Count() + 2,
+                                            EndRowIndex = lastCategoryRowIndex + 2 + _budget.Subcategories.Where( x=> x.CategoryId == _budget.Categories.Last().Id).Count() + 1 + 2,
+                                            SheetId = 1,
+                                        },
+                                    }
+                                },
+
+                            },
+                            Color = new Color()
+                            {
+                                Alpha = 1,
+                                Red = (float)0x93 / 256,
+                                Green = (float)0xc4 / 256,
+                                Blue = (float)0x7d / 256,
+                            },
+                        },
+                    },
+                    Domains = new List<BasicChartDomain>()
+                    {
+                        new BasicChartDomain()
+                        {
+                            Domain = new ChartData()
+                            {
+                                SourceRange = new ChartSourceRange()
+                                {
+                                    Sources = new List<GridRange>()
+                                    {
+                                        new GridRange()
+                                        {
+                                            StartColumnIndex = 6,
+                                            EndColumnIndex = 6 + DateTime.DaysInMonth(_budget.Month.Year, _budget.Month.Month),
+                                            StartRowIndex = lastCategoryRowIndex + 2,
+                                            EndRowIndex = lastCategoryRowIndex + 3,
+                                            SheetId = 1,
+                                        },
+                                    }
+                                },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _log.LogInformation($"Line chart spec: {Newtonsoft.Json.JsonConvert.SerializeObject(chartSpec)}");
+
+            _googleSheetService.AddChart(0, anchorRow, chartSpec);
+        }
+
+        private void AddBarChart()
+        {
+            var anchorRow = 5 + _budget.Categories.Count + 2 * 18;
+            var chartSpec = new ChartSpec()
+            {
+                Title = "Spending in categories",
+                BasicChart = new BasicChartSpec()
+                {
+                    ChartType = "COLUMN",
+                    Series = new List<BasicChartSeries>()
+                    {
+                        new BasicChartSeries()
+                        {
+                            Series = new ChartData()
+                            {
+                                SourceRange = new ChartSourceRange()
+                                {
+                                    Sources = new List<GridRange>()
+                                    {
+                                        new GridRange() {
+                                            StartColumnIndex = 1,
+                                            EndColumnIndex = 2,
+                                            StartRowIndex = 1,
+                                            EndRowIndex = 2 + _budget.Categories.Count,
+                                            SheetId = 2,
+                                        }
+                                    }
+                                },
+                            },
+                            Color = new Color()
+                            {
+                                Alpha = 1,
+                                Red = (float)0x8e / 256,
+                                Green = (float)0x7c / 256,
+                                Blue = (float)0xc3 / 256,
+                            },
+                        },
+                    },
+                    Domains = new List<BasicChartDomain>()
+                    {
+                        new BasicChartDomain()
+                        {
+                            Domain = new ChartData()
+                            {
+                                SourceRange = new ChartSourceRange()
+                                {
+                                    Sources = new List<GridRange>()
+                                    {
+                                        new GridRange()
+                                        {
+                                            StartColumnIndex = 0,
+                                            EndColumnIndex = 1,
+                                            StartRowIndex = 1,
+                                            EndRowIndex = 2 + _budget.Categories.Count,
+                                            SheetId = 2,
+                                        }
+                                    }
+                                },
+                            },
                         }
                     }
                 }

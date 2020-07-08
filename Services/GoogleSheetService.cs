@@ -28,6 +28,7 @@ namespace Services
                 Data = new List<GridData>(),
                 ProtectedRanges = new List<ProtectedRange>(),
                 Charts = new List<EmbeddedChart>(),
+                BandedRanges = new List<BandedRange>(),
             };
             _sheetName = sheetName;
             _sheetId = sheetId;
@@ -330,7 +331,31 @@ namespace Services
                 }
             };
             embededChart.Spec = chartSpec;
+
             _sheet.Charts.Add(embededChart);
+        }
+
+        public void AddBandedRange(int startCol, int endCol, int startRow, int endRow, Color firstBandColor, Color secondBandColor)
+        {
+            var bandedRange = new BandedRange()
+            {
+                BandedRangeId = _sheet.BandedRanges.Count(),
+                Range = new GridRange()
+                {
+                    StartColumnIndex = startCol,
+                    EndColumnIndex = endCol,
+                    StartRowIndex = startRow,
+                    EndRowIndex = endRow,
+                    SheetId = _sheet.Properties.SheetId,
+                },
+                RowProperties = new BandingProperties()
+                {
+                    FirstBandColor = firstBandColor,
+                    SecondBandColor = secondBandColor,
+                },
+            };
+
+            _sheet.BandedRanges.Add(bandedRange);
         }
 
         public int CurrentRow => _currentRowIndex;

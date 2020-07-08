@@ -13,6 +13,7 @@ namespace QuantumBudget
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpClient();
+            builder.Services.AddLogging();
         }
     }
 }

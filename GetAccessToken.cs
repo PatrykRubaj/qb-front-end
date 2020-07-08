@@ -54,7 +54,7 @@ namespace QuantumBudget.Auth
             var auth0User = await GetAuth0User(userInfo.UserId, managementApiToken.AccessToken);
             log.LogInformation($"Auth0User: {JsonConvert.SerializeObject(auth0User)}");
 
-            var googleSpreadsheet = GetRequestJsonForGoogle();
+            var googleSpreadsheet = GetRequestJsonForGoogle(log);
             log.LogInformation($"Json for Google: {googleSpreadsheet}");
             string googleRespone = await CreateSpreadsheet(auth0User, googleSpreadsheet);
 
@@ -131,10 +131,10 @@ namespace QuantumBudget.Auth
             return false;
         }
 
-        private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle()
+        private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle(ILogger log)
         {
             _budget.Month = DateTime.Now;
-            var service = new SpreadsheetGeneratingService(_budget);
+            var service = new SpreadsheetGeneratingService(_budget, log);
 
             return service.Generate();
         }
