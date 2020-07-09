@@ -55,7 +55,7 @@ namespace QuantumBudget.Auth
             log.LogInformation($"Auth0User: {JsonConvert.SerializeObject(auth0User)}");
 
             var googleSpreadsheet = GetRequestJsonForGoogle(log);
-            log.LogInformation($"Json for Google: {googleSpreadsheet}");
+
             string googleRespone = await CreateSpreadsheet(auth0User, googleSpreadsheet);
 
             return new OkObjectResult(googleRespone);
