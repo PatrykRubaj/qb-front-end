@@ -84,4 +84,5 @@ export const initialState: RootState = {
       emailVerified: false,
     },
   },
+  month: 1,
 };

@@ -22,6 +22,7 @@ export const getCategories = (state: RootState): Array<Category> =>
   state.categoriesSection.categories;
 export const getSubcategories = (state: RootState): Array<Subcategory> =>
   state.subcategorySection.subcategories;
+export const getMonth = (state: RootState): number => state.month;
 
 const saveState = (state: RootState): void => {
   console.log("Saving to local storage");
@@ -69,6 +70,7 @@ export function* requestCallbackSaga() {
         incomes: yield select(getIncomes),
         categories: yield select(getCategories),
         subcategories: yield select(getSubcategories),
+        month: yield select(getMonth),
       };
       yield put(
         budgetActions.requestBudgetGeneration(typedHistory, user, budget)
