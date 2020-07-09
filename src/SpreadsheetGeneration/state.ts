@@ -69,4 +69,5 @@ export interface BudgetToGenerate {
   incomes: Array<Income>;
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
+  month: number;
 }
