@@ -37,11 +37,7 @@ const SaveComponent: React.FC<Props> = ({
             onChange={onChecboxClick}
             value="agreedToNewsletter"
           />
-          <label
-            // onClick={onChecboxClick}
-            className="form-check-label"
-            htmlFor="defaultCheck1"
-          >
+          <label className="form-check-label" htmlFor="defaultCheck1">
             Agree to receive email newsletter.
           </label>
         </div>
