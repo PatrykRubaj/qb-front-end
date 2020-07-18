@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect } from "react";
+=======
+import React from "react";
+>>>>>>> 400ebf0... added authentication with Google
 import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
@@ -22,6 +26,7 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
   useEffect(() => {
     loadState();
   }, [loadState]);
+
 
   return (
     <>

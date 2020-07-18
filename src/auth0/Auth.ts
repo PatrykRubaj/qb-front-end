@@ -18,13 +18,13 @@ export default class Auth {
   }
 
   login = (): void => {
+<<<<<<< HEAD
     this.auth0.authorize({
       connection: "google-oauth2",
       accessType: "offline",
       // eslint-disable-next-line @typescript-eslint/camelcase
       connection_scope: "https://www.googleapis.com/auth/spreadsheets",
       scope: "openid profile email offline_access",
-      // approvalPrompt: "force",
     });
   };
 
