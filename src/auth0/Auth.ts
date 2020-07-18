@@ -18,7 +18,6 @@ export default class Auth {
   }
 
   login = (): void => {
-<<<<<<< HEAD
     this.auth0.authorize({
       connection: "google-oauth2",
       accessType: "offline",

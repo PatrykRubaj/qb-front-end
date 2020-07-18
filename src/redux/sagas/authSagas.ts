@@ -74,6 +74,7 @@ export function* requestCallbackSaga() {
 
       yield put(authActions.requestCallbackFinished(user));
       const month = yield select(getMonth);
+
       const budget: BudgetToGenerate = {
         country: yield select(getCountry),
         incomes: yield select(getIncomes),

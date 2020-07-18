@@ -26,7 +26,6 @@ export function* generate() {
     const { history, budget, user } = yield take(
       budgetTypes.REQUEST_BUDGET_GENERATION
     );
-
     console.log("Budget to send: ", budget);
     yield call(apiCall, user, budget);
     console.log(history);
