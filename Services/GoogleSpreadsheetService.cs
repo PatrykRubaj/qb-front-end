@@ -31,8 +31,8 @@ namespace Services
         private void SetDefaults()
         {
             var properties = new SpreadsheetProperties();
-            properties.Title = "Your Quantum Budget for March";
-            properties.Locale = _budget.Country.Key.ToLower();
+            properties.Title = $"{_budget.Month.ToString("yyyy-MM")} Quantum Budget";
+            properties.Locale = $"{_budget.Country.Language.ToLower()}_{_budget.Country.Key.ToUpper()}";
             _spreadsheet.Properties = properties;
         }
 

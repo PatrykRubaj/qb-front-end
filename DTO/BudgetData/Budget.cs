@@ -10,5 +10,6 @@ namespace DTO.BudgetData
         public IList<Category> Categories { get; set; } = new List<Category>();
         public IList<Subcategory> Subcategories { get; set; } = new List<Subcategory>();
         public DateTime Month { get; set; }
+        public bool AgreedToNewsletter { get; set; }
     }
 }

@@ -22,11 +22,13 @@ namespace QuantumBudget.Auth
     public class GetAccessToken
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly BusMessageService _busMessageService;
         private Budget _budget;
 
-        public GetAccessToken(IHttpClientFactory clientFactory)
+        public GetAccessToken(IHttpClientFactory clientFactory, BusMessageService busMessageService)
         {
             _clientFactory = clientFactory;
+            _busMessageService = busMessageService;
         }
 
         [FunctionName("GetAccessToken")]
@@ -49,6 +51,25 @@ namespace QuantumBudget.Auth
             _budget = JsonConvert.DeserializeObject<Budget>(content);
             log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
             var userInfo = await GetUserInfo(accessToken.FirstOrDefault());
+
+            if (userInfo == null)
+            {
+                return new ObjectResult("Please go away")
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+
+            if (_budget.AgreedToNewsletter)
+            {
+                await _busMessageService.SendMessage(new DTO.Mailchimp.NewSubscriber()
+                {
+                    Email = userInfo.Email,
+                    Name = userInfo.GivenName,
+                    Source = "MVP-Generator",
+                });
+            }
+
             log.LogInformation($"UserInfo: {JsonConvert.SerializeObject(userInfo)}");
             var managementApiToken = await GetManagementToken();
             var auth0User = await GetAuth0User(userInfo.UserId, managementApiToken.AccessToken);
@@ -118,22 +139,8 @@ namespace QuantumBudget.Auth
             return responseAsString;
         }
 
-        private async Task<bool> CreateSpreadsheet(string googleAccessToken)
-        {
-            // var baseClientService = new BaseClientService.Initializer();
-            // baseClientService.Y
-
-            // Create Google Sheets API service.
-            var service = new SheetsService(new BaseClientService.Initializer()
-            {
-                ApplicationName = "Quantum Budget",
-            });
-            return false;
-        }
-
         private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle(ILogger log)
         {
-            _budget.Month = DateTime.Now;
             var service = new SpreadsheetGeneratingService(_budget, log);
 
             return service.Generate();
