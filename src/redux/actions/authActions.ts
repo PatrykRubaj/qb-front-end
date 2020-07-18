@@ -27,8 +27,28 @@ const requestCallbackFinished = (user: User): authTypes.AuthActionTypes => {
   };
 };
 
+const requestSetNewsletter = (
+  agreedToNewsletter: boolean
+): authTypes.AuthActionTypes => {
+  return {
+    type: authTypes.REQUEST_SET_NEWSLETTER,
+    agreedToNewsletter,
+  };
+};
+
+const requestSetNewsletterFinished = (
+  agreedToNewsletter: boolean
+): authTypes.AuthActionTypes => {
+  return {
+    type: authTypes.REQUEST_SET_NEWSLETTER_FINISHED,
+    agreedToNewsletter,
+  };
+};
+
 export default {
   requestLogin,
   requestCallback,
   requestCallbackFinished,
+  requestSetNewsletter,
+  requestSetNewsletterFinished,
 };

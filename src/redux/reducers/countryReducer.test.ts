@@ -8,6 +8,7 @@ describe("Country reducer", () => {
     currency: "USD",
     emojiU: "emoji",
     key: "USD",
+    language: "pl",
   };
 
   it("Returns new country when setCountryFinished action is called", () => {
@@ -16,6 +17,7 @@ describe("Country reducer", () => {
       currency: "PLN",
       emojiU: "emoji+PL",
       key: "PLN",
+      language: "pl",
     };
     const newState = countryReducer(
       initialIncomeSectionState,

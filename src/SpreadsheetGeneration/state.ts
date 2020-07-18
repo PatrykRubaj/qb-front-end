@@ -9,6 +9,7 @@ export interface Country {
   currency: string;
   emojiU: string;
   key: string;
+  language: string;
 }
 
 export interface Category {
@@ -61,6 +62,7 @@ export interface User {
 
 export interface UserSection {
   user: User;
+  agreedToNewsletter: boolean;
   isLoading: boolean;
 }
 
@@ -69,5 +71,6 @@ export interface BudgetToGenerate {
   incomes: Array<Income>;
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
-  month: number;
+  month: string;
+  agreedToNewsletter: boolean;
 }

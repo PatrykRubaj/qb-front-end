@@ -10,8 +10,8 @@ export default function monthReducer(
   switch (action.type) {
     case types.SET_MONTH_FINISHED:
       return action.month;
-    // case appTypes.REQUEST_STATE_LOAD_FINISHED:
-    //   return action.state.country;
+    case appTypes.REQUEST_STATE_LOAD_FINISHED:
+      return action.state.month;
     default:
       return month;
   }

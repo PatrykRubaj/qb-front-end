@@ -1,6 +1,20 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import { RootState } from "../../redux/reducers";
+import { Dispatch } from "redux";
+import { MonthActionTypes } from "../../redux/types/monthTypes";
+import monthActions from "../../redux/actions/monthActions";
+import classNames from "classnames";
 
-export interface IMonthSelectorProps {}
+interface StateProps {
+  month: number;
+}
+
+interface DispatchProps {
+  setMonth: (month: number) => MonthActionTypes;
+}
+
+type Props = StateProps & DispatchProps;
 
 const months = [
   { name: "January", number: 1 },
@@ -17,20 +31,25 @@ const months = [
   { name: "December", number: 12 },
 ];
 
-export default function MonthSelector(props: IMonthSelectorProps) {
+const MonthSelector: React.FC<Props> = (props: Props) => {
   return (
     <div className="row">
       <div className="col">
         <h2>Select month</h2>
         <div className="row">
-          {months.map((month, index) => {
+          {months.map(month => {
             if (month.number > 6) return null;
+            const classes = classNames("btn mr-1 mb-1", {
+              "btn-dark": props.month !== month.number,
+              "btn-primary": props.month === month.number,
+            });
             return (
               <button
                 key={month.number}
                 type="button"
-                className="btn btn-dark mr-1 mb-1"
-                style={{ width: "16%" }}
+                className={classes}
+                style={{ width: "10%" }}
+                onClick={(): MonthActionTypes => props.setMonth(month.number)}
               >
                 {month.name}
               </button>
@@ -38,14 +57,19 @@ export default function MonthSelector(props: IMonthSelectorProps) {
           })}
         </div>
         <div className="row">
-          {months.map((month, index) => {
+          {months.map(month => {
             if (month.number <= 6) return null;
+            const classes = classNames("btn mr-1 mb-1", {
+              "btn-dark": props.month !== month.number,
+              "btn-primary": props.month === month.number,
+            });
             return (
               <button
                 key={month.number}
                 type="button"
-                className="btn btn-dark mr-1 mb-1"
-                style={{ width: "16%" }}
+                className={classes}
+                style={{ width: "10%" }}
+                onClick={(): MonthActionTypes => props.setMonth(month.number)}
               >
                 {month.name}
               </button>
@@ -55,4 +79,19 @@ export default function MonthSelector(props: IMonthSelectorProps) {
       </div>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    month: state.month,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    setMonth: (month: number): MonthActionTypes =>
+      dispatch(monthActions.setMonth(month)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MonthSelector);

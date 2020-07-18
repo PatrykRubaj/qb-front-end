@@ -75,6 +75,7 @@ export const initialState: RootState = {
   country: null,
   userSection: {
     isLoading: false,
+    agreedToNewsletter: false,
     user: {
       idToken: "",
       accessToken: "",
