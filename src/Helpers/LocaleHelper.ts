@@ -5,7 +5,12 @@ import { Country } from "../SpreadsheetGeneration/state";
 export const countriesList = (): Country[] => {
   const tmpCountryList: Country[] = [];
   Object.entries(countries).forEach(([key, value]) =>
-    tmpCountryList.push({ ...value, key: key })
+    tmpCountryList.push({
+      ...value,
+      key: key,
+      currency: value.currency.split(/,/)[0],
+      language: value.languages[0],
+    })
   );
   return tmpCountryList;
 };
@@ -24,6 +29,7 @@ export const getUsersCountry = (): Country => {
       currency: "USD",
       emojiU: "",
       key: "US",
+      language: "en",
     }
   );
 };

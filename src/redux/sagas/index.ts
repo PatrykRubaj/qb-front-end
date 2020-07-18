@@ -6,6 +6,7 @@ import * as countrySagas from "./countrySagas";
 import authSagas from "./authSagas";
 import budgetSagas from "./budgetSagas";
 import appSagas from "./appSagas";
+import monthSagas from "./monthSagas";
 
 export default function* rootSaga() {
   yield all([
@@ -27,5 +28,6 @@ export default function* rootSaga() {
     ...authSagas.map(as => fork(as)),
     ...budgetSagas.map(as => fork(as)),
     ...appSagas.map(as => fork(as)),
+    ...monthSagas.map(ms => fork(ms)),
   ]);
 }

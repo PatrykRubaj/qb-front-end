@@ -50,6 +50,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({
           name: userCountry.name,
           currency: userCountry.currency,
           emojiU: userCountry.emojiU,
+          language: userCountry.language,
         });
       }
     };
@@ -95,6 +96,7 @@ const LocaleSelectorComponent: React.FC<Props> = ({
         name: `${country.currency} - ${country.name}`,
         currency: country.currency,
         emojiU: country.emojiU,
+        language: country.language,
       });
     }
   };

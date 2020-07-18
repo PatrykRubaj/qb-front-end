@@ -64,7 +64,9 @@ describe("Income Component", () => {
             idToken: "",
             imageUrl: "",
           },
+          agreedToNewsletter: false,
         },
+        month: 1,
       };
 
       const mappedValues = mapStateToProps(appState);
@@ -235,6 +237,7 @@ describe("Income Component", () => {
         name: "PLN - Poland",
         currency: "PLN",
         emojiU: "U+1F1F5 U+1F1F1",
+        language: "pl",
       };
 
       ReactTestUtils.act(() => {
