@@ -49,6 +49,8 @@ namespace QuantumBudget.Auth
             }
 
             _budget = JsonConvert.DeserializeObject<Budget>(content);
+            CleanUpTheData(_budget);
+
             log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
             var userInfo = await GetUserInfo(accessToken.FirstOrDefault());
 
@@ -81,6 +83,30 @@ namespace QuantumBudget.Auth
 
             return new OkObjectResult(googleRespone);
         }
+
+        private void CleanUpTheData(Budget budget)
+        {
+            _budget.Categories = _budget.Categories.Where(x => String.IsNullOrEmpty(x.Name) == false).ToList();
+
+            foreach (var subcategory in _budget.Subcategories.Where(x => String.IsNullOrEmpty(x.Name) == false))
+            {
+                if (subcategory.Amount == null)
+                {
+                    subcategory.Amount = 0;
+                }
+            }
+            foreach (var income in _budget.Incomes.Where(x => String.IsNullOrEmpty(x.Name) == false))
+            {
+                if (income.Amount == null)
+                {
+                    income.Amount = 0;
+                }
+            }
+
+            Guid[] categoriesIds = _budget.Subcategories.GroupBy(x => x.CategoryId).Select(x => x.Key).ToArray();
+            _budget.Categories = _budget.Categories.Where(x => categoriesIds.Contains(x.Id)).ToList();
+        }
+
 
         private async Task<Auth0User> GetAuth0User(string userId, string token)
         {
