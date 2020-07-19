@@ -22,7 +22,7 @@ export default class Auth {
       connection: "google-oauth2",
       accessType: "offline",
       // eslint-disable-next-line @typescript-eslint/camelcase
-      connection_scope: "https://www.googleapis.com/auth/spreadsheets",
+      connection_scope: "https://www.googleapis.com/auth/drive.file",
       scope: "openid profile email offline_access",
     });
   };
