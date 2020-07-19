@@ -6,7 +6,7 @@ const HomePageComponent: React.FC = () => {
       <div className="col-sm">
         <div className="media">
           <img
-            src="https://via.placeholder.com/200"
+            src="/images/placeholder.png"
             className="align-self-center mr-3"
             alt="place holder"
           />
@@ -41,7 +41,7 @@ const HomePageComponent: React.FC = () => {
             </p>
           </div>
           <img
-            src="https://via.placeholder.com/200"
+            src="/images/placeholder.png"
             className="align-self-center mr-3"
             alt="place holder"
           />
