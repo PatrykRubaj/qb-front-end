@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
+import PrivacyPolicyComponent from "./HomePage/PrivacyPolicyPage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
 import NavigationBar from "./Common/NavigationBar";
 import Login from "./auth0/Components/Login";
@@ -29,6 +30,7 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
       <div className="container">
         <Switch>
           <Route exact path="/" component={HomePageComponent} />
+          <Route exact path="/privacy" component={PrivacyPolicyComponent} />
           <Route path="/generator" component={GeneratorPage} />
           <Route path="/login" render={() => <Login history={history} />} />
           <Route
