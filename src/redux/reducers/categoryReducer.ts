@@ -77,7 +77,10 @@ export default function categoryReducer(
         ),
       };
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
-      return action.state.categoriesSection;
+      return {
+        ...initialState.categoriesSection,
+        ...action.state.categoriesSection,
+      };
     default:
       return categorySection;
   }
