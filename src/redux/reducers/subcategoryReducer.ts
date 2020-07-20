@@ -107,7 +107,10 @@ export default function subcategoryReducer(
       };
     }
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
-      return action.state.subcategorySection;
+      return {
+        ...initialState.subcategorySection,
+        ...action.state.subcategorySection,
+      };
     default:
       return subcategorySection;
   }

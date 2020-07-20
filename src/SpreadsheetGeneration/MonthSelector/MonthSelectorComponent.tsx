@@ -39,40 +39,40 @@ const MonthSelector: React.FC<Props> = (props: Props) => {
         <div className="row">
           {months.map(month => {
             if (month.number > 6) return null;
-            const classes = classNames("btn mr-1 mb-1", {
+            const classes = classNames("btn btn-block mr-1 mb-1", {
               "btn-dark": props.month !== month.number,
               "btn-primary": props.month === month.number,
             });
             return (
-              <button
-                key={month.number}
-                type="button"
-                className={classes}
-                style={{ width: "10%" }}
-                onClick={(): MonthActionTypes => props.setMonth(month.number)}
-              >
-                {month.name}
-              </button>
+              <div className="col-6 col-md-2" key={month.number}>
+                <button
+                  type="button"
+                  className={classes}
+                  onClick={(): MonthActionTypes => props.setMonth(month.number)}
+                >
+                  {month.name}
+                </button>
+              </div>
             );
           })}
         </div>
         <div className="row">
           {months.map(month => {
             if (month.number <= 6) return null;
-            const classes = classNames("btn mr-1 mb-1", {
+            const classes = classNames("btn btn-block mr-1 mb-1", {
               "btn-dark": props.month !== month.number,
               "btn-primary": props.month === month.number,
             });
             return (
-              <button
-                key={month.number}
-                type="button"
-                className={classes}
-                style={{ width: "10%" }}
-                onClick={(): MonthActionTypes => props.setMonth(month.number)}
-              >
-                {month.name}
-              </button>
+              <div className="col-6 col-md-2" key={month.number}>
+                <button
+                  type="button"
+                  className={classes}
+                  onClick={(): MonthActionTypes => props.setMonth(month.number)}
+                >
+                  {month.name}
+                </button>
+              </div>
             );
           })}
         </div>

@@ -14,7 +14,7 @@ export default function countryReducer(
         ...action.country,
       };
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
-      return action.state.country;
+      return action.state.country || initialState.country;
     default:
       return country;
   }
