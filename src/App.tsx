@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { History } from "history";
 import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import PrivacyPolicyComponent from "./HomePage/PrivacyPolicyPage";
@@ -13,7 +14,7 @@ import { AppActionTypes } from "./redux/types/appTypes";
 import appActions from "./redux/actions/appActions";
 
 interface DispatchProps {
-  loadState: () => AppActionTypes;
+  loadState: (history: History<History.PoorMansUnknown>) => AppActionTypes;
 }
 
 type Props = DispatchProps;
@@ -21,8 +22,8 @@ type Props = DispatchProps;
 const App: React.FC<Props> = ({ loadState }: Props) => {
   const history = useHistory();
   useEffect(() => {
-    loadState();
-  }, [loadState]);
+    loadState(history);
+  }, [loadState, history]);
 
   return (
     <>
@@ -45,7 +46,8 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    loadState: (): AppActionTypes => dispatch(appActions.requestLoadState()),
+    loadState: (history: History<History.PoorMansUnknown>): AppActionTypes =>
+      dispatch(appActions.requestLoadState(history)),
   };
 };
 

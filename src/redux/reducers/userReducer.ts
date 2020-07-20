@@ -21,8 +21,8 @@ export default function userReducer(
       };
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
       return {
-        ...userSection,
-        agreedToNewsletter: action.state.userSection.agreedToNewsletter,
+        ...initialState.userSection,
+        ...action.state.userSection,
       };
     default:
       return userSection;

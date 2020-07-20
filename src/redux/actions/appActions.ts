@@ -1,9 +1,13 @@
+import { History } from "history";
 import * as appTypes from "../types/appTypes";
 import { RootState } from "../reducers";
 
-const requestLoadState = (): appTypes.AppActionTypes => {
+const requestLoadState = (
+  history: History<History.PoorMansUnknown>
+): appTypes.AppActionTypes => {
   return {
     type: appTypes.REQUEST_STATE_LOAD,
+    history,
   };
 };
 

@@ -8,6 +8,7 @@ const getStateFromLocalStorage = (): RootState | null => {
   const state = localStorage.getItem("state");
   if (state !== null) {
     const parsedState = JSON.parse(state);
+    console.log(parsedState);
     return parsedState;
   }
 
@@ -20,7 +21,12 @@ export function* requestStateSaga() {
     const state = yield call(getStateFromLocalStorage);
 
     if (state !== null) {
-      yield put(appActions.requestLoadStateFinished(state));
+      try {
+        yield put(appActions.requestLoadStateFinished(state));
+      } catch (ex) {
+        console.log(ex);
+        localStorage.clear();
+      }
     }
   }
 }

@@ -73,7 +73,10 @@ export default function incomeReducer(
         ),
       };
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
-      return action.state.incomeSection;
+      return {
+        ...initialState.incomeSection,
+        ...action.state.incomeSection,
+      };
     default:
       return incomeSection;
   }
