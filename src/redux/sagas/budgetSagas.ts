@@ -1,13 +1,18 @@
 import { take, put, call } from "redux-saga/effects";
 import budgetActions from "../actions/budgetActions";
 import * as budgetTypes from "../types/budgetTypes";
-import { User, BudgetToGenerate } from "../../SpreadsheetGeneration/state";
+import {
+  User,
+  BudgetToGenerate,
+  BudgetResponse,
+} from "../../SpreadsheetGeneration/state";
 import axios from "axios";
 
 export const apiCall = async (
   user: User,
   budget: BudgetToGenerate
-): Promise<void> => {
+): Promise<BudgetResponse | null> => {
+  let responseToReturn: BudgetResponse | null = null;
   const url = `${process.env.REACT_APP_AZURE_FUNCTIONS_API}/api/GetAccessToken`;
   try {
     const response = await axios.post(url, budget, {
@@ -16,9 +21,30 @@ export const apiCall = async (
       },
     });
     console.log("Response", response);
+    responseToReturn = response.data as BudgetResponse;
   } catch (ex) {
     console.log("Exception", ex);
+    let message = "";
+    let code = 0;
+
+    if (ex.response) {
+      message = ex.response.data;
+      code = ex.response.status;
+    } else if (ex.request) {
+      message = ex.request;
+    } else {
+      message = ex.message;
+    }
+
+    responseToReturn = {
+      errors: {
+        message,
+        code,
+      },
+    };
   }
+  console.log("Returned response: ", responseToReturn);
+  return responseToReturn;
 };
 
 export function* generate() {
@@ -28,10 +54,15 @@ export function* generate() {
     );
 
     console.log("Budget to send: ", budget);
-    yield call(apiCall, user, budget);
+    const budgetResponse: BudgetResponse | null = yield call(
+      apiCall,
+      user,
+      budget
+    );
     console.log(history);
-    console.log("Generate saga run");
-    yield put(budgetActions.requestBudgetGenerationFinished());
+    console.log("Generate saga run ", budgetResponse);
+    history.push("/generator-response");
+    yield put(budgetActions.requestBudgetGenerationFinished(budgetResponse));
   }
 }
 

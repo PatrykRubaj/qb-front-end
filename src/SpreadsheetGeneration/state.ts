@@ -74,3 +74,17 @@ export interface BudgetToGenerate {
   month: string;
   agreedToNewsletter: boolean;
 }
+
+export interface BudgetResponse {
+  spreadsheetUrl?: string;
+  errors?: ErrorResponse;
+}
+
+export interface ErrorResponse {
+  code: number;
+  message: string;
+}
+
+export interface BudgetSection {
+  response: BudgetResponse | null;
+}

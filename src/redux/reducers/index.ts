@@ -5,6 +5,7 @@ import subcategorySection from "./subcategoryReducer";
 import country from "./countryReducer";
 import userSection from "./userReducer";
 import month from "./monthReducer";
+import budgetSection from "./budgetReducer";
 
 export const rootReducer = combineReducers({
   incomeSection,
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
   country,
   userSection,
   month,
+  budgetSection,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import PrivacyPolicyComponent from "./HomePage/PrivacyPolicyPage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
+import GeneratorResponse from "./SpreadsheetGeneration/ResponsePage";
 import NavigationBar from "./Common/NavigationBar";
 import Login from "./auth0/Components/Login";
 import Callback from "./auth0/Components/Callback";
@@ -33,6 +34,7 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
           <Route exact path="/" component={HomePageComponent} />
           <Route exact path="/privacy" component={PrivacyPolicyComponent} />
           <Route path="/generator" component={GeneratorPage} />
+          <Route path="/generator-response" component={GeneratorResponse} />
           <Route path="/login" render={() => <Login history={history} />} />
           <Route
             path="/callback"

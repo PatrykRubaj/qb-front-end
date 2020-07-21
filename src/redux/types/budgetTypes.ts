@@ -1,5 +1,9 @@
 import { History } from "history";
-import { BudgetToGenerate, User } from "../../SpreadsheetGeneration/state";
+import {
+  BudgetToGenerate,
+  User,
+  BudgetResponse,
+} from "../../SpreadsheetGeneration/state";
 
 export const REQUEST_BUDGET_GENERATION = "REQUEST_BUDGET_GENERATION";
 export const REQUEST_BUDGET_GENERATION_FINISHED =
@@ -14,6 +18,7 @@ interface RequestBudgetGenerationAction {
 
 interface RequestBudgetGenerationActionFinishedAction {
   type: typeof REQUEST_BUDGET_GENERATION_FINISHED;
+  response: BudgetResponse | null;
 }
 
 export type BudgetActionTypes =

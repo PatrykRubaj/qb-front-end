@@ -32,6 +32,11 @@ const months = [
 ];
 
 const MonthSelector: React.FC<Props> = (props: Props) => {
+  const { setMonth } = props;
+  React.useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    setMonth(currentMonth);
+  }, [setMonth]);
   return (
     <div className="row">
       <div className="col">
@@ -48,7 +53,7 @@ const MonthSelector: React.FC<Props> = (props: Props) => {
                 <button
                   type="button"
                   className={classes}
-                  onClick={(): MonthActionTypes => props.setMonth(month.number)}
+                  onClick={(): MonthActionTypes => setMonth(month.number)}
                 >
                   {month.name}
                 </button>
@@ -68,7 +73,7 @@ const MonthSelector: React.FC<Props> = (props: Props) => {
                 <button
                   type="button"
                   className={classes}
-                  onClick={(): MonthActionTypes => props.setMonth(month.number)}
+                  onClick={(): MonthActionTypes => setMonth(month.number)}
                 >
                   {month.name}
                 </button>

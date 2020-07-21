@@ -1,6 +1,10 @@
 import * as budgetTypes from "../types/budgetTypes";
 import { History } from "history";
-import { BudgetToGenerate, User } from "../../SpreadsheetGeneration/state";
+import {
+  BudgetToGenerate,
+  User,
+  BudgetResponse,
+} from "../../SpreadsheetGeneration/state";
 
 const requestBudgetGeneration = (
   history: History,
@@ -15,9 +19,12 @@ const requestBudgetGeneration = (
   };
 };
 
-const requestBudgetGenerationFinished = (): budgetTypes.BudgetActionTypes => {
+const requestBudgetGenerationFinished = (
+  response: BudgetResponse | null
+): budgetTypes.BudgetActionTypes => {
   return {
     type: budgetTypes.REQUEST_BUDGET_GENERATION_FINISHED,
+    response,
   };
 };
 

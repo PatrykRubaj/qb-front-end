@@ -35,7 +35,7 @@ export default class Auth {
         }
 
         if (authResult && authResult.accessToken && authResult.idToken) {
-          this.history.push("/");
+          // this.history.push("/");
 
           this.auth0.client.userInfo(authResult.accessToken, function(
             err,
@@ -44,7 +44,7 @@ export default class Auth {
             const user: User = {
               accessToken: authResult.accessToken || "",
               idToken: authResult.idToken || "",
-              givenName: "Patryk",
+              givenName: userInfo.given_name || "",
               imageUrl: userInfo.picture,
               email: userInfo.email || "",
               emailVerified: userInfo.email_verified || false,
@@ -52,6 +52,8 @@ export default class Auth {
 
             resolve(user);
           });
+        } else {
+          this.history.push("/");
         }
       });
     });

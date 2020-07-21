@@ -86,4 +86,7 @@ export const initialState: RootState = {
     },
   },
   month: new Date().getMonth() + 1,
+  budgetSection: {
+    response: null,
+  },
 };
