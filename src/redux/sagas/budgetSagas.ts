@@ -14,35 +14,50 @@ export const apiCall = async (
 ): Promise<BudgetResponse | null> => {
   let responseToReturn: BudgetResponse | null = null;
   const url = `${process.env.REACT_APP_AZURE_FUNCTIONS_API}/api/GetAccessToken`;
-  try {
-    const response = await axios.post(url, budget, {
+  let responseFromAxios: any = null;
+  let message = "";
+  let code = 0;
+
+  axios
+    .post(url, budget, {
       headers: {
         Authorization: `Bearer ${user.accessToken}`,
       },
+    })
+    .then(response => {
+      responseFromAxios = response;
+      responseToReturn = responseFromAxios?.data as BudgetResponse;
+    })
+    .catch(error => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        message = error.response.data;
+        code = error.response.status;
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+        message = error.request;
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+        message = error;
+      }
+      console.log(error.config);
     });
-    console.log("Response", response);
-    responseToReturn = response.data as BudgetResponse;
-  } catch (ex) {
-    console.log("Exception", ex);
-    let message = "";
-    let code = 0;
 
-    if (ex.response) {
-      message = ex.response.data;
-      code = ex.response.status;
-    } else if (ex.request) {
-      message = ex.request;
-    } else {
-      message = ex.message;
-    }
+  responseToReturn = {
+    errors: {
+      message,
+      code,
+    },
+  };
 
-    responseToReturn = {
-      errors: {
-        message,
-        code,
-      },
-    };
-  }
   console.log("Returned response: ", responseToReturn);
   return responseToReturn;
 };

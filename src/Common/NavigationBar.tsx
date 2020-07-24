@@ -11,21 +11,21 @@ interface StateProps {
 type Props = StateProps;
 
 const NavigationBar: React.FC<Props> = (props: Props) => (
-  <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+  <nav className="navbar navbar-expand-sm navbar-dark bg-dark justify-content-between">
     <NavLink to="/" className="navbar-brand">
       Quantum Budget
     </NavLink>
-    <div className="">
+    <div className="collapse navbar-collapse justify-content-end">
       <ul className="navbar-nav">
         <li className="nav-item">
           <NavLink to="/generator" className="nav-link">
             Generator
           </NavLink>
         </li>
-        {props.user.givenName.length > 0 ? (
-          <li className="nav-item">Hi {props.user.givenName}</li>
-        ) : null}
       </ul>
+      {props.user.givenName.length > 0 ? (
+        <span className="navbar-text">Hi {props.user.givenName}</span>
+      ) : null}
     </div>
   </nav>
 );

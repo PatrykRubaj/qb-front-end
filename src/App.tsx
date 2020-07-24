@@ -4,7 +4,9 @@ import { Route, Switch } from "react-router-dom";
 import HomePageComponent from "./HomePage/HomePage";
 import PrivacyPolicyComponent from "./HomePage/PrivacyPolicyPage";
 import GeneratorPage from "./SpreadsheetGeneration/GeneratorPage";
-import GeneratorResponse from "./SpreadsheetGeneration/ResponsePage";
+import GeneratorResponse, {
+  GeneratorResponse as GeneratorResponsePage,
+} from "./SpreadsheetGeneration/ResponsePage";
 import NavigationBar from "./Common/NavigationBar";
 import Login from "./auth0/Components/Login";
 import Callback from "./auth0/Components/Callback";
@@ -13,6 +15,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { AppActionTypes } from "./redux/types/appTypes";
 import appActions from "./redux/actions/appActions";
+import { ErrorResponse } from "./SpreadsheetGeneration/state";
 
 interface DispatchProps {
   loadState: (history: History<History.PoorMansUnknown>) => AppActionTypes;
@@ -26,6 +29,11 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
     loadState(history);
   }, [loadState, history]);
 
+  const error: ErrorResponse = {
+    code: 401,
+    message: "Error",
+  };
+
   return (
     <>
       <NavigationBar />
@@ -35,6 +43,16 @@ const App: React.FC<Props> = ({ loadState }: Props) => {
           <Route exact path="/privacy" component={PrivacyPolicyComponent} />
           <Route path="/generator" component={GeneratorPage} />
           <Route path="/generator-response" component={GeneratorResponse} />
+          <Route
+            path="/generator-response-test"
+            render={() => (
+              <GeneratorResponsePage
+                spreadsheetUrl="https://google.com/"
+                isNewsletterSubscriber={true}
+                errors={error}
+              />
+            )}
+          />
           <Route path="/login" render={() => <Login history={history} />} />
           <Route
             path="/callback"
