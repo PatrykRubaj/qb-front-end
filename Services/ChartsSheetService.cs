@@ -343,7 +343,7 @@ namespace Services
                                         new GridRange() {
                                             StartColumnIndex = 1,
                                             EndColumnIndex = 2,
-                                            StartRowIndex = 1,
+                                            StartRowIndex = 2,
                                             EndRowIndex = 2 + _budget.Categories.Count,
                                             SheetId = 2,
                                         }
@@ -373,7 +373,7 @@ namespace Services
                                         {
                                             StartColumnIndex = 0,
                                             EndColumnIndex = 1,
-                                            StartRowIndex = 1,
+                                            StartRowIndex = 2,
                                             EndRowIndex = 2 + _budget.Categories.Count,
                                             SheetId = 2,
                                         }

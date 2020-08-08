@@ -82,6 +82,7 @@ namespace Services
                     Borders = GoogleSheetService.GetBottomMediumBorder(),
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "BOTTOM",
+                    HorizontalAlignment = "RIGHT",
                     WrapStrategy = "WRAP",
                 }
             });
@@ -96,6 +97,7 @@ namespace Services
                     Borders = GoogleSheetService.GetBottomMediumBorder(),
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "BOTTOM",
+                    HorizontalAlignment = "RIGHT",
                     WrapStrategy = "WRAP",
                 }
             });
@@ -110,6 +112,7 @@ namespace Services
                     Borders = GoogleSheetService.GetBottomMediumBorder(),
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "BOTTOM",
+                    HorizontalAlignment = "RIGHT",
                     WrapStrategy = "WRAP",
                 }
             });
@@ -333,6 +336,7 @@ namespace Services
                 {
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "TOP",
+                    HorizontalAlignment = "RIGHT",
                     Borders = GoogleSheetService.GetTopBorder(),
                     WrapStrategy = "WRAP",
                 }
@@ -347,6 +351,7 @@ namespace Services
                 {
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "TOP",
+                    HorizontalAlignment = "RIGHT",
                     Borders = GoogleSheetService.GetTopBorder(),
                     WrapStrategy = "WRAP",
                 }
@@ -361,6 +366,7 @@ namespace Services
                 {
                     TextFormat = GoogleSheetService.GetDefaultTableHeaderFormatting(),
                     VerticalAlignment = "TOP",
+                    HorizontalAlignment = "RIGHT",
                     Borders = GoogleSheetService.GetTopBorder(),
                     WrapStrategy = "WRAP",
                 }
