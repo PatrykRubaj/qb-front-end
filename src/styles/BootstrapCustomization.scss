@@ -1,0 +1,34 @@
+$font-family-sans-serif: "Poppins", -apple-system, BlinkMacSystemFont,
+  "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$primary: #5b7191;
+$secondary: #d5e199;
+$thirdColor: #b6d1d8;
+
+.bg-third {
+  background-color: $thirdColor;
+}
+
+@font-face {
+  font-family: "Silka Bold";
+  src: url("/fonts/silka-bold-webfont.woff2") format("woff2"),
+    url("/fonts/silka-bold-webfont.woff") format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silka Medium";
+  src: url("/fonts/silka-medium-webfont.woff2") format("woff2"),
+    url("/fonts/silka-medium-webfont.woff") format("woff");
+  font-display: swap;
+}
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 800;
+}
