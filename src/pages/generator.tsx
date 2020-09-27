@@ -5,6 +5,7 @@
 // import LocaleSelectorComponent from "../components/spreadsheet-generation/LocaleSelector/LocaleSelectorComponent";
 // import MonthSelectorComponent from "../components/spreadsheet-generation/MonthSelector/MonthSelectorComponent";
 // import SaveComponent from "../components/spreadsheet-generation/Save/SaveComponent";
+import Head from "next/head";
 import dynamic from "next/dynamic";
 
 const DynamicIncomeComponent = dynamic(
@@ -53,6 +54,9 @@ const DynamicSaveComponent = dynamic(
 const GeneratorPage: React.FC = () => {
   return (
     <>
+      <Head>
+        <title>Home Budget spreadsheet generator - Quantum Budget</title>
+      </Head>
       <div className="row">
         <div className="col">
           <h2 className="mt-2">Word of introduction</h2>

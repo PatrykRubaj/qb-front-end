@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { NextRouter, useRouter } from "next/router";
 import { RootState } from "../redux/reducers";
 import { Dispatch } from "redux";
@@ -21,10 +22,15 @@ const Login: React.FC<Props> = (props: Props) => {
   }, [router, props.login, props]);
 
   return (
-    <LoaderWheel
-      title="Redirecting"
-      description="You're being redirected to login"
-    />
+    <>
+      <Head>
+        <title>Login redirect - Quantum Budget</title>
+      </Head>
+      <LoaderWheel
+        title="Redirecting"
+        description="You're being redirected to login"
+      />
+    </>
   );
 };
 

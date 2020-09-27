@@ -7,6 +7,7 @@ import { AuthActionTypes } from "../redux/types/authTypes";
 import LoaderWheel from "../components/common/LoaderWheel";
 import { AppActionTypes } from "../redux/types/appTypes";
 import appActions from "../redux/actions/appActions";
+import Head from "next/head";
 
 interface DispatchProps {
   loadState: (history: NextRouter) => AppActionTypes;
@@ -23,10 +24,15 @@ const Callback: React.FC<Props> = ({ loadState, handleCallback }: Props) => {
   }, [router, loadState, handleCallback]);
 
   return (
-    <LoaderWheel
-      description="It can take some time if the website wasn't used for a while."
-      title="Generating"
-    />
+    <>
+      <Head>
+        <title>Callback - Quantum Budget</title>
+      </Head>
+      <LoaderWheel
+        description="It can take some time if the website wasn't used for a while."
+        title="Generating"
+      />
+    </>
   );
 };
 

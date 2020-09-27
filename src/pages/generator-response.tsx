@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import EmailIcon from "@material-ui/icons/Email";
 import ErrorIcon from "@material-ui/icons/Error";
+import Head from "next/head";
 
 // interface DispatchProps {
 //   moveSubcategory: (startIndex: number, endIndex: number, id: string) => void;
@@ -26,6 +27,9 @@ export const GeneratorResponse: React.FC<Props> = ({
   if (!errors && spreadsheetUrl) {
     return (
       <>
+        <Head>
+          <title>Spreadsheet generated - Quantum Budget</title>
+        </Head>
         <div className="alert alert-success mt-1 mb-1" role="alert">
           Your spreadsheet is ready.
         </div>
@@ -71,6 +75,9 @@ export const GeneratorResponse: React.FC<Props> = ({
   } else if (errors) {
     return (
       <>
+        <Head>
+          <title>Generator failed - Quantum Budget</title>
+        </Head>
         <div className="alert alert-danger mt-1 mb-1" role="alert">
           <p>There was an error when generating you spreadsheet.</p>
           <hr />

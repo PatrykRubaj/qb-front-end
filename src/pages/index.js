@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>Home Budget - Quantum Budget</title>
       </Head>
       <div className="row mb-0 justify-content-center">
         <div className="col-lg-7 col">

@@ -1,0 +1,53 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: AzureKeyVault@1
+        inputs:
+          azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
+          KeyVaultName: 'secrets-and-certs'
+          SecretsFilter: '*'
+          RunAsPreJob: false
+      - task: AzurePowerShell@5
+        inputs:
+          azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
+          ScriptType: 'InlineScript'
+          Inline: |
+            $cert = Get-AzKeyVaultSecret -VaultName "secrets-and-certs" -Name "CertificateQuantumBudgetCloudFlare"
+            $privateKey = Get-AzKeyVaultSecret -VaultName "secrets-and-certs" -Name "PrivateKeyQuantumBudgetCloudFlare"
+            
+            $publicPath = "quantumbudget-cert.txt"
+            [Environment]::CurrentDirectory = (Get-Location -PSProvider FileSystem).ProviderPath
+            [System.IO.File]::WriteAllText($publicPath, $cert.SecretValueText)
+            
+            $privatePath = "quantumbudget.txt"
+            [Environment]::CurrentDirectory = (Get-Location -PSProvider FileSystem).ProviderPath
+            [System.IO.File]::WriteAllText($privatePath, $privateKey.SecretValueText)
+          azurePowerShellVersion: 'LatestVersion'
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Patryk Rubaj Docker Hub'
+          repository: 'patrykrubaj/quantumbudget-frontend'
+          command: 'buildAndPush'
+          Dockerfile: '**/Dockerfile'
+          tags: |
+            $(Build.BuildId)
+            latest
