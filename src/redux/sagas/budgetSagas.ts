@@ -26,7 +26,7 @@ export const apiCall = async (
   budget: BudgetToGenerate
 ): Promise<BudgetResponse | null> => {
   let responseToReturn: BudgetResponse | null = null;
-  const url = `${process.env.REACT_APP_AZURE_FUNCTIONS_API}/api/GetAccessToken`;
+  const url = `${process.env.NEXT_PUBLIC_AZURE_FUNCTIONS_API}/api/GetAccessToken`;
 
   try {
     const response = await axios.post(url, budget, {

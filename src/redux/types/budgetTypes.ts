@@ -1,4 +1,4 @@
-import { History } from "history";
+import { NextRouter } from "next/router";
 import { BudgetToGenerate, User, BudgetResponse } from "../state";
 
 export const REQUEST_BUDGET_GENERATION = "REQUEST_BUDGET_GENERATION";
@@ -7,7 +7,7 @@ export const REQUEST_BUDGET_GENERATION_FINISHED =
 
 interface RequestBudgetGenerationAction {
   type: typeof REQUEST_BUDGET_GENERATION;
-  history: History<History.PoorMansUnknown>;
+  history: NextRouter;
   user: User;
   budget: BudgetToGenerate;
 }

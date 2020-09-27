@@ -1,17 +1,17 @@
 import auth0, { WebAuth } from "auth0-js";
-import { History } from "history";
+import { NextRouter } from "next/router";
 import { User } from "../redux/state";
 
 export default class Auth {
-  private history: History<History.PoorMansUnknown>;
+  private history: NextRouter;
   private auth0: WebAuth;
 
-  constructor(history: History<History.PoorMansUnknown>) {
+  constructor(history: NextRouter) {
     this.history = history;
     this.auth0 = new auth0.WebAuth({
-      domain: process.env.REACT_APP_AUTH0_DOMAIN || "",
-      clientID: process.env.REACT_APP_AUTH0_CLIENT_ID || "",
-      redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL || "",
+      domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN || "",
+      clientID: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || "",
+      redirectUri: process.env.NEXT_PUBLIC_AUTH0_CALLBACK_URL || "",
       responseType: "token id_token",
       scope: "openid profile email offline_access",
     });

@@ -1,9 +1,9 @@
 import * as budgetTypes from "../types/budgetTypes";
-import { History } from "history";
+import { NextRouter } from "next/router";
 import { BudgetToGenerate, User, BudgetResponse } from "../state";
 
 const requestBudgetGeneration = (
-  history: History,
+  history: NextRouter,
   user: User,
   budget: BudgetToGenerate
 ): budgetTypes.BudgetActionTypes => {

@@ -1,10 +1,8 @@
-import { History } from "history";
+import { NextRouter } from "next/router";
 import * as appTypes from "../types/appTypes";
 import { RootState } from "../reducers";
 
-const requestLoadState = (
-  history: History<History.PoorMansUnknown>
-): appTypes.AppActionTypes => {
+const requestLoadState = (history: NextRouter): appTypes.AppActionTypes => {
   return {
     type: appTypes.REQUEST_STATE_LOAD,
     history,

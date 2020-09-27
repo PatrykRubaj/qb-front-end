@@ -21,35 +21,20 @@ const ConfirmationDialog: React.FC<Props> = (props: Props) => {
 
   const [state, setState] = useState<State>({
     open: false,
-    callback: null
+    callback: null,
   });
 
-  // const show = (callback: Function) => (
-  //   event: React.MouseEvent<HTMLButtonElement>
-  // ): void => {
-  //   event.preventDefault();
-  //   event = {
-  //     ...event,
-  //     target: { ...event.target }
-  //   };
-
-  //   setState({
-  //     open: true,
-  //     callback: () => callback(event)
-  //   });
-  // };
-
   function show(callback: Function, param: any): Function {
-    return function(event: React.MouseEvent<HTMLButtonElement>): void {
+    return function (event: React.MouseEvent<HTMLButtonElement>): void {
       event.preventDefault();
       event = {
         ...event,
-        target: { ...event.target }
+        target: { ...event.target },
       };
 
       setState({
         open: true,
-        callback: () => callback(event, param)
+        callback: () => callback(event, param),
       });
     };
   }

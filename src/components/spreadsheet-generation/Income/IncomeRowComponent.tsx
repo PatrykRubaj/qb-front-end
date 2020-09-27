@@ -2,7 +2,7 @@ import * as React from "react";
 import { Income, EntityStatus } from "../../../redux/state";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import ConfirmationDialog from "../../common/ConfirmationDialog";
 import { Draggable } from "react-beautiful-dnd";
 
 interface Props {

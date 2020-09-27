@@ -1,4 +1,4 @@
-import { History } from "history";
+import { NextRouter } from "next/router";
 import { User } from "../state";
 
 export const REQUEST_LOGIN = "REQUEST_LOGIN";
@@ -17,12 +17,12 @@ export const REQUEST_SET_NEWSLETTER_PROMPT_FINISHED =
 
 interface RequestLoginAction {
   type: typeof REQUEST_LOGIN;
-  history: History<History.PoorMansUnknown>;
+  history: NextRouter;
 }
 
 interface RequestCallbackdAction {
   type: typeof REQUEST_CALLBACK;
-  history: History<History.PoorMansUnknown>;
+  history: NextRouter;
 }
 
 interface RequestCallbackFinishedAction {

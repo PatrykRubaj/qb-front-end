@@ -1,19 +1,15 @@
 import * as authTypes from "../types/authTypes";
-import { History } from "history";
 import { User } from "../state";
+import { NextRouter } from "next/router";
 
-const requestLogin = (
-  history: History<History.PoorMansUnknown>
-): authTypes.AuthActionTypes => {
+const requestLogin = (history: NextRouter): authTypes.AuthActionTypes => {
   return {
     type: authTypes.REQUEST_LOGIN,
     history,
   };
 };
 
-const requestCallback = (
-  history: History<History.PoorMansUnknown>
-): authTypes.AuthActionTypes => {
+const requestCallback = (history: NextRouter): authTypes.AuthActionTypes => {
   return {
     type: authTypes.REQUEST_CALLBACK,
     history,

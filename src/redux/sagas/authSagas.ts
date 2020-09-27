@@ -2,7 +2,7 @@ import { take, put, call, select } from "redux-saga/effects";
 import authActions from "../actions/authActions";
 import * as authTypes from "../types/authTypes";
 import Auth from "../../auth0/Auth";
-import { History } from "history";
+import { NextRouter } from "next/router";
 import {
   User,
   BudgetToGenerate,
@@ -31,17 +31,14 @@ export const saveState = (state: RootState): void => {
   localStorage.setItem("state", JSON.stringify(state));
 };
 
-const redirectToLogin = (
-  history: History<History.PoorMansUnknown>,
-  state: RootState
-): void => {
+const redirectToLogin = (history: NextRouter, state: RootState): void => {
   saveState(state);
   const auth = new Auth(history);
   auth.login();
 };
 
 const handleAuthentication = async (
-  history: History<History.PoorMansUnknown>
+  history: NextRouter
 ): Promise<User | null> => {
   const auth = new Auth(history);
   const user = await auth.handleAuthentication();
@@ -53,6 +50,7 @@ export function* requestLoginSaga() {
   while (true) {
     const { history } = yield take(authTypes.REQUEST_LOGIN);
     const state = yield select(getState);
+    debugger;
     yield call(redirectToLogin, history, state);
   }
 }
@@ -89,9 +87,9 @@ export function* requestSetNewsletterPromptSaga() {
 export function* requestCallbackSaga() {
   while (true) {
     const { history } = yield take(authTypes.REQUEST_CALLBACK);
-    const typedHistory = history as History<History.PoorMansUnknown>;
+    const typedHistory = history as NextRouter;
 
-    if (/access_token|id_token|error/.test(typedHistory.location.hash)) {
+    if (/access_token|id_token|error/.test(typedHistory.asPath)) {
       const user: User = yield call(handleAuthentication, typedHistory);
 
       yield put(authActions.requestCallbackFinished(user));
