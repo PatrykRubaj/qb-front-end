@@ -16,7 +16,7 @@
       "request": "launch",
       "name": "Next: Node",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "debug"],
       "port": 9229,
       "console": "integratedTerminal"
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="35" failures="0" time="3.718">
-  <testsuite name="Income actions" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.246" tests="10">
-    <testcase classname="Income actions should return IncomeActionType when deleteIncome called" name="Income actions should return IncomeActionType when deleteIncome called" time="0.004">
+<testsuites name="jest tests" tests="35" failures="0" time="3.513">
+  <testsuite name="Income actions" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.087" tests="10">
+    <testcase classname="Income actions should return IncomeActionType when deleteIncome called" name="Income actions should return IncomeActionType when deleteIncome called" time="0.002">
     </testcase>
-    <testcase classname="Income actions should return IncomeActionType when deleteIncomeFinished called" name="Income actions should return IncomeActionType when deleteIncomeFinished called" time="0.001">
+    <testcase classname="Income actions should return IncomeActionType when deleteIncomeFinished called" name="Income actions should return IncomeActionType when deleteIncomeFinished called" time="0">
     </testcase>
     <testcase classname="Income actions should return IncomeActionType when addIncome called" name="Income actions should return IncomeActionType when addIncome called" time="0.001">
     </testcase>
@@ -11,7 +11,7 @@
     </testcase>
     <testcase classname="Income actions should return IncomeActionType when editIncome called" name="Income actions should return IncomeActionType when editIncome called" time="0.001">
     </testcase>
-    <testcase classname="Income actions should return IncomeActionType when editIncomeFinished called" name="Income actions should return IncomeActionType when editIncomeFinished called" time="0.001">
+    <testcase classname="Income actions should return IncomeActionType when editIncomeFinished called" name="Income actions should return IncomeActionType when editIncomeFinished called" time="0">
     </testcase>
     <testcase classname="Income actions should return IncomeActionType when setIncomeFormValues called" name="Income actions should return IncomeActionType when setIncomeFormValues called" time="0">
     </testcase>
@@ -22,18 +22,22 @@
     <testcase classname="Income actions should return IncomeActionType when setPromptVisibilityFinished called" name="Income actions should return IncomeActionType when setPromptVisibilityFinished called" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Country reducer" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.219" tests="1">
-    <testcase classname="Country reducer Returns new country when setCountryFinished action is called" name="Country reducer Returns new country when setCountryFinished action is called" time="0.002">
+  <testsuite name="Category reducer" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.126" tests="3">
+    <testcase classname="Category reducer Should return trimmmed name property when adding new category" name="Category reducer Should return trimmmed name property when adding new category" time="0.002">
+    </testcase>
+    <testcase classname="Category reducer Should return trimmmed name property when saving existing category" name="Category reducer Should return trimmmed name property when saving existing category" time="0.001">
+    </testcase>
+    <testcase classname="Category reducer Should return categories in new order id2, id3, id1" name="Category reducer Should return categories in new order id2, id3, id1" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Subcategory reducer" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.292" tests="2">
-    <testcase classname="Subcategory reducer Should return trimmmed name property when adding new category" name="Subcategory reducer Should return trimmmed name property when adding new category" time="0.003">
+  <testsuite name="Subcategory reducer" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.138" tests="2">
+    <testcase classname="Subcategory reducer Should return trimmmed name property when adding new category" name="Subcategory reducer Should return trimmmed name property when adding new category" time="0.002">
     </testcase>
     <testcase classname="Subcategory reducer Should return trimmmed name property when saving existing category" name="Subcategory reducer Should return trimmmed name property when saving existing category" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Income reducer" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.278" tests="9">
-    <testcase classname="Income reducer Should return add income" name="Income reducer Should return add income" time="0.003">
+  <testsuite name="Income reducer" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.165" tests="9">
+    <testcase classname="Income reducer Should return add income" name="Income reducer Should return add income" time="0.002">
     </testcase>
     <testcase classname="Income reducer Should return delete income" name="Income reducer Should return delete income" time="0.001">
     </testcase>
@@ -47,41 +51,37 @@
     </testcase>
     <testcase classname="Income reducer Should return trimmed name property when saving existing income" name="Income reducer Should return trimmed name property when saving existing income" time="0">
     </testcase>
-    <testcase classname="Income reducer Should return incomes in order id2, id1, id3" name="Income reducer Should return incomes in order id2, id1, id3" time="0.001">
+    <testcase classname="Income reducer Should return incomes in order id2, id1, id3" name="Income reducer Should return incomes in order id2, id1, id3" time="0">
     </testcase>
-    <testcase classname="Income reducer Should return incomes in order id2, id3, id1" name="Income reducer Should return incomes in order id2, id3, id1" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="The Field with Error Message component" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.305" tests="2">
-    <testcase classname="The Field with Error Message component Should renders successfuly" name="The Field with Error Message component Should renders successfuly" time="0.019">
-    </testcase>
-    <testcase classname="The Field with Error Message component Should have error bootstrap classes applied when input has error and was touched" name="The Field with Error Message component Should have error bootstrap classes applied when input has error and was touched" time="0.004">
+    <testcase classname="Income reducer Should return incomes in order id2, id3, id1" name="Income reducer Should return incomes in order id2, id3, id1" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Category reducer" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="1.339" tests="3">
-    <testcase classname="Category reducer Should return trimmmed name property when adding new category" name="Category reducer Should return trimmmed name property when adding new category" time="0.002">
-    </testcase>
-    <testcase classname="Category reducer Should return trimmmed name property when saving existing category" name="Category reducer Should return trimmmed name property when saving existing category" time="0.001">
-    </testcase>
-    <testcase classname="Category reducer Should return categories in new order id2, id3, id1" name="Category reducer Should return categories in new order id2, id3, id1" time="0.001">
+  <testsuite name="Country reducer" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.141" tests="1">
+    <testcase classname="Country reducer Returns new country when setCountryFinished action is called" name="Country reducer Returns new country when setCountryFinished action is called" time="0.002">
     </testcase>
   </testsuite>
-  <testsuite name="Income Component" errors="0" failures="0" skipped="0" timestamp="2020-09-13T07:47:03" time="2.081" tests="8">
+  <testsuite name="The Field with Error Message component" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.119" tests="2">
+    <testcase classname="The Field with Error Message component Should renders successfuly" name="The Field with Error Message component Should renders successfuly" time="0.012">
+    </testcase>
+    <testcase classname="The Field with Error Message component Should have error bootstrap classes applied when input has error and was touched" name="The Field with Error Message component Should have error bootstrap classes applied when input has error and was touched" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Income Component" errors="0" failures="0" skipped="0" timestamp="2020-10-01T14:14:26" time="1.924" tests="8">
     <testcase classname="Income Component mapStateToProps should pass incomes and onlyOneEditAllowedPrompt" name="Income Component mapStateToProps should pass incomes and onlyOneEditAllowedPrompt" time="0.002">
     </testcase>
-    <testcase classname="Income Component Test display element Should render div with warnging when there are 0 incomes" name="Income Component Test display element Should render div with warnging when there are 0 incomes" time="0.066">
+    <testcase classname="Income Component Test display element Should render div with warnging when there are 0 incomes" name="Income Component Test display element Should render div with warnging when there are 0 incomes" time="0.068">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM can render the Income Component" name="Income Component Rendered Income Component inside a DOM can render the Income Component" time="0.036">
+    <testcase classname="Income Component Rendered Income Component inside a DOM can render the Income Component" name="Income Component Rendered Income Component inside a DOM can render the Income Component" time="0.04">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM Given 3 incomes in the array, 3 rows should be rendered with correct names and amounts" name="Income Component Rendered Income Component inside a DOM Given 3 incomes in the array, 3 rows should be rendered with correct names and amounts" time="0.034">
+    <testcase classname="Income Component Rendered Income Component inside a DOM Given 3 incomes in the array, 3 rows should be rendered with correct names and amounts" name="Income Component Rendered Income Component inside a DOM Given 3 incomes in the array, 3 rows should be rendered with correct names and amounts" time="0.037">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM Should format amount in PLN if locale is set to PL, eg. 1500,00 zł" name="Income Component Rendered Income Component inside a DOM Should format amount in PLN if locale is set to PL, eg. 1500,00 zł" time="0.022">
+    <testcase classname="Income Component Rendered Income Component inside a DOM Should format amount in PLN if locale is set to PL, eg. 1500,00 zł" name="Income Component Rendered Income Component inside a DOM Should format amount in PLN if locale is set to PL, eg. 1500,00 zł" time="0.023">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM Should format amount in USD if locale set to null" name="Income Component Rendered Income Component inside a DOM Should format amount in USD if locale set to null" time="0.02">
+    <testcase classname="Income Component Rendered Income Component inside a DOM Should format amount in USD if locale set to null" name="Income Component Rendered Income Component inside a DOM Should format amount in USD if locale set to null" time="0.025">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM After clicking edit button once, I should see that it was in fact clicked with income passed if form passes validation" name="Income Component Rendered Income Component inside a DOM After clicking edit button once, I should see that it was in fact clicked with income passed if form passes validation" time="0.041">
+    <testcase classname="Income Component Rendered Income Component inside a DOM After clicking edit button once, I should see that it was in fact clicked with income passed if form passes validation" name="Income Component Rendered Income Component inside a DOM After clicking edit button once, I should see that it was in fact clicked with income passed if form passes validation" time="0.037">
     </testcase>
-    <testcase classname="Income Component Rendered Income Component inside a DOM Shouldn&apos;t fire editAction after clicking edit button when status is EntityStatus.Editing" name="Income Component Rendered Income Component inside a DOM Shouldn&apos;t fire editAction after clicking edit button when status is EntityStatus.Editing" time="0.022">
+    <testcase classname="Income Component Rendered Income Component inside a DOM Shouldn&apos;t fire editAction after clicking edit button when status is EntityStatus.Editing" name="Income Component Rendered Income Component inside a DOM Shouldn&apos;t fire editAction after clicking edit button when status is EntityStatus.Editing" time="0.024">
     </testcase>
   </testsuite>
 </testsuites>
