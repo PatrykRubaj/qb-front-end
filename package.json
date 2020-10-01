@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4001",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev -p 4001",
     "build": "next build",
     "start": "next start -p 80"
   },
@@ -48,6 +48,7 @@
     "@types/redux-devtools": "^3.0.47",
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.7",
+    "cross-env": "^7.0.2",
     "jest": "^26.4.2",
     "react-test-renderer": "^16.13.1",
     "redux-devtools": "^3.7.0",
