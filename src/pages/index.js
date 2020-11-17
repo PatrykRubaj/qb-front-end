@@ -2,6 +2,8 @@ import Head from "next/head";
 import Link from "next/link";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import LockIcon from "@material-ui/icons/Lock";
+import { Button } from "@material-ui/core";
+import TouchAppIcon from "@material-ui/icons/TouchApp";
 
 export default function Home() {
   return (
@@ -19,8 +21,14 @@ export default function Home() {
         <div className="col-lg-7 col-sm">
           <div className="media mt-1 mb-1">
             <Link href="/generator">
-              <a className="btn btn-primary btn-lg btn-block">
-                Go to Spreadsheet Generator
+              <a className="btn btn-secondary btn-lg btn-block">
+                <TouchAppIcon
+                  fontSize="large"
+                  className="mr-2 align-middle"
+                ></TouchAppIcon>
+                <span className="align-middle">
+                  Go to Spreadsheet Generator
+                </span>
               </a>
             </Link>
           </div>
@@ -135,8 +143,14 @@ export default function Home() {
           </div>
           <div className="media mt-3 mb-3">
             <Link href="/generator">
-              <a className="btn btn-primary btn-lg btn-block">
-                Go to Spreadsheet Generator
+              <a className="btn btn-secondary btn-lg btn-block">
+                <TouchAppIcon
+                  fontSize="large"
+                  className="mr-2 align-middle"
+                ></TouchAppIcon>
+                <span className="align-middle">
+                  Go to Spreadsheet Generator
+                </span>
               </a>
             </Link>
           </div>
