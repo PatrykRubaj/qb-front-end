@@ -22,13 +22,7 @@ export default function Home() {
           <div className="media mt-1 mb-1">
             <Link href="/generator">
               <a className="btn btn-secondary btn-lg btn-block">
-                <TouchAppIcon
-                  fontSize="large"
-                  className="mr-2 align-middle"
-                ></TouchAppIcon>
-                <span className="align-middle">
-                  Go to Spreadsheet Generator
-                </span>
+                Go to Spreadsheet Generator
               </a>
             </Link>
           </div>
@@ -144,13 +138,7 @@ export default function Home() {
           <div className="media mt-3 mb-3">
             <Link href="/generator">
               <a className="btn btn-secondary btn-lg btn-block">
-                <TouchAppIcon
-                  fontSize="large"
-                  className="mr-2 align-middle"
-                ></TouchAppIcon>
-                <span className="align-middle">
-                  Go to Spreadsheet Generator
-                </span>
+                Go to Spreadsheet Generator
               </a>
             </Link>
           </div>
