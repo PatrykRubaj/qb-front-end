@@ -19,7 +19,7 @@ namespace QuantumBudget
         }
 
         [FunctionName("SubscribeUserToMailchimp")]
-        public async Task Run([ServiceBusTrigger("mailchimp-subscriptions", Connection = "AzureWebJobsMailchimpServiceQueue")] NewSubscriber myQueueItem, ILogger log)
+        public async Task Run([QueueTrigger("mailchimp-subscriptions", Connection = "AzureWebJobsMailchimpServiceQueue")] NewSubscriber myQueueItem, ILogger log)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {JsonConvert.SerializeObject(myQueueItem)}");
             var mailchimpSubscriptionStatus = await _subscriberService.MailExists(myQueueItem.Email);

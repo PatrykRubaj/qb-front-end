@@ -10,9 +10,6 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using DTO;
 using System.Text;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Services;
 using System.Linq;
 using DTO.BudgetData;
 using Services;
@@ -22,10 +19,10 @@ namespace QuantumBudget.Auth
     public class GetAccessToken
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly BusMessageService _busMessageService;
+        private readonly QueueMessageService _busMessageService;
         private Budget _budget;
 
-        public GetAccessToken(IHttpClientFactory clientFactory, BusMessageService busMessageService)
+        public GetAccessToken(IHttpClientFactory clientFactory, QueueMessageService busMessageService)
         {
             _clientFactory = clientFactory;
             _busMessageService = busMessageService;
@@ -37,7 +34,6 @@ namespace QuantumBudget.Auth
             ILogger log)
         {
             var content = await new StreamReader(req.Body).ReadToEndAsync();
-
             bool gotValue = req.Headers.TryGetValue("Authorization", out var accessToken);
 
             if (accessToken.FirstOrDefault() == null)
