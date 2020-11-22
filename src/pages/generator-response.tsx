@@ -39,6 +39,7 @@ export const GeneratorResponse: React.FC<Props> = ({
               href={spreadsheetUrl}
               style={{ display: "block" }}
               className="mt-2 btn btn-light btn-lg"
+              target="_blank"
             >
               <div style={{ textAlign: "center" }}>
                 <p>
