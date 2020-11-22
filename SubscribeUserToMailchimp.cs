@@ -28,9 +28,13 @@ namespace QuantumBudget
             {
                 await _subscriberService.Add(myQueueItem);
             }
-            else if (mailchimpSubscriptionStatus == SubscriberStatus.Archived || mailchimpSubscriptionStatus == SubscriberStatus.Unsubscribed || mailchimpSubscriptionStatus == SubscriberStatus.Pending)
+            else if (mailchimpSubscriptionStatus == SubscriberStatus.Archived || mailchimpSubscriptionStatus == SubscriberStatus.Unsubscribed)
             {
                 await _subscriberService.ReconfirmSubscription(myQueueItem);
+            }
+            else if (mailchimpSubscriptionStatus == SubscriberStatus.Pending)
+            {
+                await _subscriberService.ReconfirmPending(myQueueItem);
             }
         }
     }

@@ -53,6 +53,32 @@ namespace Services.Mailchimp
             _log.LogInformation($"Mailchimp update response: {responseAsString}");
         }
 
+        public async Task ReconfirmPending(NewSubscriber newSubscriber)
+        {
+            string emailHash = EmailHash(newSubscriber.Email);
+            var updateUrl = $"{MAILCHIMP_API_URL}/lists/{MAILCHIMP_AUDIANCE_ID}/members/{emailHash}";
+
+            var updatedMember = new Member()
+            {
+                Status = "unsubscribed",
+                Tags = null,
+            };
+
+            var json = JsonConvert.SerializeObject(updatedMember, Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+            });
+
+            var updatedMemberJson = new StringContent(json, Encoding.UTF8, "application/json");
+            _log.LogInformation($"JSON sent with update: {json}");
+            var client = GetAuthenticatedClientInstance();
+            using var httpResponse = await client.PatchAsync(updateUrl, updatedMemberJson);
+            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
+            _log.LogInformation($"Mailchimp update response: {responseAsString}");
+
+            await ReconfirmSubscription(newSubscriber);
+        }
+
         public async Task<SubscriberStatus> MailExists(string email)
         {
             string emailHash = EmailHash(email);
