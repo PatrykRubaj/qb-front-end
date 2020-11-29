@@ -85,7 +85,9 @@ export const initialState: RootState = {
       imageUrl: "",
       email: "",
       emailVerified: false,
+      expiresAt: 0,
     },
+    redirectUrl: "",
   },
   month: new Date().getMonth() + 1,
   budgetSection: {

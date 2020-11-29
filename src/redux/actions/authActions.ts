@@ -77,6 +77,24 @@ const requestSetNewsletterPromptFinished = (
   };
 };
 
+const requestSetRedirectUrl = (
+  redirectUrl: string
+): authTypes.AuthActionTypes => {
+  return {
+    type: authTypes.REQUEST_SET_REDIRECT_URL,
+    redirectUrl,
+  };
+};
+
+const requestSetRedirectUrlFinished = (
+  redirectUrl: string
+): authTypes.AuthActionTypes => {
+  return {
+    type: authTypes.REQUEST_SET_REDIRECT_URL_FINISHED,
+    redirectUrl,
+  };
+};
+
 export default {
   requestLogin,
   requestCallback,
@@ -87,4 +105,6 @@ export default {
   requestSetPrivacyPolicyFinished,
   requestSetNewsletterPrompt,
   requestSetNewsletterPromptFinished,
+  requestSetRedirectUrl,
+  requestSetRedirectUrlFinished,
 };

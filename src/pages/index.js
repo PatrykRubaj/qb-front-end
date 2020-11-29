@@ -4,6 +4,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import LockIcon from "@material-ui/icons/Lock";
 import { Button } from "@material-ui/core";
 import TouchAppIcon from "@material-ui/icons/TouchApp";
+import { Route } from "../redux/state";
 
 export default function Home() {
   return (
@@ -20,7 +21,7 @@ export default function Home() {
       <div className="row pt-1 pb-2 justify-content-center">
         <div className="col-lg-7 col-sm">
           <div className="media mt-1 mb-1">
-            <Link href="/generator">
+            <Link href={Route.Generator}>
               <a className="btn btn-secondary btn-lg btn-block">
                 Go to Spreadsheet Generator
               </a>
@@ -136,7 +137,7 @@ export default function Home() {
             />
           </div>
           <div className="media mt-3 mb-3">
-            <Link href="/generator">
+            <Link href={Route.Generator}>
               <a className="btn btn-secondary btn-lg btn-block">
                 Go to Spreadsheet Generator
               </a>

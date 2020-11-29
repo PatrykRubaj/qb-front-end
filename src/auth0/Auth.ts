@@ -1,6 +1,6 @@
 import auth0, { WebAuth } from "auth0-js";
 import { NextRouter } from "next/router";
-import { User } from "../redux/state";
+import { Route, User } from "../redux/state";
 
 export default class Auth {
   private history: NextRouter;
@@ -35,25 +35,24 @@ export default class Auth {
         }
 
         if (authResult && authResult.accessToken && authResult.idToken) {
-          // this.history.push("/");
+          this.auth0.client.userInfo(
+            authResult.accessToken,
+            function (err, userInfo) {
+              const user: User = {
+                accessToken: authResult.accessToken || "",
+                idToken: authResult.idToken || "",
+                givenName: userInfo.given_name || "",
+                imageUrl: userInfo.picture,
+                email: userInfo.email || "",
+                emailVerified: userInfo.email_verified || false,
+                expiresAt: authResult.expiresIn * 1000 + new Date().getTime(),
+              };
 
-          this.auth0.client.userInfo(authResult.accessToken, function (
-            err,
-            userInfo
-          ) {
-            const user: User = {
-              accessToken: authResult.accessToken || "",
-              idToken: authResult.idToken || "",
-              givenName: userInfo.given_name || "",
-              imageUrl: userInfo.picture,
-              email: userInfo.email || "",
-              emailVerified: userInfo.email_verified || false,
-            };
-
-            resolve(user);
-          });
+              resolve(user);
+            }
+          );
         } else {
-          this.history.push("/");
+          this.history.push(Route.HomePage);
         }
       });
     });

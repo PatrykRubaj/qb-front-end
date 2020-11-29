@@ -3,28 +3,12 @@ import authActions from "../actions/authActions";
 import * as authTypes from "../types/authTypes";
 import Auth from "../../auth0/Auth";
 import { NextRouter } from "next/router";
-import {
-  User,
-  BudgetToGenerate,
-  Country,
-  Income,
-  Category,
-  Subcategory,
-} from "../state";
+import { User, Route } from "../state";
 import budgetActions from "../actions/budgetActions";
 import { RootState } from "../reducers";
+import { getRedirectUrl } from "./budgetSagas";
 
 export const getState = (state: RootState): RootState => state;
-export const getCountry = (state: RootState): Country | null => state.country;
-export const getIncomes = (state: RootState): Array<Income> =>
-  state.incomeSection.incomes;
-export const getCategories = (state: RootState): Array<Category> =>
-  state.categoriesSection.categories;
-export const getSubcategories = (state: RootState): Array<Subcategory> =>
-  state.subcategorySection.subcategories;
-export const getMonth = (state: RootState): number => state.month;
-export const getNewsletterAgreement = (state: RootState): boolean =>
-  state.userSection.agreedToNewsletter;
 
 export const saveState = (state: RootState): void => {
   console.log("Saving to local storage");
@@ -84,27 +68,30 @@ export function* requestSetNewsletterPromptSaga() {
   }
 }
 
+export function* requestSetRedirectUrlSaga() {
+  while (true) {
+    const { redirectUrl } = yield take(authTypes.REQUEST_SET_REDIRECT_URL);
+    yield put(authActions.requestSetRedirectUrlFinished(redirectUrl));
+  }
+}
+
 export function* requestCallbackSaga() {
   while (true) {
     const { history } = yield take(authTypes.REQUEST_CALLBACK);
     const typedHistory = history as NextRouter;
-
+    console.log("Respone URL: ", typedHistory.asPath);
     if (/access_token|id_token|error/.test(typedHistory.asPath)) {
       const user: User = yield call(handleAuthentication, typedHistory);
 
       yield put(authActions.requestCallbackFinished(user));
-      const month = yield select(getMonth);
-      const budget: BudgetToGenerate = {
-        country: yield select(getCountry),
-        incomes: yield select(getIncomes),
-        categories: yield select(getCategories),
-        subcategories: yield select(getSubcategories),
-        month: `${new Date().getFullYear()}-${month}-01`,
-        agreedToNewsletter: yield select(getNewsletterAgreement),
-      };
-      yield put(
-        budgetActions.requestBudgetGeneration(typedHistory, user, budget)
-      );
+
+      const redirectUrl = (yield select(getRedirectUrl)) as string;
+      if (Route.GeneratorResponse === redirectUrl) {
+        yield put(budgetActions.requestBudgetSave(typedHistory));
+      } else {
+        typedHistory.push(Route.HomePage);
+        // typedHistory.push(redirectUrl);
+      }
     }
   }
 }
@@ -115,4 +102,5 @@ export default [
   requestSetNewsletterSaga,
   requestSetPrivacyPolicySaga,
   requestSetNewsletterPromptSaga,
+  requestSetRedirectUrlSaga,
 ];

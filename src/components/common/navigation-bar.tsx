@@ -1,22 +1,23 @@
 import Link from "next/link";
 import * as React from "react";
+import { connect } from "react-redux";
+import { Route } from "../../redux/state";
 // import { NavLink } from "react-router-dom";
-// import { connect } from "react-redux";
-// import { User } from "../SpreadsheetGeneration/state";
-// import { RootState } from "../redux/reducers";
+import { User } from "../../redux/state";
+import { RootState } from "../../redux/reducers";
 
-// interface StateProps {
-//   user: User;
-// }
+interface StateProps {
+  user: User;
+}
 
-// type Props = StateProps;
+type Props = StateProps;
 
-const navigationBar = () => (
+const navigationBar: React.FC<Props> = ({ user }: Props) => (
   <nav
-    className="navbar navbar-expand-sm navbar-dark justify-content-between"
+    className="navbar navbar-expand navbar-dark justify-content-between"
     style={{ backgroundColor: "#5b7191" }}
   >
-    <Link href="/">
+    <Link href={Route.HomePage}>
       <a className="navbar-brand">
         <img
           src="/images/logo.png"
@@ -45,13 +46,20 @@ const navigationBar = () => (
         </span>
       </a>
     </Link>
-    <div className="">
-      <ul className="navbar-nav d-inline-block mr-2">
+    <div className="collapse navbar-collapse">
+      <ul className="navbar-nav">
         <li className="nav-item">
-          <Link href="/generator">
+          <Link href={Route.Generator}>
             <a className="nav-link">Generator</a>
           </Link>
         </li>
+        {user.expiresAt < new Date().getTime() ? (
+          <li className="nav-item">
+            <Link href={Route.Login}>
+              <a className="nav-link">Login</a>
+            </Link>
+          </li>
+        ) : null}
       </ul>
       {/* {props.user.givenName.length > 0 ? (
         <span className="navbar-text">Hi {props.user.givenName}</span>
@@ -60,12 +68,10 @@ const navigationBar = () => (
   </nav>
 );
 
-export default navigationBar;
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    user: state.userSection.user,
+  };
+};
 
-// const mapStateToProps = (state: RootState): StateProps => {
-//   return {
-//     user: state.userSection.user,
-//   };
-// };
-
-// export default connect(mapStateToProps)(navigationBar);
+export default connect(mapStateToProps)(navigationBar);

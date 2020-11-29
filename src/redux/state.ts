@@ -4,6 +4,16 @@ export enum EntityStatus {
   Editing,
 }
 
+export enum Route {
+  HomePage = "/",
+  Generator = "/generator",
+  GeneratorResponse = "/generator-response",
+  Login = "/login",
+  PrivacyPolicy = "/privacy",
+  Callback = "/callback",
+  Loading = "/loading",
+}
+
 export interface Country {
   name: string;
   currency: string;
@@ -58,6 +68,7 @@ export interface User {
   imageUrl: string;
   email: string;
   emailVerified: boolean;
+  expiresAt: Number;
 }
 
 export interface UserSection {
@@ -66,6 +77,7 @@ export interface UserSection {
   agreedToPrivacyPolicy: boolean;
   showNewsletterPrompt: boolean;
   isLoading: boolean;
+  redirectUrl: string;
 }
 
 export interface BudgetToGenerate {

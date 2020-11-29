@@ -278,10 +278,15 @@ const PrivacyPolicy: React.FC = () => {
             <a
               href="https://security.google.com/settings/security/permissions"
               rel="nofollow"
+              style={{
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                display: "block",
+              }}
             >
               https://security.google.com/settings/security/permissions
             </a>
-            .
           </p>
           <p>
             Scopes requested from You when using Google Sign In allow me to:

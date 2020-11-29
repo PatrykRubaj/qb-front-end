@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { NextRouter, useRouter } from "next/router";
-import { RootState } from "../redux/reducers";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import authActions from "../redux/actions/authActions";

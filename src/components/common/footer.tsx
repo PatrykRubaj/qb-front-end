@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Route } from "../../redux/state";
 
 const footer = () => (
   <footer className="pt-4 my-md-5 pt-md-5 border-top mt-4">
@@ -10,14 +11,14 @@ const footer = () => (
         <h5>Legal</h5>
         <ul className="list-unstyled text-small">
           <li>
-            <Link href="/privacy">
+            <Link href={Route.PrivacyPolicy}>
               <a className="text-muted" rel="nofollow">
                 Privacy policy
               </a>
             </Link>
           </li>
           <li>
-            <Link href="/privacy#cookie-policy">
+            <Link href={`${Route.PrivacyPolicy}#cookie-policy`}>
               <a className="text-muted" rel="nofollow">
                 Cookie policy
               </a>
