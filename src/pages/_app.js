@@ -15,11 +15,16 @@ function MyApp({ Component, pageProps }) {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=yes"
         />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-176564324-1"
-        ></script>
-        <script src="/ganalytics.js"></script>
+        {process.env === "production" ? (
+          <>
+            <script
+              async
+              src="https://www.googletagmanager.com/gtag/js?id=UA-176564324-1"
+            ></script>
+            <script src="/ganalytics.js"></script>
+          </>
+        ) : null}
+
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"

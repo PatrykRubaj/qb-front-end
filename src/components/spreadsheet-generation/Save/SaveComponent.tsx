@@ -12,8 +12,11 @@ import { AuthActionTypes } from "../../../redux/types/authTypes";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import NewsletterComponent from "./NewsletterComponent";
+import { Route } from "../../../redux/state";
+import { BudgetActionTypes } from "../../../redux/types/budgetTypes";
+import budgetActions from "../../../redux/actions/budgetActions";
 
 interface StateProps {
   agreedToNewsletter: boolean;
@@ -29,17 +32,20 @@ interface DispatchProps {
   setDisplayNewsletterPrompt: (
     showNewsletterPrompt: boolean
   ) => AuthActionTypes;
+  setRedirectUrl: (redirectUrl: string) => AuthActionTypes;
+  saveBudget: (history: NextRouter) => BudgetActionTypes;
 }
 
 type Props = StateProps & DispatchProps;
 
 const SaveComponent: React.FC<Props> = ({
-  agreedToNewsletter,
   agreedToPrivacyPolicy,
   showNewsletterPrompt,
   setNewsletterAgreement,
   setPrivacyPolicyAgreement,
   setDisplayNewsletterPrompt,
+  setRedirectUrl,
+  saveBudget,
 }: Props) => {
   const [
     displayPrivacyRequiredInfo,
@@ -67,7 +73,9 @@ const SaveComponent: React.FC<Props> = ({
   const onSave = (agreed: boolean): void => {
     setNewsletterAgreement(agreed);
     setDisplayNewsletterPrompt(false);
-    router.push("/login");
+    setRedirectUrl(Route.GeneratorResponse);
+    saveBudget(router);
+    // router.push(Route.Login);
   };
 
   const closingNewsletterPrompt = (): void => {
@@ -112,7 +120,7 @@ const SaveComponent: React.FC<Props> = ({
               />
               <FormHelperText>
                 You must agree to{" "}
-                <Link href="/privacy">
+                <Link href={Route.PrivacyPolicy}>
                   <a rel="nofollow">privacy policy</a>
                 </Link>{" "}
                 before submitting.
@@ -157,6 +165,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       showNewsletterPrompt: boolean
     ): AuthActionTypes =>
       dispatch(authActions.requestSetNewsletterPrompt(showNewsletterPrompt)),
+    setRedirectUrl: (redirectUrl: string): AuthActionTypes =>
+      dispatch(authActions.requestSetRedirectUrl(redirectUrl)),
+    saveBudget: (history: NextRouter): BudgetActionTypes =>
+      dispatch(budgetActions.requestBudgetSave(history)),
   };
 };
 

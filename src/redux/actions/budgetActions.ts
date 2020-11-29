@@ -24,7 +24,17 @@ const requestBudgetGenerationFinished = (
   };
 };
 
+const requestBudgetSave = (
+  history: NextRouter
+): budgetTypes.BudgetActionTypes => {
+  return {
+    type: budgetTypes.REQUEST_BUDGET_SAVE,
+    history,
+  };
+};
+
 export default {
   requestBudgetGeneration,
   requestBudgetGenerationFinished,
+  requestBudgetSave,
 };

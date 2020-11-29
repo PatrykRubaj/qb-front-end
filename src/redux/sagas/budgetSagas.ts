@@ -1,10 +1,35 @@
 import { take, put, call, select } from "redux-saga/effects";
 import budgetActions from "../actions/budgetActions";
 import * as budgetTypes from "../types/budgetTypes";
-import { User, BudgetToGenerate, BudgetResponse } from "../state";
+import {
+  User,
+  BudgetToGenerate,
+  Country,
+  Income,
+  Category,
+  Subcategory,
+  Route,
+  BudgetResponse,
+} from "../state";
 import axios from "axios";
 import { getState } from "./authSagas";
 import { RootState } from "../reducers";
+import authActions from "../actions/authActions";
+import { NextRouter } from "next/router";
+
+export const getCountry = (state: RootState): Country | null => state.country;
+export const getIncomes = (state: RootState): Array<Income> =>
+  state.incomeSection.incomes;
+export const getCategories = (state: RootState): Array<Category> =>
+  state.categoriesSection.categories;
+export const getSubcategories = (state: RootState): Array<Subcategory> =>
+  state.subcategorySection.subcategories;
+export const getMonth = (state: RootState): number => state.month;
+export const getNewsletterAgreement = (state: RootState): boolean =>
+  state.userSection.agreedToNewsletter;
+export const getRedirectUrl = (state: RootState): string =>
+  state.userSection.redirectUrl;
+export const getUser = (state: RootState): User => state.userSection.user;
 
 const saveState = (state: RootState): void => {
   const modifiedState: RootState = {
@@ -15,6 +40,7 @@ const saveState = (state: RootState): void => {
       showNewsletterPrompt: false,
       isLoading: false,
       user: { ...state.userSection.user },
+      redirectUrl: "",
     },
   };
   console.log("Saving to local storage after budget generated");
@@ -90,12 +116,43 @@ export function* generate() {
     );
     console.log(history);
     console.log("Generate saga run ", budgetResponse);
-    history.push("/generator-response");
+    debugger;
+    history.push(Route.GeneratorResponse);
     yield put(budgetActions.requestBudgetGenerationFinished(budgetResponse));
+    yield put(authActions.requestSetRedirectUrlFinished(Route.HomePage));
 
     const state = yield select(getState);
     yield call(saveState, state);
   }
 }
 
-export default [generate];
+export function* budgetSave() {
+  while (true) {
+    const { history } = yield take(budgetTypes.REQUEST_BUDGET_SAVE);
+    const typedHistory = history as NextRouter;
+    typedHistory.push(Route.Loading);
+    const user: User = yield select(getUser);
+
+    if (user && user.accessToken && user.expiresAt > new Date().getTime()) {
+      const month = yield select(getMonth);
+
+      const budget: BudgetToGenerate = {
+        country: yield select(getCountry),
+        incomes: yield select(getIncomes),
+        categories: yield select(getCategories),
+        subcategories: yield select(getSubcategories),
+        month: `${new Date().getFullYear()}-${month}-01`,
+        agreedToNewsletter: yield select(getNewsletterAgreement),
+      };
+
+      yield put(
+        budgetActions.requestBudgetGeneration(typedHistory, user, budget)
+      );
+    } else {
+      // yield put(authActions.requestCallback(typedHistory));
+      typedHistory.push(Route.Login);
+    }
+  }
+}
+
+export default [generate, budgetSave];

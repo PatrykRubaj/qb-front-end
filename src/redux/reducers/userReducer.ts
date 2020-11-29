@@ -29,6 +29,11 @@ export default function userReducer(
         ...userSection,
         showNewsletterPrompt: action.showNewsletterPrompt,
       };
+    case types.REQUEST_SET_REDIRECT_URL_FINISHED:
+      return {
+        ...userSection,
+        redirectUrl: action.redirectUrl,
+      };
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
       return {
         ...initialState.userSection,

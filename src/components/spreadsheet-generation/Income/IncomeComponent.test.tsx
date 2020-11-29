@@ -63,10 +63,12 @@ describe("Income Component", () => {
             givenName: "",
             idToken: "",
             imageUrl: "",
+            expiresAt: 0,
           },
           agreedToNewsletter: false,
           agreedToPrivacyPolicy: false,
           showNewsletterPrompt: false,
+          redirectUrl: "",
         },
         budgetSection: {
           response: null,

@@ -14,6 +14,9 @@ export const REQUEST_SET_PRIVACY_POLICY_FINISHED =
 export const REQUEST_SET_NEWSLETTER_PROMPT = "REQUEST_SET_NEWSLETTER_PROMPT";
 export const REQUEST_SET_NEWSLETTER_PROMPT_FINISHED =
   "REQUEST_SET_NEWSLETTER_PROMPT_FINISHED";
+export const REQUEST_SET_REDIRECT_URL = "REQUEST_SET_REDIRECT_URL";
+export const REQUEST_SET_REDIRECT_URL_FINISHED =
+  "REQUEST_SET_REDIRECT_URL_FINISHED";
 
 interface RequestLoginAction {
   type: typeof REQUEST_LOGIN;
@@ -58,6 +61,16 @@ interface RequestSetNewsletterPromptFinishedAction {
   showNewsletterPrompt: boolean;
 }
 
+interface RequestSetRedirectUrlAction {
+  type: typeof REQUEST_SET_REDIRECT_URL;
+  redirectUrl: string;
+}
+
+interface RequestSetRedirectUrlActionFinished {
+  type: typeof REQUEST_SET_REDIRECT_URL_FINISHED;
+  redirectUrl: string;
+}
+
 export type AuthActionTypes =
   | RequestLoginAction
   | RequestCallbackdAction
@@ -67,4 +80,6 @@ export type AuthActionTypes =
   | RequestSetPrivacyPolicyAction
   | RequestSetPrivacyPolicyFinishedAction
   | RequestSetNewsletterPromptAction
-  | RequestSetNewsletterPromptFinishedAction;
+  | RequestSetNewsletterPromptFinishedAction
+  | RequestSetRedirectUrlAction
+  | RequestSetRedirectUrlActionFinished;
