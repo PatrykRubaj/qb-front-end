@@ -20,7 +20,7 @@ stages:
     steps:
     - task: AzureKeyVault@1
       inputs:
-        azureSubscription: 'Azure subscription 1 (6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
+        azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
         KeyVaultName: 'secrets-and-certs'
         SecretsFilter: '*'
 - stage: Build
