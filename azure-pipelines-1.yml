@@ -12,9 +12,11 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Gather Information
+- stage: Gather
+  displayName: Gather Information
   jobs:
   - job:
+    displayName: Read secrets
     steps:
     - task: AzureKeyVault@1
       inputs:
