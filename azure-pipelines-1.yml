@@ -12,17 +12,6 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Gather
-  displayName: Gather Information
-  jobs:
-  - job:
-    displayName: Read secrets
-    steps:
-    - task: AzureKeyVault@1
-      inputs:
-        azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
-        KeyVaultName: 'secrets-and-certs'
-        SecretsFilter: '*'
 - stage: Build
   displayName: Build image
   jobs:  
@@ -39,12 +28,7 @@ stages:
           RunAsPreJob: true
       - task: Docker@2
         inputs:
-          containerRegistry: 'Patryk Rubaj Docker Hub'
-          command: 'login'
-          arguments: '--username patrykrubaj --password $(DockerHubAccessToken)'
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'Patryk Rubaj Docker Hub'
+          containerRegistry: 'Dockerhub Key'
           repository: 'patrykrubaj/quantumbudget-frontend'
           command: 'buildAndPush'
           Dockerfile: '**/Dockerfile'
