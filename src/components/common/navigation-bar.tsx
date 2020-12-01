@@ -5,6 +5,7 @@ import { Route } from "../../redux/state";
 // import { NavLink } from "react-router-dom";
 import { User } from "../../redux/state";
 import { RootState } from "../../redux/reducers";
+import ProtectedComponent from "../../auth0/ProtectedComponent";
 
 interface StateProps {
   user: User;
@@ -53,13 +54,16 @@ const navigationBar: React.FC<Props> = ({ user }: Props) => (
             <a className="nav-link">Generator</a>
           </Link>
         </li>
-        {user.expiresAt < new Date().getTime() ? (
-          <li className="nav-item">
-            <Link href={Route.Login}>
-              <a className="nav-link">Login</a>
-            </Link>
-          </li>
-        ) : null}
+        <ProtectedComponent
+          expiresAt={user.expiresAt}
+          notAuthenticated={
+            <li className="nav-item">
+              <Link href={Route.Login}>
+                <a className="nav-link">Login</a>
+              </Link>
+            </li>
+          }
+        />
       </ul>
       {/* {props.user.givenName.length > 0 ? (
         <span className="navbar-text">Hi {props.user.givenName}</span>
