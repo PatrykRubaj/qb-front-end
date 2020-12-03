@@ -1,0 +1,9 @@
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\bin\Debug\netstandard2.1\Functions.Model.deps.json
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\bin\Debug\netstandard2.1\Functions.Model.dll
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\bin\Debug\netstandard2.1\Functions.Model.pdb
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.csprojAssemblyReference.cache
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.AssemblyInfoInputs.cache
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.AssemblyInfo.cs
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.csproj.CoreCompileInputs.cache
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.dll
+C:\Business\Clients\Myself\home-budget-mvp\ServerlessBackend\src\Functions.Model\obj\Debug\netstandard2.1\Functions.Model.pdb

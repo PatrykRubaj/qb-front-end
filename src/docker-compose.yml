@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  functions-api:
+    build: .
+    ports:
+      - "7071:7071"
+    volumes:
+      - logvolume01:/var/log
+    links:
+      - azurite
+      - mongodb
+    environment:
+      AZURE_FUNCTIONS_ENVIRONMENT: "Development"
+      AzureWebJobsStorage: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=https://azurite:10000/devstoreaccount1;QueueEndpoint=https://azurite:10001/devstoreaccount1;"
+      AzureWebJobsMailchimpServiceQueue: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=https://azurite:10001/devstoreaccount1;"
+      MongoDBConnectionString: "mongodb://localhost:5001"
+  azurite:
+    build: ./Functions.API/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+  mongodb:
+    build: ./Functions.API/mongodb
+    restart: always
+    ports:
+      - "5001:27017"
+    environment:
+      MONGO_INITDB_DATABASE: QuantumBudget
+volumes:
+  logvolume01: {}
