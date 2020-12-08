@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using Functions.Model.Models;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace Services
 {
@@ -15,18 +19,39 @@ namespace Services
     public class BudgetsService : IBudgetsService
     {
         private readonly IMongoCollection<Budget> _budgets;
+        private readonly ILogger<BudgetsService> _log;
+        private readonly IBudgetsDatabaseSettings _settings;
 
-        public BudgetsService(IBudgetsDatabaseSettings settings)
+        public BudgetsService(IBudgetsDatabaseSettings settings, ILogger<BudgetsService> log)
         {
-            var client = new MongoClient(settings.MongoDBConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+            _log = log;
+            _settings = settings;
 
-            _budgets = database.GetCollection<Budget>(settings.BudgetsCollectionName);
+            try
+            {
+                MongoClientSettings otherSettings = MongoClientSettings.FromUrl(
+                    new MongoUrl(_settings.MongoDBConnectionString)
+                );
+                
+                otherSettings.SslSettings = 
+                    new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+                
+                var client = new MongoClient(otherSettings);
+                var database = client.GetDatabase(_settings.DatabaseName);
+
+                _budgets = database.GetCollection<Budget>(_settings.BudgetsCollectionName);
+            }
+            catch (Exception e)
+            {
+                _log.LogInformation($"Exploded: {JsonConvert.SerializeObject(_settings)}");
+                throw;
+            }
         }
 
         public async Task<Budget> GetByUserId(string userId)
         {
-            var budgets = await _budgets.FindAsync<Budget>(x => x.UserId == userId);
+            _log.LogInformation($"BudgetsService ctor: DatabaseName: {_settings.DatabaseName}, BudgetsCollectionName: {_settings.BudgetsCollectionName}, connection string: {_settings.MongoDBConnectionString}");
+            var budgets = await _budgets.FindAsync(x => x.UserId == userId);
             return await budgets?.FirstOrDefaultAsync();
         }
 
@@ -41,6 +66,7 @@ namespace Services
 
             if (retrived != null)
             {
+                budget.Id = retrived.Id;
                 await _budgets.ReplaceOneAsync<Budget>(x => x.Id == retrived.Id, budget);
             }
             else

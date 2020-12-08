@@ -20,10 +20,12 @@ namespace Functions.API
             builder.Services.AddLogging();
 
             builder.Services.AddScoped<SubscriberService>();
-            builder.Services.AddSingleton<QueueMessageService>();
+            builder.Services.AddScoped<TokenValidationService>();
+            builder.Services.AddScoped<AzureADJwtBearerValidation>();
+            builder.Services.AddSingleton<QueueMessageService>(provider => new QueueMessageService());
             builder.Services.AddSingleton<IBudgetsDatabaseSettings>(GetMongoDBSettings());
             builder.Services.AddSingleton<IBudgetsService, BudgetsService>();
-
+            
             CreateQueuesForDevelopment();
         }
 
