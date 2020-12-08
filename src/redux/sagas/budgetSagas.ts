@@ -198,7 +198,9 @@ export function* budgetRead() {
     const readState = yield call(readBudgetCall, user);
     console.log("budgetRead saga", readState);
 
-    yield put(budgetActions.requestBudgetReadFinished(readState));
+    if (readState != null) {
+      yield put(budgetActions.requestBudgetReadFinished(readState));
+    }
   }
 }
 
