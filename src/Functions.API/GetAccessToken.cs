@@ -77,9 +77,8 @@ namespace Functions.API.Auth
             var auth0User = await GetAuth0User(userInfo.UserId, managementApiToken.AccessToken);
             log.LogInformation($"Auth0User: {JsonConvert.SerializeObject(auth0User)}");
 
-            var googleSpreadsheet = GetRequestJsonForGoogle(log);
-
             CleanUpTheData(_budget);
+            var googleSpreadsheet = GetRequestJsonForGoogle(log);
             string googleRespone = await CreateSpreadsheet(auth0User, googleSpreadsheet);
 
             return new OkObjectResult(googleRespone);
