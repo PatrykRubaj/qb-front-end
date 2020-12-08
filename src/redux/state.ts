@@ -1,7 +1,7 @@
 export enum EntityStatus {
-  New,
-  Saved,
-  Editing,
+  New = 0,
+  Saved = 1,
+  Editing = 2,
 }
 
 export enum Route {
@@ -62,6 +62,7 @@ export interface SubcategorySection {
 }
 
 export interface User {
+  userId: string;
   idToken: string;
   accessToken: string;
   givenName: string;
@@ -101,4 +102,11 @@ export interface ErrorResponse {
 
 export interface BudgetSection {
   response: BudgetResponse | null;
+}
+
+export interface ReadState {
+  incomes: Income[];
+  categories: Category[];
+  subcategories: Subcategory[];
+  country: Country;
 }

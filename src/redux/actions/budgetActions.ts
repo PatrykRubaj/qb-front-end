@@ -1,6 +1,6 @@
 import * as budgetTypes from "../types/budgetTypes";
 import { NextRouter } from "next/router";
-import { BudgetToGenerate, User, BudgetResponse } from "../state";
+import { BudgetToGenerate, User, BudgetResponse, ReadState } from "../state";
 
 const requestBudgetGeneration = (
   history: NextRouter,
@@ -33,8 +33,25 @@ const requestBudgetSave = (
   };
 };
 
+const requestBudgetRead = (): budgetTypes.BudgetActionTypes => {
+  return {
+    type: budgetTypes.REQUEST_BUDGET_READ,
+  };
+};
+
+const requestBudgetReadFinished = (
+  payload: ReadState
+): budgetTypes.BudgetActionTypes => {
+  return {
+    type: budgetTypes.REQUEST_BUDGET_READ_FINISHED,
+    payload,
+  };
+};
+
 export default {
   requestBudgetGeneration,
   requestBudgetGenerationFinished,
   requestBudgetSave,
+  requestBudgetRead,
+  requestBudgetReadFinished,
 };

@@ -10,12 +10,14 @@ import {
   Subcategory,
   Route,
   BudgetResponse,
+  ReadState,
 } from "../state";
 import axios from "axios";
 import { getState } from "./authSagas";
 import { RootState } from "../reducers";
 import authActions from "../actions/authActions";
 import { NextRouter } from "next/router";
+import { initialState } from "../initialsState";
 
 export const getCountry = (state: RootState): Country | null => state.country;
 export const getIncomes = (state: RootState): Array<Income> =>
@@ -102,6 +104,41 @@ export const apiCall = async (
   return responseToReturn;
 };
 
+export const readBudgetCall = async (user: User): Promise<ReadState | null> => {
+  let responseToReturn: ReadState | null = null;
+  const url = `${
+    process.env.NEXT_PUBLIC_AZURE_FUNCTIONS_API
+  }/api/GetBudget/${encodeURI(user.userId)}`;
+  console.log("readBudgetCall GET: ", url);
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    });
+    console.log("Response", response);
+
+    if (response.data?.error != null) {
+      return null;
+    } else {
+      const returnedResponse = response.data as any;
+
+      responseToReturn = {
+        categories: returnedResponse.categories,
+        subcategories: returnedResponse.subcategories,
+        incomes: returnedResponse.incomes,
+        country: returnedResponse.country,
+      };
+    }
+  } catch (ex) {
+    console.log("Exception", ex);
+  }
+
+  console.log("Returned response: ", responseToReturn);
+  return responseToReturn;
+};
+
 export function* generate() {
   while (true) {
     const { history, budget, user } = yield take(
@@ -116,7 +153,6 @@ export function* generate() {
     );
     console.log(history);
     console.log("Generate saga run ", budgetResponse);
-    debugger;
     history.push(Route.GeneratorResponse);
     yield put(budgetActions.requestBudgetGenerationFinished(budgetResponse));
     yield put(authActions.requestSetRedirectUrlFinished(Route.HomePage));
@@ -155,4 +191,15 @@ export function* budgetSave() {
   }
 }
 
-export default [generate, budgetSave];
+export function* budgetRead() {
+  while (true) {
+    yield take(budgetTypes.REQUEST_BUDGET_READ);
+    const user: User = yield select(getUser);
+    const readState = yield call(readBudgetCall, user);
+    console.log("budgetRead saga", readState);
+
+    yield put(budgetActions.requestBudgetReadFinished(readState));
+  }
+}
+
+export default [generate, budgetSave, budgetRead];

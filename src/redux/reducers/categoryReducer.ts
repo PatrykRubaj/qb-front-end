@@ -4,10 +4,14 @@ import { initialState } from "../initialsState";
 import * as types from "../types/categoryTypes";
 import arrayMove from "array-move";
 import * as appTypes from "../types/appTypes";
+import * as budgetTypes from "../types/budgetTypes";
 
 export default function categoryReducer(
   categorySection: CategorySection = initialState.categoriesSection,
-  action: CategoryActionTypes | appTypes.AppActionTypes
+  action:
+    | CategoryActionTypes
+    | appTypes.AppActionTypes
+    | budgetTypes.BudgetActionTypes
 ): CategorySection {
   switch (action.type) {
     case types.DELETE_CATEGORY_FINISHED:
@@ -78,6 +82,12 @@ export default function categoryReducer(
       return {
         ...initialState.categoriesSection,
         ...action.state.categoriesSection,
+      };
+
+    case budgetTypes.REQUEST_BUDGET_READ_FINISHED:
+      return {
+        ...categorySection,
+        categories: action.payload.categories,
       };
     default:
       return categorySection;

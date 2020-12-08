@@ -24,6 +24,7 @@ export default class Auth {
       // eslint-disable-next-line @typescript-eslint/camelcase
       connection_scope: "https://www.googleapis.com/auth/drive.file",
       scope: "openid profile email offline_access",
+      audience: "quantum-budget-api",
     });
   };
 
@@ -41,13 +42,13 @@ export default class Auth {
               const user: User = {
                 accessToken: authResult.accessToken || "",
                 idToken: authResult.idToken || "",
+                userId: userInfo.sub || "",
                 givenName: userInfo.given_name || "",
                 imageUrl: userInfo.picture,
                 email: userInfo.email || "",
                 emailVerified: userInfo.email_verified || false,
                 expiresAt: authResult.expiresIn * 1000 + new Date().getTime(),
               };
-
               resolve(user);
             }
           );

@@ -34,7 +34,6 @@ export function* requestLoginSaga() {
   while (true) {
     const { history } = yield take(authTypes.REQUEST_LOGIN);
     const state = yield select(getState);
-    debugger;
     yield call(redirectToLogin, history, state);
   }
 }
@@ -89,8 +88,8 @@ export function* requestCallbackSaga() {
       if (Route.GeneratorResponse === redirectUrl) {
         yield put(budgetActions.requestBudgetSave(typedHistory));
       } else {
+        yield put(budgetActions.requestBudgetRead());
         typedHistory.push(Route.HomePage);
-        // typedHistory.push(redirectUrl);
       }
     }
   }
