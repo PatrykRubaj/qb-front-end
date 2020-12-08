@@ -64,6 +64,7 @@ describe("Income Component", () => {
             idToken: "",
             imageUrl: "",
             expiresAt: 0,
+            userId: "",
           },
           agreedToNewsletter: false,
           agreedToPrivacyPolicy: false,

@@ -86,6 +86,7 @@ export const initialState: RootState = {
       email: "",
       emailVerified: false,
       expiresAt: 0,
+      userId: "",
     },
     redirectUrl: "",
   },
