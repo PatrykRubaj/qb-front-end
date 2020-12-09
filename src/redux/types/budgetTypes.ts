@@ -8,6 +8,7 @@ export const REQUEST_BUDGET_SAVE = "REQUEST_BUDGET_SAVE";
 export const REQUEST_BUDGET_SAVE_FINISHED = "REQUEST_BUDGET_SAVE_FINISHED";
 export const REQUEST_BUDGET_READ = "REQUEST_BUDGET_READ";
 export const REQUEST_BUDGET_READ_FINISHED = "REQUEST_BUDGET_READ_FINISHED";
+export const REQUEST_BUDGET_READ_FAILED = "REQUEST_BUDGET_READ_FAILED";
 
 interface RequestBudgetGenerationAction {
   type: typeof REQUEST_BUDGET_GENERATION;
@@ -35,9 +36,14 @@ interface RequestBudgetReadFinishedAction {
   payload: ReadState;
 }
 
+interface RequestBudgetReadFailedAction {
+  type: typeof REQUEST_BUDGET_READ_FAILED;
+}
+
 export type BudgetActionTypes =
   | RequestBudgetGenerationAction
   | RequestBudgetGenerationActionFinishedAction
   | RequestBudgetSaveAction
   | RequestBudgetReadAction
-  | RequestBudgetReadFinishedAction;
+  | RequestBudgetReadFinishedAction
+  | RequestBudgetReadFailedAction;

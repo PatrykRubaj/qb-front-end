@@ -73,6 +73,7 @@ describe("Income Component", () => {
         },
         budgetSection: {
           response: null,
+          isLoading: false,
         },
         month: 1,
       };

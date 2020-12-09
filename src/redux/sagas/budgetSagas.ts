@@ -200,6 +200,8 @@ export function* budgetRead() {
 
     if (readState != null) {
       yield put(budgetActions.requestBudgetReadFinished(readState));
+    } else {
+      yield put(budgetActions.requestBudgetReadFailed());
     }
   }
 }

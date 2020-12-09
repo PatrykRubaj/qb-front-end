@@ -103,6 +103,7 @@ export interface ErrorResponse {
 
 export interface BudgetSection {
   response: BudgetResponse | null;
+  isLoading: boolean;
 }
 
 export interface ReadState {

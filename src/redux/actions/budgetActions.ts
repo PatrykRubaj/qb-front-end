@@ -48,10 +48,17 @@ const requestBudgetReadFinished = (
   };
 };
 
+const requestBudgetReadFailed = (): budgetTypes.BudgetActionTypes => {
+  return {
+    type: budgetTypes.REQUEST_BUDGET_READ_FAILED,
+  };
+};
+
 export default {
   requestBudgetGeneration,
   requestBudgetGenerationFinished,
   requestBudgetSave,
   requestBudgetRead,
   requestBudgetReadFinished,
+  requestBudgetReadFailed,
 };

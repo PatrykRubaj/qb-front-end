@@ -7,6 +7,9 @@
 // import SaveComponent from "../components/spreadsheet-generation/Save/SaveComponent";
 import Head from "next/head";
 import dynamic from "next/dynamic";
+import LoaderWheel from "../components/common/LoaderWheel";
+import { RootState } from "../redux/reducers";
+import { connect } from "react-redux";
 
 const DynamicIncomeComponent = dynamic(
   () => import("../components/spreadsheet-generation/Income/IncomeComponent"),
@@ -51,7 +54,14 @@ const DynamicSaveComponent = dynamic(
   () => import("../components/spreadsheet-generation/Save/SaveComponent"),
   { ssr: false }
 );
-const GeneratorPage: React.FC = () => {
+
+interface StateProps {
+  isLoading: boolean;
+}
+
+type State = StateProps;
+
+const GeneratorPage: React.FC<State> = (props: State) => {
   return (
     <>
       <Head>
@@ -72,22 +82,30 @@ const GeneratorPage: React.FC = () => {
           </p>
         </div>
       </div>
-      <DynamicLocaleSelectorComponent />
-      <DynamicMonthSelectorComponent />
-      <DynamicIncomeComponent />
-      <DynamicCategoryComponent />
-      <DynamicSubcategoryComponent />
-      <DynamicSpendingPredictionComponent />
-      <DynamicSaveComponent />
+      {props.isLoading ? (
+        <LoaderWheel
+          title="Loading budget..."
+          description="⏳ It can take some time if website wasn't used for a while. "
+        />
+      ) : (
+        <>
+          <DynamicLocaleSelectorComponent />
+          <DynamicMonthSelectorComponent />
+          <DynamicIncomeComponent />
+          <DynamicCategoryComponent />
+          <DynamicSubcategoryComponent />
+          <DynamicSpendingPredictionComponent />
+          <DynamicSaveComponent />
+        </>
+      )}
     </>
   );
 };
 
-export default GeneratorPage;
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    isLoading: state.budgetSection.isLoading,
+  };
+};
 
-// This function gets called at build time
-// export async function getInitialProps(ctx) {
-//   resetServerContext();
-//   const initialProps = await Document.getInitialProps(ctx);
-//   return { ...initialProps };
-// }
+export default connect(mapStateToProps)(GeneratorPage);
