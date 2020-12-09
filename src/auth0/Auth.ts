@@ -28,6 +28,13 @@ export default class Auth {
     });
   };
 
+  logout = (): void => {
+    this.auth0.logout({
+      clientID: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || "",
+      returnTo: process.env.NEXT_PUBLIC_AUTH0_LOGOUT_URL || "",
+    });
+  };
+
   handleAuthentication = async (): Promise<User | null> => {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, authResult) => {

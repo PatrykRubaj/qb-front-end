@@ -95,6 +95,13 @@ const requestSetRedirectUrlFinished = (
   };
 };
 
+const requestLogout = (history: NextRouter): authTypes.AuthActionTypes => {
+  return {
+    type: authTypes.REQUEST_LOGOUT,
+    history,
+  };
+};
+
 export default {
   requestLogin,
   requestCallback,
@@ -107,4 +114,5 @@ export default {
   requestSetNewsletterPromptFinished,
   requestSetRedirectUrl,
   requestSetRedirectUrlFinished,
+  requestLogout,
 };

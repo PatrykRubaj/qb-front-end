@@ -17,6 +17,8 @@ export const REQUEST_SET_NEWSLETTER_PROMPT_FINISHED =
 export const REQUEST_SET_REDIRECT_URL = "REQUEST_SET_REDIRECT_URL";
 export const REQUEST_SET_REDIRECT_URL_FINISHED =
   "REQUEST_SET_REDIRECT_URL_FINISHED";
+export const REQUEST_LOGOUT = "REQUEST_LOGOUT";
+export const REQUEST_LOGOUT_FINISHED = "REQUEST_LOGOUT_FINISHED";
 
 interface RequestLoginAction {
   type: typeof REQUEST_LOGIN;
@@ -71,6 +73,15 @@ interface RequestSetRedirectUrlActionFinished {
   redirectUrl: string;
 }
 
+interface RequestLogoutAction {
+  type: typeof REQUEST_LOGOUT;
+  history: NextRouter;
+}
+
+interface RequestLogoutFinishedAction {
+  type: typeof REQUEST_LOGOUT_FINISHED;
+}
+
 export type AuthActionTypes =
   | RequestLoginAction
   | RequestCallbackdAction
@@ -82,4 +93,6 @@ export type AuthActionTypes =
   | RequestSetNewsletterPromptAction
   | RequestSetNewsletterPromptFinishedAction
   | RequestSetRedirectUrlAction
-  | RequestSetRedirectUrlActionFinished;
+  | RequestSetRedirectUrlActionFinished
+  | RequestLogoutAction
+  | RequestLogoutFinishedAction;

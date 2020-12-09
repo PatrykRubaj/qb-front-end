@@ -9,6 +9,7 @@ export enum Route {
   Generator = "/generator",
   GeneratorResponse = "/generator-response",
   Login = "/login",
+  Logout = "/logout",
   PrivacyPolicy = "/privacy",
   Callback = "/callback",
   Loading = "/loading",

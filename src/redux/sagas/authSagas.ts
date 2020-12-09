@@ -21,6 +21,11 @@ const redirectToLogin = (history: NextRouter, state: RootState): void => {
   auth.login();
 };
 
+const handleLogout = (history: NextRouter): void => {
+  const auth = new Auth(history);
+  auth.logout();
+};
+
 const handleAuthentication = async (
   history: NextRouter
 ): Promise<User | null> => {
@@ -95,6 +100,13 @@ export function* requestCallbackSaga() {
   }
 }
 
+export function* requestLogoutSaga() {
+  while (true) {
+    const { history } = yield take(authTypes.REQUEST_LOGOUT);
+    yield call(handleLogout, history);
+  }
+}
+
 export default [
   requestLoginSaga,
   requestCallbackSaga,
@@ -102,4 +114,5 @@ export default [
   requestSetPrivacyPolicySaga,
   requestSetNewsletterPromptSaga,
   requestSetRedirectUrlSaga,
+  requestLogoutSaga,
 ];
