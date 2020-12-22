@@ -12,36 +12,51 @@ using System.Net.Http;
 using Functions.Model.DTOs;
 using System.Text;
 using System.Linq;
+using Functions.Model.DTOs.Mailchimp;
 using Functions.Model.Models;
 using Services;
 using Budget = Functions.Model.DTOs.BudgetData.Budget;
 
-namespace Functions.API.Auth
+namespace Functions.API
 {
-    public class GetAccessToken
+    public class GenerateBudget
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly QueueMessageService _busMessageService;
-        private readonly TokenValidationService _tokenValidationService;
+        private readonly ILogger<GenerateBudget> _log;
+        private readonly QueueMessageService<NewSubscriber> _mailSubscriptionsMessageService;
+        private readonly QueueMessageService<Functions.Model.Models.Budget> _budgetPersistenceMessageService;
+        private readonly JwtBearerValidation _tokenValidationService;
+        private readonly UserManagementService _userManagementService;
+        private readonly SpreadsheetGeneratingService _spreadsheetGeneratingService;
         private Budget _budget;
 
-        public GetAccessToken(IHttpClientFactory clientFactory, QueueMessageService busMessageService, TokenValidationService tokenValidationService)
+        public GenerateBudget(IHttpClientFactory clientFactory, 
+            ILogger<GenerateBudget> log, 
+            QueueMessageService<NewSubscriber> mailSubscriptionsMessageService,
+            QueueMessageService<Functions.Model.Models.Budget> budgetPersistenceMessageService,
+            JwtBearerValidation tokenValidationService,
+            UserManagementService userManagementService,
+            SpreadsheetGeneratingService spreadsheetGeneratingService)
         {
-            _clientFactory = clientFactory;
-            _busMessageService = busMessageService;
-            _tokenValidationService = tokenValidationService;
+            _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _mailSubscriptionsMessageService = mailSubscriptionsMessageService ?? throw new ArgumentNullException(nameof(mailSubscriptionsMessageService));
+            _budgetPersistenceMessageService = budgetPersistenceMessageService ?? throw new ArgumentNullException(nameof(budgetPersistenceMessageService));
+            _tokenValidationService = tokenValidationService ?? throw new ArgumentNullException(nameof(tokenValidationService));
+            _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+            _spreadsheetGeneratingService = spreadsheetGeneratingService;
         }
 
-        [FunctionName("GetAccessToken")]
+        [FunctionName("GenerateBudget")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
-            HttpRequest req,
-            ILogger log)
+            HttpRequest req)
         {
             var content = await new StreamReader(req.Body).ReadToEndAsync();
-            bool gotValue = req.Headers.TryGetValue("Authorization", out var accessToken);
-
-            if (accessToken.FirstOrDefault() == null)
+            req.Headers.TryGetValue("Authorization", out var accessToken);
+            string userId = await _tokenValidationService.GetUserId(accessToken);
+            
+            if (userId == null)
             {
                 return new ObjectResult("Please go away")
                 {
@@ -50,35 +65,29 @@ namespace Functions.API.Auth
             }
             
             _budget = JsonConvert.DeserializeObject<Budget>(content);
-            log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
-
-            var userInfo = await _tokenValidationService.GetUserInfo(accessToken.FirstOrDefault());
-            if (userInfo == null)
-            {
-                return new ObjectResult("Please go away")
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized
-                };
-            }
-
+            _log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
+            
+            var auth0User = await _userManagementService.GetAuth0User(userId);
+            
             if (_budget.AgreedToNewsletter)
             {
-                await _busMessageService.SendMessage(new Functions.Model.DTOs.Mailchimp.NewSubscriber()
+                if (!string.IsNullOrEmpty(auth0User.Email))
                 {
-                    Email = userInfo.Email,
-                    Name = userInfo.GivenName,
-                    Source = "MVP-Generator",
-                });
+                    await _mailSubscriptionsMessageService.SendMessageAsync(new Functions.Model.DTOs.Mailchimp.NewSubscriber()
+                    {
+                        Email = auth0User.Email,
+                        Name = auth0User?.GivenName ?? "",
+                        Source = "MVP-Generator",
+                    });
+                }
             }
 
-            await SaveBudgetAsync(userInfo.UserId);
-            log.LogInformation($"UserInfo: {JsonConvert.SerializeObject(userInfo)}");
-            var managementApiToken = await GetManagementToken();
-            var auth0User = await GetAuth0User(userInfo.UserId, managementApiToken.AccessToken);
-            log.LogInformation($"Auth0User: {JsonConvert.SerializeObject(auth0User)}");
+            await SaveBudgetAsync(userId);
+            
+            _log.LogInformation($"Auth0User: {JsonConvert.SerializeObject(auth0User)}");
 
             CleanUpTheData(_budget);
-            var googleSpreadsheet = GetRequestJsonForGoogle(log);
+            var googleSpreadsheet = GetRequestJsonForGoogle();
             string googleRespone = await CreateSpreadsheet(auth0User, googleSpreadsheet);
 
             return new OkObjectResult(googleRespone);
@@ -86,11 +95,10 @@ namespace Functions.API.Auth
 
         private async Task SaveBudgetAsync(string userId)
         {
-            var budgetQueue = new QueueMessageService("users-budgets");
             var budgetToSend = MapBudget(_budget);
             budgetToSend.UserId = userId;
         
-            await budgetQueue.SendMessageAsync<Functions.Model.Models.Budget>(budgetToSend);
+            await _budgetPersistenceMessageService.SendMessageAsync(budgetToSend);
         }
 
         private Functions.Model.Models.Budget MapBudget(Functions.Model.DTOs.BudgetData.Budget oldBudget)
@@ -197,40 +205,7 @@ namespace Functions.API.Auth
             Guid[] categoriesIds = _budget.Subcategories.GroupBy(x => x.CategoryId).Select(x => x.Key).ToArray();
             _budget.Categories = _budget.Categories.Where(x => categoriesIds.Contains(x.Id)).ToList();
         }
-
-
-        private async Task<Auth0User> GetAuth0User(string userId, string token)
-        {
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            using var httpResponse = await client.GetAsync($"https://quantumbudget.eu.auth0.com/api/v2/users/{userId}");
-            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
-            var auth0User = JsonConvert.DeserializeObject<Auth0User>(responseAsString);
-            return auth0User;
-        }
         
-        private async Task<TokenResponse> GetManagementToken()
-        {
-            var tokenRequest = new TokenRequest()
-            {
-                ClientId = "pSnOoOn5NcRTjhMTpewokO5p06gGuXkc",
-                ClientSecret = "xU7p8QtSL54Yo5gZzLhwbArn-RLDUFz6-Dn036BwihHVy1rC-0nyPXMBGxqdH5OY",
-                Audience = "https://quantumbudget.eu.auth0.com/api/v2/",
-                GrantType = "client_credentials"
-            };
-            var tokenRequestJson = new StringContent(JsonConvert.SerializeObject(tokenRequest), Encoding.UTF8,
-                "application/json");
-
-            var client = _clientFactory.CreateClient();
-            using var httpResponse =
-                await client.PostAsync("https://quantumbudget.eu.auth0.com/oauth/token", tokenRequestJson);
-
-            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
-            var authToken = JsonConvert.DeserializeObject<TokenResponse>(responseAsString);
-
-            return authToken;
-        }
-
         private async Task<string> CreateSpreadsheet(Auth0User user, dynamic json)
         {
             var spreadsheetJson = new StringContent(JsonConvert.SerializeObject(json, Formatting.Indented,
@@ -250,11 +225,9 @@ namespace Functions.API.Auth
             return responseAsString;
         }
 
-        private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle(ILogger log)
+        private Google.Apis.Sheets.v4.Data.Spreadsheet GetRequestJsonForGoogle()
         {
-            var service = new SpreadsheetGeneratingService(_budget, log);
-
-            return service.Generate();
+            return _spreadsheetGeneratingService.Generate(_budget);
         }
     }
 }

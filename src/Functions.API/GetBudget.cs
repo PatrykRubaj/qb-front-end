@@ -12,15 +12,13 @@ namespace Functions.API
     public class GetBudget
     {
         private readonly IBudgetsService _budgetsService;
-        private readonly TokenValidationService _tokenValidationService;
-        private readonly AzureADJwtBearerValidation _verificator;
+        private readonly JwtBearerValidation _verificator;
 
 
-        public GetBudget(IBudgetsService budgetsService, TokenValidationService tokenValidationService,
-            AzureADJwtBearerValidation verificator)
+        public GetBudget(IBudgetsService budgetsService,
+            JwtBearerValidation verificator)
         {
             _budgetsService = budgetsService;
-            _tokenValidationService = tokenValidationService;
             _verificator = verificator;
         }
 
@@ -31,20 +29,11 @@ namespace Functions.API
             string userId,
             ILogger log)
         {
-            bool gotValue = req.Headers.TryGetValue("Authorization", out var accessToken);
+            req.Headers.TryGetValue("Authorization", out var accessToken);
+            
+            bool allowAccess = await _verificator.ShouldAllowAccess(accessToken.FirstOrDefault(), userId);
 
-            if (gotValue == false)
-            {
-                return new ObjectResult("Please go away")
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized
-                };
-            }
-
-            var claimsPrincipal = await _verificator.ValidateTokenAsync(accessToken.FirstOrDefault());
-
-            if (claimsPrincipal.Claims.FirstOrDefault(x =>
-                x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value == userId)
+            if (allowAccess)
             {
                 var budget = await _budgetsService.GetByUserId(userId);
 

@@ -7,6 +7,8 @@ using Functions.API;
 using Services;
 using Services.Mailchimp;
 using Azure.Storage.Queues;
+using Functions.API.Repositories;
+using Functions.Model.DTOs.Mailchimp;
 using Functions.Model.Models;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -21,11 +23,16 @@ namespace Functions.API
 
             builder.Services.AddScoped<SubscriberService>();
             builder.Services.AddScoped<TokenValidationService>();
-            builder.Services.AddScoped<AzureADJwtBearerValidation>();
-            builder.Services.AddSingleton<QueueMessageService>(provider => new QueueMessageService());
+            builder.Services.AddScoped<JwtBearerValidation>();
+            builder.Services.AddScoped<UserManagementService>();
+            builder.Services.AddScoped<SpreadsheetGeneratingService>();
+            builder.Services.AddScoped<GoogleSpreadsheetService>();
+            builder.Services.AddScoped<IMailchimpRepository, MailchimpRepository>();
+            builder.Services.AddSingleton(typeof(QueueMessageService<NewSubscriber>), (sp) => new QueueMessageService<NewSubscriber>("mailchimp-subscriptions"));
+            builder.Services.AddSingleton(typeof(QueueMessageService<Functions.Model.Models.Budget>), (sp) => new QueueMessageService<Functions.Model.Models.Budget>("users-budgets"));
             builder.Services.AddSingleton<IBudgetsDatabaseSettings>(GetMongoDBSettings());
             builder.Services.AddSingleton<IBudgetsService, BudgetsService>();
-            
+
             CreateQueuesForDevelopment();
         }
 

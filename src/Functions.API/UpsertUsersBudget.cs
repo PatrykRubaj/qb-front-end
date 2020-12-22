@@ -12,9 +12,9 @@ namespace Functions.API
     public class UpsertUsersBudget
     {
         private readonly IBudgetsService _budgetsService;
-        private readonly AzureADJwtBearerValidation _verificator;
+        private readonly JwtBearerValidation _verificator;
 
-        public UpsertUsersBudget(IBudgetsService budgetsService, AzureADJwtBearerValidation verificator)
+        public UpsertUsersBudget(IBudgetsService budgetsService, JwtBearerValidation verificator)
         {
             _budgetsService = budgetsService;
             _verificator = verificator;

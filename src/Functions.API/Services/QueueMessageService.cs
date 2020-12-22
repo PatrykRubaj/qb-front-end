@@ -8,34 +8,18 @@ using Azure.Storage.Queues;
 
 namespace Services
 {
-    public class QueueMessageService
+    public class QueueMessageService<T>
     {
         private readonly string _serviceBusConnectionString;
         private readonly QueueClient _queueClient;
-
-        public QueueMessageService()
-        {
-            _serviceBusConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsMailchimpServiceQueue");
-            _queueClient = new QueueClient(_serviceBusConnectionString, "mailchimp-subscriptions");
-        }
-
+        
         public QueueMessageService(string queueName)
         {
             _serviceBusConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsMailchimpServiceQueue");
             _queueClient = new QueueClient(_serviceBusConnectionString, queueName);
         }
         
-        public async Task SendMessage(NewSubscriber newSubscriber)
-        {
-            string jsonString = JsonConvert.SerializeObject(newSubscriber);
-            var encodedBytes = Encoding.UTF8.GetBytes(jsonString);
-            var base64Encoded = System.Convert.ToBase64String(encodedBytes);
-            var message = new BinaryData(base64Encoded);
-
-            await _queueClient.SendMessageAsync(message);
-        }
-        
-        public async Task SendMessageAsync<T>(T messageToSend)
+        public async Task SendMessageAsync(T messageToSend)
         {
             string jsonString = JsonConvert.SerializeObject(messageToSend);
             var encodedBytes = Encoding.UTF8.GetBytes(jsonString);

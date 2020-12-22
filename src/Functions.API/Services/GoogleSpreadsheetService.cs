@@ -9,23 +9,17 @@ namespace Services
     public class GoogleSpreadsheetService
     {
         private readonly Spreadsheet _spreadsheet;
-        private readonly Budget _budget;
-        private readonly ILogger _log;
+        private Budget _budget;
+        private readonly ILogger<GoogleSpreadsheetService> _log;
 
-        public GoogleSpreadsheetService(Budget budget, ILogger log)
+        public GoogleSpreadsheetService(ILogger<GoogleSpreadsheetService> log)
         {
             _spreadsheet = new Spreadsheet();
-            _budget = budget;
             _log = log;
             if (_spreadsheet.Sheets == null)
             {
                 _spreadsheet.Sheets = new List<Sheet>();
             }
-
-            SetDefaults();
-            AddSpendingSheet();
-            AddDashboardSheet();
-            AddChartsSheet();
         }
 
         private void SetDefaults()
@@ -62,6 +56,15 @@ namespace Services
             this.AddSheet(dashboardSheet);
         }
 
-        public Spreadsheet GetSpreadsheet() => _spreadsheet;
+        public Spreadsheet GetSpreadsheet(Budget budget)
+        {
+            _budget = budget;
+            SetDefaults();
+            AddSpendingSheet();
+            AddDashboardSheet();
+            AddChartsSheet();
+            
+            return _spreadsheet;
+        }
     }
 }

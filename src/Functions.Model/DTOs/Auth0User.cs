@@ -10,6 +10,9 @@ namespace Functions.Model.DTOs
 
         [JsonProperty("user_id")]
         public string UserId { get; set; }
+        
+        [JsonProperty("given_name")] 
+        public string GivenName { get; set; }
 
         [JsonProperty("identities")]
         public IList<Auth0Identities> Identities { get; set; } = new List<Auth0Identities>();

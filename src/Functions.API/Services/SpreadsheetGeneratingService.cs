@@ -9,19 +9,16 @@ namespace Services
 {
     public class SpreadsheetGeneratingService
     {
-        private readonly Budget _budget;
         private readonly GoogleSpreadsheetService _googleSpreadsheetService;
-        private readonly ILogger _log;
-        public SpreadsheetGeneratingService(Budget budget, ILogger log)
+        
+        public SpreadsheetGeneratingService(GoogleSpreadsheetService googleSpreadsheetService)
         {
-            _budget = budget;
-            _log = log;
-            _googleSpreadsheetService = new GoogleSpreadsheetService(_budget, _log);
+            _googleSpreadsheetService = googleSpreadsheetService;
         }
 
-        public Spreadsheet Generate()
+        public Spreadsheet Generate(Budget budget)
         {
-            return _googleSpreadsheetService.GetSpreadsheet();
+            return _googleSpreadsheetService.GetSpreadsheet(budget);
         }
 
     }

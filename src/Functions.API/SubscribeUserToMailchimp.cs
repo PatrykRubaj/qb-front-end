@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Functions.Model.DTOs.Mailchimp;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Services;
 using Services.Mailchimp;
 
 namespace Functions.API
@@ -12,30 +14,20 @@ namespace Functions.API
     public class SubscribeUserToMailchimp
     {
         private readonly SubscriberService _subscriberService;
+        private readonly UserManagementService _userManagementService;
 
-        public SubscribeUserToMailchimp(SubscriberService subscriberService)
+        public SubscribeUserToMailchimp(SubscriberService subscriberService, UserManagementService userManagementService)
         {
             _subscriberService = subscriberService;
+            _userManagementService = userManagementService;
         }
 
         [FunctionName("SubscribeUserToMailchimp")]
-        public async Task Run([QueueTrigger("mailchimp-subscriptions", Connection = "AzureWebJobsMailchimpServiceQueue")] NewSubscriber myQueueItem, ILogger log)
+        public async Task Run([QueueTrigger("mailchimp-subscriptions", Connection = "AzureWebJobsMailchimpServiceQueue")] NewSubscriber userToSubscribe, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {JsonConvert.SerializeObject(myQueueItem)}");
-            var mailchimpSubscriptionStatus = await _subscriberService.MailExists(myQueueItem.Email);
+            log.LogInformation($"C# ServiceBus queue trigger function processed message: {JsonConvert.SerializeObject(userToSubscribe)}");
 
-            if (mailchimpSubscriptionStatus == SubscriberStatus.DoesNotExist)
-            {
-                await _subscriberService.Add(myQueueItem);
-            }
-            else if (mailchimpSubscriptionStatus == SubscriberStatus.Archived || mailchimpSubscriptionStatus == SubscriberStatus.Unsubscribed)
-            {
-                await _subscriberService.ReconfirmSubscription(myQueueItem);
-            }
-            else if (mailchimpSubscriptionStatus == SubscriberStatus.Pending)
-            {
-                await _subscriberService.ReconfirmPending(myQueueItem);
-            }
+            _subscriberService.HandleMemberSubscriptionAsync(userToSubscribe);
         }
     }
 }
