@@ -27,7 +27,7 @@ namespace Functions.API
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {JsonConvert.SerializeObject(userToSubscribe)}");
 
-            _subscriberService.HandleMemberSubscriptionAsync(userToSubscribe);
+            await _subscriberService.HandleMemberSubscriptionAsync(userToSubscribe);
         }
     }
 }
