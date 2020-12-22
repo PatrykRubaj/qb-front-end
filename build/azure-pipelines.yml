@@ -50,6 +50,24 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
+- stage: Test
+  displayName: Test build
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - job: Test
+    displayName: Test
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: 'src\Functions.API.Tests\*.csproj'
+        
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
