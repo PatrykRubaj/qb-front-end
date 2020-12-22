@@ -65,7 +65,7 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        projects: 'src\Functions.API.Tests\*.csproj'
+        projects: 'src/Functions.API.Tests/*.csproj'
         
 
 - stage: Deploy
