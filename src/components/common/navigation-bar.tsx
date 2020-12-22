@@ -79,10 +79,7 @@ const navigationBar: React.FC<Props> = ({ user, logout }: Props) => {
               </li>
             }
           >
-            <ProfileMenu
-              logout={() => onLogoutClick}
-              avatarUrl={user.imageUrl}
-            />
+            <ProfileMenu logout={onLogoutClick} avatarUrl={user.imageUrl} />
           </ProtectedComponent>
         </ul>
       </div>
