@@ -63,6 +63,13 @@ export default function ProfileMenu(props: Props) {
     setAnchorEl(null);
   };
 
+  const onLogoutClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ): void => {
+    event.preventDefault();
+    props.logout();
+  };
+
   return (
     <div className="align-middle">
       <Button
@@ -82,7 +89,7 @@ export default function ProfileMenu(props: Props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={props.logout()}>
+        <StyledMenuItem onClick={onLogoutClick}>
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>
