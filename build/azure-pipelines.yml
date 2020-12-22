@@ -14,7 +14,7 @@ variables:
   functionAppName: 'quantum-budget-api'
 
   # Agent VM image name
-  vmImageName: 'vs2017-win2016'
+  vmImageName: 'ubuntu-latest'
 
   # Working Directory
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
@@ -70,7 +70,7 @@ stages:
 
 - stage: Deploy
   displayName: Deploy stage
-  dependsOn: Build
+  dependsOn: Test
   condition: succeeded()
 
   jobs:
