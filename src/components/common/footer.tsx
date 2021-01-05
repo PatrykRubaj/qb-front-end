@@ -8,6 +8,16 @@ const footer = () => (
         <small className="d-block mb-3 text-muted">© 2020 Quantum Budget</small>
       </div>
       <div className="col-6 col-md">
+        <h5>Contact me</h5>
+        <ul className="list-unstyled text-small">
+          <li>
+            <Link href={Route.MessangerBot}>
+              <a className="text-muted" rel="nofollow" target="_blank">
+                Leave feedback
+              </a>
+            </Link>
+          </li>
+        </ul>
         <h5>Legal</h5>
         <ul className="list-unstyled text-small">
           <li>

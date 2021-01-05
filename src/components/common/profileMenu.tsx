@@ -10,6 +10,8 @@ import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
 import Avatar from "@material-ui/core/Avatar";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import MessageIcon from "@material-ui/icons/Message";
+import { Route } from "../../redux/state";
 
 const StyledMenu = withStyles({
   paper: {
@@ -70,6 +72,19 @@ export default function ProfileMenu(props: Props) {
     props.logout();
   };
 
+  const openInNewTab = (url: string) => {
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (newWindow) newWindow.opener = null;
+  };
+
+  const onFeedbackClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ): void => {
+    event.preventDefault();
+    handleClose();
+    openInNewTab(Route.MessangerBot);
+  };
+
   return (
     <div className="align-middle">
       <Button
@@ -94,6 +109,12 @@ export default function ProfileMenu(props: Props) {
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Logout" />
+        </StyledMenuItem>
+        <StyledMenuItem onClick={onFeedbackClick}>
+          <ListItemIcon>
+            <MessageIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Leave feedback" />
         </StyledMenuItem>
       </StyledMenu>
     </div>

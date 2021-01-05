@@ -13,6 +13,7 @@ export enum Route {
   PrivacyPolicy = "/privacy",
   Callback = "/callback",
   Loading = "/loading",
+  MessangerBot = "https://m.me/1PatrickDaniel?ref=w14091837",
 }
 
 export interface Country {

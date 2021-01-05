@@ -1,11 +1,12 @@
 import * as React from "react";
 import { RootState } from "../redux/reducers";
-import { ErrorResponse } from "../redux/state";
+import { ErrorResponse, Route } from "../redux/state";
 import { connect } from "react-redux";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import EmailIcon from "@material-ui/icons/Email";
 import ErrorIcon from "@material-ui/icons/Error";
 import Head from "next/head";
+import MessageIcon from "@material-ui/icons/Message";
 
 // interface DispatchProps {
 //   moveSubcategory: (startIndex: number, endIndex: number, id: string) => void;
@@ -46,6 +47,23 @@ export const GeneratorResponse: React.FC<Props> = ({
                   <TableChartIcon htmlColor="#000" style={{ fontSize: 64 }} />
                 </p>
                 <p>Link to Your budget</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div className="row justify-content-center my-2">
+          <div className="col-9 col-xs-7 col-md-5 col-lg-3">
+            <a
+              href={Route.MessangerBot}
+              style={{ display: "block" }}
+              className="mt-2 btn btn-light btn-lg"
+              target="_blank"
+            >
+              <div style={{ textAlign: "center" }}>
+                <p>
+                  <MessageIcon htmlColor="#000" style={{ fontSize: 32 }} />
+                </p>
+                <p>Leave feedback</p>
               </div>
             </a>
           </div>
@@ -101,6 +119,23 @@ export const GeneratorResponse: React.FC<Props> = ({
                 <p>{errors?.message}</p>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="row justify-content-center my-2">
+          <div className="col-9 col-xs-7 col-md-5 col-lg-3">
+            <a
+              href={Route.MessangerBot}
+              style={{ display: "block" }}
+              className="mt-2 btn btn-light btn-lg"
+              target="_blank"
+            >
+              <div style={{ textAlign: "center" }}>
+                <p>
+                  <MessageIcon htmlColor="#000" style={{ fontSize: 32 }} />
+                </p>
+                <p>Leave feedback</p>
+              </div>
+            </a>
           </div>
         </div>
       </>
