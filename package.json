@@ -14,7 +14,7 @@
   "dependencies": {
     "array-move": "^3.0.1",
     "auth0-js": "^9.14.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "countries-list": "^2.5.6",
     "formik": "^2.2.0",
