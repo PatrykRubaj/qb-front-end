@@ -15,7 +15,9 @@ namespace Services
         private readonly ILogger<UserManagementService> _log;
         
         private readonly string _tenant;
-        
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+
 
         public UserManagementService(IHttpClientFactory clientFactory, IConfiguration configuration, ILogger<UserManagementService> log)
         {
@@ -23,6 +25,8 @@ namespace Services
             _configuration = configuration;
             _log = log;
             _tenant = configuration.GetValue<string>("Auth0_Instance");
+            _clientId = configuration.GetValue<string>("Auth0_ClientId");
+            _clientSecret = configuration.GetValue<string>("Auth0_ClientSecret");
         }
 
         public async Task<UserInfo> GetUserInfo(string userAccessToken)
@@ -54,8 +58,8 @@ namespace Services
         {
             var tokenRequest = new TokenRequest()
             {
-                ClientId = "pSnOoOn5NcRTjhMTpewokO5p06gGuXkc",
-                ClientSecret = "xU7p8QtSL54Yo5gZzLhwbArn-RLDUFz6-Dn036BwihHVy1rC-0nyPXMBGxqdH5OY",
+                ClientId = _clientId,
+                ClientSecret = _clientSecret,
                 Audience = $"{_tenant}/api/v2/",
                 GrantType = "client_credentials"
             };
