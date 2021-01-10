@@ -10,12 +10,12 @@ services:
 #      AzureWebJobsMailchimpServiceQueue: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=https://azurite:10001/devstoreaccount1;"
 #      MongoDBConnectionString: "mongodb://mongo_database:5001"
   azurite:
-    build: ./Functions.API/azurite
+    build: ./azurite
     ports:
       - "10000:10000"
       - "10001:10001"
   mongo_database:
-    build: ./Functions.API/mongodb
+    build: ./mongodb
     command: mongod --bind_ip_all --noauth
     restart: always
     ports:
