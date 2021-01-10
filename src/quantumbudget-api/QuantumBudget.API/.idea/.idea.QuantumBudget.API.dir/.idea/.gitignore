@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/contentModel.xml
+/modules.xml
+/.idea.QuantumBudget.API.iml
+# Datasource local storage ignored files
+/../../../../../../../../../../../:\Business\Clients\Myself\quantumbudget\quantumbudget-api\src\QuantumBudget.API\.idea\.idea.QuantumBudget.API.dir\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
