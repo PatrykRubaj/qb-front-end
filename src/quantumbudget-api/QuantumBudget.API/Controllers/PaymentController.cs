@@ -90,7 +90,7 @@ namespace QuantumBudget.API.Controllers
                     {
                         ErrorMessage = new ErrorMessageDto
                         {
-                            Message = "This user already has subscription.",
+                            Message = "This user already has a subscription.",
                         }
                     });
                 }

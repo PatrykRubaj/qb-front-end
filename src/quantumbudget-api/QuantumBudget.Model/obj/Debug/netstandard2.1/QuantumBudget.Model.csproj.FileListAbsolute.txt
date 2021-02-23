@@ -1,9 +1,0 @@
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\bin\Debug\netstandard2.1\QuantumBudget.Model.deps.json
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\bin\Debug\netstandard2.1\QuantumBudget.Model.dll
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\bin\Debug\netstandard2.1\QuantumBudget.Model.pdb
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.AssemblyInfoInputs.cache
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.AssemblyInfo.cs
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.csproj.CoreCompileInputs.cache
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.dll
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.pdb
-C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Model\obj\Debug\netstandard2.1\QuantumBudget.Model.csprojAssemblyReference.cache
