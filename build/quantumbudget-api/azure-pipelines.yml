@@ -10,9 +10,6 @@ variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: '54de0977-3d6b-409e-99f0-4323ea6718aa'
 
-  # Function app name
-  functionAppName: 'quantum-budget-api'
-
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -30,12 +27,16 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '5.x'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
         command: 'build'
         projects: |
-          $(workingDirectory)/src/Functions.API/*.csproj
+          $(workingDirectory)/src/quantumbudget-api/QuantumBudget.API/*.csproj
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
 
     - task: ArchiveFiles@2
@@ -50,45 +51,19 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
-- stage: Test
-  displayName: Test build
-  dependsOn: Build
-  condition: succeeded()
-
-  jobs:
-  - job: Test
-    displayName: Test
-    pool:
-      vmImage: $(vmImageName)
-
-    steps:
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'test'
-        projects: 'src/Functions.API.Tests/*.csproj'
-        
-
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Test
-  condition: succeeded()
-
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment: 'production'
-    pool:
-      vmImage: $(vmImageName)
-
-    strategy:
-      runOnce:
-        deploy:
-
-          steps:
-          - task: AzureFunctionApp@1
-            displayName: 'Azure functions app deploy'
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              appType: functionApp
-              appName: $(functionAppName)
-              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+#- stage: Test
+#  displayName: Test build
+#  dependsOn: Build
+#  condition: succeeded()
+#
+#  jobs:
+#  - job: Test
+#    displayName: Test
+#    pool:
+#      vmImage: $(vmImageName)
+#
+#    steps:
+#    - task: DotNetCoreCLI@2
+#      inputs:
+#        command: 'test'
+#        projects: 'src/quantumbudget-api/QuantumBudget.API.Tests/*.csproj'
