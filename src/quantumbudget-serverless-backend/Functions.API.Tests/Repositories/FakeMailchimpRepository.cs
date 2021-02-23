@@ -2,26 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Functions.API.Repositories;
-using Functions.Model.DTOs.Mailchimp;
-using Microsoft.Azure.Documents.SystemFunctions;
+using QuantumBudget.Model.DTOs.Mailchimp;
+using QuantumBudget.Repositories;
 
 namespace Functions.API.Tests.Repositories
 {
     public class FakeMailchimpRepository : IMailchimpRepository
     {
-        private readonly Dictionary<string, List<Member>> _members;
+        private readonly Dictionary<string, List<MemberDto>> _members;
 
-        public Dictionary<string, List<Member>> Members => _members;
+        public Dictionary<string, List<MemberDto>> Members => _members;
 
         public FakeMailchimpRepository()
         {
-            _members = new Dictionary<string, List<Member>>()
+            _members = new Dictionary<string, List<MemberDto>>()
             {
                 {
-                    "existing@example.org", new List<Member>()
+                    "existing@example.org", new List<MemberDto>()
                     {
-                        new Member()
+                        new MemberDto()
                         {
                             Id = "9ebeb3a9-7663-42ee-a65a-d0ae8c10f833",
                             Status = "subscribed",
@@ -31,9 +30,9 @@ namespace Functions.API.Tests.Repositories
                     }
                 },
                 {
-                    "archived@example.org", new List<Member>()
+                    "archived@example.org", new List<MemberDto>()
                     {
-                        new Member()
+                        new MemberDto()
                         {
                             Id = "96c5b7a3-0932-4dfe-881a-e957820b0797",
                             Status = "archived",
@@ -43,9 +42,9 @@ namespace Functions.API.Tests.Repositories
                     }
                 },
                 {
-                    "pending@example.org", new List<Member>()
+                    "pending@example.org", new List<MemberDto>()
                     {
-                        new Member()
+                        new MemberDto()
                         {
                             Id = "1c726f3b-d2ec-4e73-bb22-d95cde89edba",
                             Status = "pending",
@@ -55,9 +54,9 @@ namespace Functions.API.Tests.Repositories
                     }
                 },
                 {
-                    "unsubscribed@example.org", new List<Member>()
+                    "unsubscribed@example.org", new List<MemberDto>()
                     {
-                        new Member()
+                        new MemberDto()
                         {
                             Id = "4dc5067d-53b3-4d2e-9fb0-8a65875ccee0",
                             Status = "unsubscribed",
@@ -68,9 +67,9 @@ namespace Functions.API.Tests.Repositories
                     }
                 },
                 {
-                    "subscribed@example.org", new List<Member>()
+                    "subscribed@example.org", new List<MemberDto>()
                     {
-                        new Member()
+                        new MemberDto()
                         {
                             Id = "177985be-bf2b-4d26-bd31-03afc25912b6",
                             Status = "subscribed",
@@ -83,20 +82,20 @@ namespace Functions.API.Tests.Repositories
             };
         }
 
-        public async Task AddMemberAsync(NewSubscriber newSubscriber)
+        public async Task AddMemberAsync(NewSubscriberDto newSubscriber)
         {
             var memberExists = _members.TryGetValue(newSubscriber.Email, out var member);
 
             if (memberExists)
             {
-                member.Add(new Member()
+                member.Add(new MemberDto()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Status = "pending",
                     EmailAddress = newSubscriber.Email,
-                    Tags = new List<Tag>()
+                    Tags = new List<TagDto>()
                     {
-                        new Tag()
+                        new TagDto()
                         {
                             Name = newSubscriber.Source
                         }
@@ -105,16 +104,16 @@ namespace Functions.API.Tests.Repositories
             }
             else
             {
-                _members.Add(newSubscriber.Email, new List<Member>()
+                _members.Add(newSubscriber.Email, new List<MemberDto>()
                 {
-                    new Member()
+                    new MemberDto()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Status = "pending",
                         EmailAddress = newSubscriber.Email,
-                        Tags = new List<Tag>()
+                        Tags = new List<TagDto>()
                         {
-                            new Tag()
+                            new TagDto()
                             {
                                 Name = newSubscriber.Source
                             }
@@ -124,7 +123,7 @@ namespace Functions.API.Tests.Repositories
             }
         }
 
-        public async Task<Member> GetMemberAsync(string email)
+        public async Task<MemberDto> GetMemberAsync(string email)
         {
             var memberExists = _members.TryGetValue(email, out var member);
 
@@ -136,13 +135,13 @@ namespace Functions.API.Tests.Repositories
             return null;
         }
 
-        public async Task UpdateMemberAsync(string email, Member updatedMember)
+        public async Task UpdateMemberAsync(string email, MemberDto updatedMember)
         {
             var memberExists = _members.TryGetValue(email, out var member);
 
             if (memberExists)
             {
-                member.Add(new Member()
+                member.Add(new MemberDto()
                 {
                     Status = updatedMember.Status ?? member.FirstOrDefault()?.Status,
                     Tags = updatedMember.Tags ?? member.FirstOrDefault()?.Tags,

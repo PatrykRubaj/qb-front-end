@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Functions.API;
-using Services;
-using Services.Mailchimp;
+using QuantumBudget.Services;
 using Azure.Storage.Queues;
-using Functions.API.Repositories;
-using Functions.Model.DTOs.Mailchimp;
-using Functions.Model.Models;
+using QuantumBudget.Model.Models;
+using QuantumBudget.Services.Mailchimp;
+using QuantumBudget.Model.DTOs.Mailchimp;
+using QuantumBudget.Repositories;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Functions.API
@@ -28,8 +28,8 @@ namespace Functions.API
             builder.Services.AddScoped<SpreadsheetGeneratingService>();
             builder.Services.AddScoped<GoogleSpreadsheetService>();
             builder.Services.AddScoped<IMailchimpRepository, MailchimpRepository>();
-            builder.Services.AddSingleton(typeof(QueueMessageService<NewSubscriber>), (sp) => new QueueMessageService<NewSubscriber>("mailchimp-subscriptions"));
-            builder.Services.AddSingleton(typeof(QueueMessageService<Functions.Model.Models.Budget>), (sp) => new QueueMessageService<Functions.Model.Models.Budget>("users-budgets"));
+            builder.Services.AddSingleton(typeof(QueueMessageService<NewSubscriberDto>), (sp) => new QueueMessageService<NewSubscriberDto>("mailchimp-subscriptions"));
+            builder.Services.AddSingleton(typeof(QueueMessageService<Budget>), (sp) => new QueueMessageService<Budget>("users-budgets"));
             builder.Services.AddSingleton<IBudgetsDatabaseSettings>(GetMongoDBSettings());
             builder.Services.AddSingleton<IBudgetsService, BudgetsService>();
 

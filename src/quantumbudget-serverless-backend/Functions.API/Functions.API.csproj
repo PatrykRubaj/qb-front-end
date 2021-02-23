@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     <RootNamespace>Functions.API</RootNamespace>
   </PropertyGroup>
@@ -9,15 +9,16 @@
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.8.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.3" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.49.0.2160" />
     <PackageReference Include="Azure.Storage.Queues" Version="12.5.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
-    <PackageReference Include="Stripe.net" Version="39.31.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Functions.Model\Functions.Model.csproj" />
+    <ProjectReference Include="..\..\quantumbudget-api\QuantumBudget.Model\QuantumBudget.Model.csproj" />
+    <ProjectReference Include="..\..\quantumbudget-api\QuantumBudget.Repositories\QuantumBudget.Repositories.csproj" />
+    <ProjectReference Include="..\..\quantumbudget-api\QuantumBudget.Services\QuantumBudget.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

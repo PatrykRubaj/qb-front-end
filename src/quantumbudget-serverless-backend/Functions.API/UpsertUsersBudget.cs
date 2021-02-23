@@ -2,10 +2,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Functions.Model.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Services;
+using QuantumBudget.Services;
+using QuantumBudget.Model;
+using QuantumBudget.Model.Models;
 
 namespace Functions.API
 {

@@ -2,9 +2,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Functions.API.Tests.Repositories;
-using Functions.Model.DTOs.Mailchimp;
 using Microsoft.Extensions.Logging.Abstractions;
-using Services.Mailchimp;
+using QuantumBudget.Model.DTOs.Mailchimp;
+using QuantumBudget.Services;
+using QuantumBudget.Services.Mailchimp;
 using Xunit;
 
 namespace Functions.API.Tests
@@ -18,7 +19,7 @@ namespace Functions.API.Tests
             var nullLogger = new NullLogger<SubscriberService>();
             var fakeRepository = new FakeMailchimpRepository();
             var subscriberService = new SubscriberService(nullLogger, fakeRepository);
-            var newSubscriber = new NewSubscriber()
+            var newSubscriber = new NewSubscriberDto()
             {
                 Email = "new@example.org",
                 Name = "Marek",
@@ -27,7 +28,7 @@ namespace Functions.API.Tests
 
             //act
             await subscriberService.HandleMemberSubscriptionAsync(newSubscriber);
-            Member receivedMember = await fakeRepository.GetMemberAsync(newSubscriber.Email);
+            MemberDto receivedMember = await fakeRepository.GetMemberAsync(newSubscriber.Email);
 
             //assert
             Assert.Equal(newSubscriber.Email, receivedMember.EmailAddress);
@@ -41,7 +42,7 @@ namespace Functions.API.Tests
             var nullLogger = new NullLogger<SubscriberService>();
             var fakeRepository = new FakeMailchimpRepository();
             var subscriberService = new SubscriberService(nullLogger, fakeRepository);
-            var archivedSubscriber = new NewSubscriber()
+            var archivedSubscriber = new NewSubscriberDto()
             {
                 Email = "archived@example.org",
                 Name = "Archived",
@@ -55,7 +56,7 @@ namespace Functions.API.Tests
 
             //act
             await subscriberService.HandleMemberSubscriptionAsync(archivedSubscriber);
-            Member receivedMember = await fakeRepository.GetMemberAsync(archivedSubscriber.Email);
+            MemberDto receivedMember = await fakeRepository.GetMemberAsync(archivedSubscriber.Email);
 
             //assert
             Assert.Equal(archivedSubscriber.Email, receivedMember.EmailAddress);
@@ -69,7 +70,7 @@ namespace Functions.API.Tests
             var nullLogger = new NullLogger<SubscriberService>();
             var fakeRepository = new FakeMailchimpRepository();
             var subscriberService = new SubscriberService(nullLogger, fakeRepository);
-            var newSubscriber = new NewSubscriber()
+            var newSubscriber = new NewSubscriberDto()
             {
                 Email = "pending@example.org",
                 Name = "Marek",
@@ -78,7 +79,7 @@ namespace Functions.API.Tests
 
             //act
             await subscriberService.HandleMemberSubscriptionAsync(newSubscriber);
-            Member receivedMember = await fakeRepository.GetMemberAsync(newSubscriber.Email);
+            MemberDto receivedMember = await fakeRepository.GetMemberAsync(newSubscriber.Email);
             var memberHistory = fakeRepository.Members["pending@example.org"];
             
             //assert
@@ -95,7 +96,7 @@ namespace Functions.API.Tests
             var nullLogger = new NullLogger<SubscriberService>();
             var fakeRepository = new FakeMailchimpRepository();
             var subscriberService = new SubscriberService(nullLogger, fakeRepository);
-            var unsubscribedSubscriber = new NewSubscriber()
+            var unsubscribedSubscriber = new NewSubscriberDto()
             {
                 Email = "unsubscribed@example.org",
                 Name = "Unsubscribed",
@@ -110,7 +111,7 @@ namespace Functions.API.Tests
 
             //act
             await subscriberService.HandleMemberSubscriptionAsync(unsubscribedSubscriber);
-            Member receivedMember = await fakeRepository.GetMemberAsync(unsubscribedSubscriber.Email);
+            MemberDto receivedMember = await fakeRepository.GetMemberAsync(unsubscribedSubscriber.Email);
 
             //assert
             Assert.Equal(unsubscribedSubscriber.Email, receivedMember.EmailAddress);
@@ -124,7 +125,7 @@ namespace Functions.API.Tests
             var nullLogger = new NullLogger<SubscriberService>();
             var fakeRepository = new FakeMailchimpRepository();
             var subscriberService = new SubscriberService(nullLogger, fakeRepository);
-            var subscribedSubscriber = new NewSubscriber()
+            var subscribedSubscriber = new NewSubscriberDto()
             {
                 Email = "subscribed@example.org",
                 Name = "Subscribed",
@@ -139,7 +140,7 @@ namespace Functions.API.Tests
 
             //act
             await subscriberService.HandleMemberSubscriptionAsync(subscribedSubscriber);
-            Member receivedMember = await fakeRepository.GetMemberAsync(subscribedSubscriber.Email);
+            MemberDto receivedMember = await fakeRepository.GetMemberAsync(subscribedSubscriber.Email);
             var memberChanges = fakeRepository.Members["subscribed@example.org"];
             
             //assert

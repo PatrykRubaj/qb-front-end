@@ -3,22 +3,22 @@ services:
 #  functions_api:
 #    build: .
 #    ports:
-#      - "7071:7071"
+#      - "5002:7071"
 #    environment:
 #      AZURE_FUNCTIONS_ENVIRONMENT: "Development"
-#      AzureWebJobsStorage: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=https://azurite:10000/devstoreaccount1;QueueEndpoint=https://azurite:10001/devstoreaccount1;"
-#      AzureWebJobsMailchimpServiceQueue: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=https://azurite:10001/devstoreaccount1;"
-#      MongoDBConnectionString: "mongodb://mongo_database:5001"
-  azurite:
-    build: ./azurite
-    ports:
-      - "10000:10000"
-      - "10001:10001"
+#      AzureWebJobsStorage: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=https://azurite:5003/devstoreaccount1;QueueEndpoint=https://azurite:5004/devstoreaccount1;"
+#      AzureWebJobsMailchimpServiceQueue: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=https://azurite:5004/devstoreaccount1;"
+#      MongoDBConnectionString: "mongodb://mongo_database:5005"
+#  azurite:
+#    build: ./azurite
+#    ports:
+#      - "5003:10000"
+#      - "5004:10001"
   mongo_database:
     build: ./mongodb
     command: mongod --bind_ip_all --noauth
     restart: always
     ports:
-      - "5001:27017"
+      - "5005:27017"
     environment:
       MONGO_INITDB_DATABASE: QuantumBudget

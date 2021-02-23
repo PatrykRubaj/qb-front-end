@@ -1,0 +1,15 @@
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\QuantumBudget.Repositories.deps.json
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\QuantumBudget.Repositories.dll
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\ref\QuantumBudget.Repositories.dll
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\QuantumBudget.Repositories.pdb
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\QuantumBudget.Model.dll
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\bin\Debug\net5.0\QuantumBudget.Model.pdb
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.csprojAssemblyReference.cache
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.AssemblyInfoInputs.cache
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.AssemblyInfo.cs
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.csproj.CoreCompileInputs.cache
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.csproj.CopyComplete
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.dll
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\ref\QuantumBudget.Repositories.dll
+C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Repositories\obj\Debug\net5.0\QuantumBudget.Repositories.pdb
