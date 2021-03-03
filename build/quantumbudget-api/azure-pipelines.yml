@@ -66,10 +66,10 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        projects: '**/*Tests/*.csproj'
-        arguments: '-r ./TestResults --logger trx'
+        projects: '$(workingDirectory)/src/quantumbudget-api/*Tests/*.csproj'
+        arguments: '-r $(workingDirectory)/TestResults --logger trx'
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
         testRunner: VSTest
-        testResultsFiles: './TestResults/*.trx'
+        testResultsFiles: '$(workingDirectory)/TestResults/*.trx'
