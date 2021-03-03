@@ -31,7 +31,6 @@ stages:
       inputs:
         command: 'test'
         projects: '$(workingDirectory)/src/quantumbudget-api/*Tests/*.csproj'
-        arguments: '-r $(workingDirectory)/TestResults --logger trx'
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
