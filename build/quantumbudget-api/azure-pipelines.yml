@@ -19,8 +19,6 @@ variables:
 stages:
 - stage: Test
   displayName: Test build
-  dependsOn: Build
-  condition: succeeded()
 
   jobs:
   - job: Test
@@ -41,6 +39,8 @@ stages:
         testResultsFiles: '$(workingDirectory)/TestResults/*.trx'
 - stage: Build
   displayName: Build stage
+  dependsOn: Test
+  condition: succeeded()
 
   jobs:
   - job: Build
