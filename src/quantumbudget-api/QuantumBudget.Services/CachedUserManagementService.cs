@@ -16,16 +16,16 @@ namespace QuantumBudget.Services
             _memoryCache = memoryCache;
         }
         
-        public async Task<UserInfoDto> GetUserInfo(string userAccessToken)
+        public async Task<UserInfoDto> GetUserInfoAsync(string userAccessToken)
         {
-            return await _userManagementService.GetUserInfo(userAccessToken);
+            return await _userManagementService.GetUserInfoAsync(userAccessToken);
         }
 
-        public async Task<Auth0UserDto> GetAuth0User(string userId)
+        public async Task<Auth0UserDto> GetAuth0UserAsync(string userId)
         {
             if (!_memoryCache.TryGetValue(userId, out Auth0UserDto user))
             {
-                user = await _userManagementService.GetAuth0User(userId);
+                user = await _userManagementService.GetAuth0UserAsync(userId);
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
@@ -38,19 +38,19 @@ namespace QuantumBudget.Services
             return user;
         }
 
-        public async Task UpdateAppMetadata(string userId, object userAppMetadataDto)
+        public async Task UpdateAppMetadataAsync(string userId, UserAppMetadataWriteDto userAppMetadataDto)
         {
-            await _userManagementService.UpdateAppMetadata(userId, userAppMetadataDto);
+            await _userManagementService.UpdateAppMetadataAsync(userId, userAppMetadataDto);
         }
 
-        public async Task AssignRole(string userId, Auth0Role role)
+        public async Task AssignRoleAsync(string userId, string roleName)
         {
-            await _userManagementService.AssignRole(userId, role);
+            await _userManagementService.AssignRoleAsync(userId, roleName);
         }
 
-        public async Task DeleteRole(string userId, Auth0Role role)
+        public async Task DeleteRoleAsync(string userId, string roleName)
         {
-            await _userManagementService.DeleteRole(userId, role);
+            await _userManagementService.DeleteRoleAsync(userId, roleName);
         }
     }
 }

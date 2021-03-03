@@ -16,16 +16,18 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using QuantumBudget.API.Middleware;
 using QuantumBudget.Model.Options;
 using QuantumBudget.API.Policies;
 using QuantumBudget.API.Validators;
 using QuantumBudget.Model.DTOs.Auth0;
-using QuantumBudget.Model.DTOs.Mailchimp;
+using QuantumBudget.Model.Mappers;
 using QuantumBudget.Model.Models;
 using QuantumBudget.Repositories;
+using QuantumBudget.Repositories.Auth0;
+using QuantumBudget.Repositories.HttpClients;
+using QuantumBudget.Repositories.Stripe;
 using QuantumBudget.Services;
 using QuantumBudget.Services.Mailchimp;
 using Stripe;
@@ -34,11 +36,13 @@ namespace QuantumBudget.API
 {
     public class Startup
     {
+        private readonly IWebHostEnvironment _env;
         private readonly string DevelopmentOrigins = "_developmentOrigins";
         private readonly string ProductionOrigins = "_productionOrigins";
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            _env = env;
             Configuration = configuration;
         }
 
@@ -47,6 +51,15 @@ namespace QuantumBudget.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<Auth0Configuration>(Configuration.GetSection(
+                Auth0Configuration.Auth0));
+            services.Configure<StripeOptions>(Configuration.GetSection(
+                StripeOptions.Stripe));
+            services.Configure<GoogleApiCredentials>(Configuration.GetSection(
+                GoogleApiCredentials.GoogleApi));
+            services.Configure<MailchimpConfiguration>(Configuration.GetSection(
+                MailchimpConfiguration.Mailchimp));
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: DevelopmentOrigins,
@@ -113,13 +126,13 @@ namespace QuantumBudget.API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = $"{Configuration.GetValue(typeof(string), "Auth0_Instance")}";
+                    options.Authority = Configuration.GetValue<string>("Auth0:Instance");
                     options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         ValidateAudience = true,
                         ValidateIssuer = true,
-                        ValidAudiences = new string[] {$"{Configuration.GetValue(typeof(string), "Auth0_Audience")}"},
+                        ValidAudiences = new string[] {$"{Configuration.GetValue(typeof(string), "Auth0:Audience")}"},
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
                 });
@@ -128,45 +141,64 @@ namespace QuantumBudget.API
             {
                 options.AddPolicy(Auth0Permissions.BudgetRead,
                     policy => policy.Requirements.Add(new HasPermissionRequirement(Auth0Permissions.BudgetRead,
-                        $"{Configuration.GetValue(typeof(string), "Auth0_Instance")}")));
+                        Configuration.GetValue<string>("Auth0:Instance"))));
                 options.AddPolicy(Auth0Permissions.BudgetWrite,
                     policy => policy.Requirements.Add(new HasPermissionRequirement(Auth0Permissions.BudgetWrite,
-                        $"{Configuration.GetValue(typeof(string), "Auth0_Instance")}")));
+                        Configuration.GetValue<string>("Auth0:Instance"))));
                 options.AddPolicy(Auth0Permissions.BudgetGenerate,
                     policy => policy.Requirements.Add(new HasPermissionRequirement(Auth0Permissions.BudgetGenerate,
-                        $"{Configuration.GetValue(typeof(string), "Auth0_Instance")}")));
+                        Configuration.GetValue<string>("Auth0:Instance"))));
             });
 
             services.AddHttpClient();
             services.AddLogging();
             services.AddMemoryCache();
 
-            services.Configure<StripeOptions>(Configuration.GetSection(
-                StripeOptions.Stripe));
-            services.Configure<GoogleApiCredentials>(Configuration.GetSection(
-                GoogleApiCredentials.GoogleApi));
+            services.AddHttpClient<Auth0Client>();
+            services.AddHttpClient<MailchimpClient>();
 
             services.AddScoped<SubscriberService>();
 
             // First, add our service to the collection.
             services.AddScoped<IUserManagementService, UserManagementService>();
-
-            // Finally, decorate Decorator with the OtherDecorator type.
-            // As you can see, OtherDecorator requires a separate service, IService. We can get that from the provider argument.
+            // Finally, decorate UserManagementService with the CachedUserManagementService type.
+            // As you can see, CachedUserManagementService requires a separate service, IMemoryCache. We can get that from the provider argument.
             services.Decorate<IUserManagementService>((inner, provider) =>
                 new CachedUserManagementService(inner, provider.GetRequiredService<IMemoryCache>()));
 
             services.AddScoped<SpreadsheetGeneratingService>();
             services.AddScoped<GoogleSpreadsheetService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+
             services.AddScoped<JwtToken>();
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
+
             services.AddScoped<CustomerService>();
+            services.AddScoped<Stripe.Checkout.SessionService>();
+            services.AddScoped<Stripe.BillingPortal.SessionService>();
             services.AddScoped<StripeEventHandlerService>();
             services.AddScoped<StripePaymentService>();
             services.AddScoped<IStripeClient>(provider =>
-                new StripeClient(Environment.GetEnvironmentVariable("Stripe__SecretKey")));
+                new StripeClient(Configuration.GetValue<string>("Stripe:SecretKey")));
             services.AddScoped<IMailchimpRepository, MailchimpRepository>();
+
+            if (_env.IsProduction())
+            {
+                services.AddScoped<IPriceNameToIdMapper, ProdPriceNameToIdMapper>();
+                services.AddScoped<IAuth0RoleMapper, ProdAuth0RoleMapper>();
+            }
+            else
+            {
+                services.AddScoped<IPriceNameToIdMapper, DevPriceNameToIdMapper>();
+                services.AddScoped<IAuth0RoleMapper, DevAuth0RoleMapper>();
+            }
+
             services.AddScoped<GoogleAuthService>();
+            services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
+            services.AddScoped<IStripeCheckoutSessionRepository, StripeCheckoutSessionRepository>();
+            services.AddScoped<IStripeBillingPortalSessionRepository, StripeBillingPortalSessionRepository>();
             services.AddSingleton<IBudgetsDatabaseSettings>(GetMongoDBSettings());
             services.AddSingleton<IBudgetsService, BudgetsService>();
         }
@@ -199,7 +231,6 @@ namespace QuantumBudget.API
             app.UseGetJwtToken();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-            
         }
 
         private BudgetsDatabaseSettings GetMongoDBSettings()

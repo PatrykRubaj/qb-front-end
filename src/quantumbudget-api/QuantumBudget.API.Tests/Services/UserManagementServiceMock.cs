@@ -8,7 +8,7 @@ namespace QuantumBudget.API.Tests.Services
 {
     public class UserManagementServiceMock : IUserManagementService
     {
-        public async Task<UserInfoDto> GetUserInfo(string userAccessToken)
+        public async Task<UserInfoDto> GetUserInfoAsync(string userAccessToken)
         {
             return new UserInfoDto
             {
@@ -18,7 +18,7 @@ namespace QuantumBudget.API.Tests.Services
             };
         }
 
-        public async Task<Auth0UserDto> GetAuth0User(string userId)
+        public async Task<Auth0UserDto> GetAuth0UserAsync(string userId)
         {
             return new Auth0UserDto
             {
@@ -39,26 +39,31 @@ namespace QuantumBudget.API.Tests.Services
             };
         }
 
-        public async Task UpdateAppMetadata(string userId, object userAppMetadataDto)
+        public async Task UpdateAppMetadataAsync(string userId, UserAppMetadataWriteDto userAppMetadataDto)
         {
             throw new NotImplementedException();
         }
 
-        public async Task AssignRole(string userId, Auth0Role role)
+        public async Task UpdateAppMetadataAsync(string userId, object userAppMetadataDto)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteRole(string userId, Auth0Role role)
+        public async Task AssignRoleAsync(string userId, string roleName)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateAppMetadata(string userId, UserAppMetadataWriteSubscriptionInfoDto userAppMetadataWriteSubscriptionInfoDto)
+        public async Task DeleteRoleAsync(string userId,  string roleName)
         {
-            UpdatedAppMetadataWriteSubscriptionInfo = userAppMetadataWriteSubscriptionInfoDto;
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAppMetadata(string userId, UserAppMetadataWriteDto userAppMetadataWriteDto)
+        {
+            UpdatedAppMetadataWrite = userAppMetadataWriteDto;
         }
         
-        public UserAppMetadataWriteSubscriptionInfoDto UpdatedAppMetadataWriteSubscriptionInfo { get; private set; }
+        public UserAppMetadataWriteDto UpdatedAppMetadataWrite { get; private set; }
     }
 }

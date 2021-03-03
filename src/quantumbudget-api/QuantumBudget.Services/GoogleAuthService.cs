@@ -21,7 +21,7 @@ namespace QuantumBudget.Services
             _configuration = configuration?.Value ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<Auth0UserDto> GetNewAccessToken(Auth0UserDto user)
+        public async Task<Auth0UserDto> GetNewAccessTokenAsync(Auth0UserDto user)
         {
             var client = _clientFactory.CreateClient();
             var googleIdentity = user.Identities?.FirstOrDefault(x => x.Provider == "google-oauth2");

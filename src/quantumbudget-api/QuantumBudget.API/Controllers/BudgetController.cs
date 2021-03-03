@@ -91,7 +91,7 @@ namespace QuantumBudget.API.Controllers
 
             _log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
 
-            var auth0User = await _userManagementService.GetAuth0User(_jwtToken.UserId);
+            var auth0User = await _userManagementService.GetAuth0UserAsync(_jwtToken.UserId);
 
             if (_budget.User.AgreedToNewsletter)
             {
@@ -254,14 +254,13 @@ namespace QuantumBudget.API.Controllers
 
             if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
-                var refreshedUser = await _googleAuthService.GetNewAccessToken(user);
+                var refreshedUser = await _googleAuthService.GetNewAccessTokenAsync(user);
                 if (_memoryCache.TryGetValue(user.UserId, out Auth0UserDto cachedUser))
                 {
                     _memoryCache.Remove(user.UserId);
                 }
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    // Keep in cache for this time, reset time if accessed.
                     .SetAbsoluteExpiration(
                         TimeSpan.FromSeconds(refreshedUser.Identities.FirstOrDefault()?.ExpiresIn ?? 0));
 

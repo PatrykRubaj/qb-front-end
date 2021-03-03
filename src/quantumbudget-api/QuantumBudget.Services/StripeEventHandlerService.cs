@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using QuantumBudget.Model.DTOs.Auth0;
+using QuantumBudget.Model.DTOs.Stripe;
+using QuantumBudget.Model.Options;
+using QuantumBudget.Repositories.Stripe;
 using Stripe;
 using Stripe.Checkout;
 
@@ -10,62 +14,85 @@ namespace QuantumBudget.Services
     public class StripeEventHandlerService
     {
         private readonly IUserManagementService _userManagementService;
-        private readonly StripePaymentService _paymentService;
+        private readonly IStripeCustomerRepository _stripeCustomerRepository;
+        private readonly StripeOptions _stripeOptions;
 
-        public StripeEventHandlerService(IUserManagementService userManagementService, StripePaymentService paymentService)
+        public StripeEventHandlerService(IUserManagementService userManagementService,
+            IOptions<StripeOptions> stripeOptions, IStripeCustomerRepository stripeCustomerRepository)
         {
             _userManagementService = userManagementService;
-            _paymentService = paymentService;
+            _stripeCustomerRepository = stripeCustomerRepository;
+            _stripeOptions = stripeOptions.Value;
         }
-        
+
+        public Event GetValidatedEvent(string json, string stripeSignature)
+        {
+            try
+            {
+                Event stripeEvent = EventUtility.ConstructEvent(
+                    json,
+                    stripeSignature,
+                    _stripeOptions.WebhookSecret
+                );
+                Console.WriteLine($"Webhook notification with type: {stripeEvent.Type} found for {stripeEvent.Id}");
+
+                return stripeEvent;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Something failed {e}");
+                return null;
+            }
+        }
+
         public async Task SessionCompletedAsync(Session session)
         {
             string sessionId = session?.Id ?? string.Empty;
             string auth0UserId = session?.ClientReferenceId ?? string.Empty;
-            
-            await _userManagementService.AssignRole(auth0UserId, new Auth0Role("Basic"));
+
+            await _userManagementService.AssignRoleAsync(auth0UserId, "basic");
         }
 
-        public async Task InvoicePaid(Invoice invoice)
+        public async Task InvoicePaidAsync(Invoice invoice)
         {
-            Customer customer = await _paymentService.GetCustomer(invoice.CustomerId);
+            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(invoice.CustomerId);
 
-            string auth0UserId = customer.Metadata.GetValueOrDefault("auth0UserId") ?? string.Empty;
-            await _userManagementService.UpdateAppMetadata(auth0UserId, new UserAppMetadataWriteSubscriptionInfoDto()
-            {
-                SubscriptionPlan = SubscriptionPlan.Basic,
-                SubscriptionExpires = new DateTimeOffset(invoice.PeriodEnd)
-            });
+            await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
+                new UserAppMetadataWriteDto()
+                {
+                    SubscriptionPlan = SubscriptionPlan.Basic,
+                    SubscriptionExpires = new DateTimeOffset(invoice.PeriodEnd)
+                });
         }
 
-        public async Task InvoiceFailed(Invoice invoice)
+        public async Task InvoiceFailedAsync(Invoice invoice)
         {
-            Customer customer = await _paymentService.GetCustomer(invoice.CustomerId);
+            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(invoice.CustomerId);
 
-            string auth0UserId = customer.Metadata.GetValueOrDefault("auth0UserId") ?? throw new ArgumentNullException(nameof(auth0UserId));
-            await _userManagementService.UpdateAppMetadata(auth0UserId, new UserAppMetadataWriteSubscriptionInfoDto()
-            {
-                SubscriptionPlan = SubscriptionPlan.Free,
-                SubscriptionExpires = new DateTimeOffset(invoice.PeriodEnd)
-            });
-            
-            await _userManagementService.DeleteRole(auth0UserId, new Auth0Role("Basic"));
-            await _userManagementService.AssignRole(auth0UserId, new Auth0Role("Free"));
+            await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
+                new UserAppMetadataWriteDto()
+                {
+                    SubscriptionPlan = SubscriptionPlan.Free,
+                    SubscriptionExpires = new DateTimeOffset(invoice.PeriodEnd)
+                });
+
+            await _userManagementService.DeleteRoleAsync(customer.Auth0Id, "basic");
+            await _userManagementService.AssignRoleAsync(customer.Auth0Id, "free");
         }
 
-        public async Task SubscriptionDeleted(Subscription subscriptionDeleted)
+        public async Task SubscriptionDeletedAsync(Subscription subscriptionDeleted)
         {
-            Customer customer = await _paymentService.GetCustomer(subscriptionDeleted.CustomerId);
+            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(subscriptionDeleted.CustomerId);
 
-            string auth0UserId = customer.Metadata?.GetValueOrDefault("auth0UserId") ?? throw new ArgumentNullException(nameof(auth0UserId));
-            await _userManagementService.UpdateAppMetadata(auth0UserId, new UserAppMetadataWriteSubscriptionInfoDto()
-            {
-                SubscriptionPlan = SubscriptionPlan.Free,
-                SubscriptionExpires = new DateTimeOffset(subscriptionDeleted.EndedAt ?? DateTime.UtcNow),
-            });
-            
-            await _userManagementService.DeleteRole(auth0UserId, new Auth0Role("Basic"));
-            await _userManagementService.AssignRole(auth0UserId, new Auth0Role("Free"));
+            await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
+                new UserAppMetadataWriteDto()
+                {
+                    SubscriptionPlan = SubscriptionPlan.Free,
+                    SubscriptionExpires = new DateTimeOffset(subscriptionDeleted.EndedAt ?? DateTime.UtcNow),
+                });
+
+            await _userManagementService.DeleteRoleAsync(customer.Auth0Id, "basic");
+            await _userManagementService.AssignRoleAsync(customer.Auth0Id, "free");
         }
     }
 }

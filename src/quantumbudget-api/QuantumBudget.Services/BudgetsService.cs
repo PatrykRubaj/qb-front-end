@@ -43,14 +43,13 @@ namespace QuantumBudget.Services
             }
             catch (Exception e)
             {
-                _log.LogInformation($"Exploded: {JsonConvert.SerializeObject(_settings)}");
+                _log.LogError($"Exploded: {JsonConvert.SerializeObject(_settings)}");
                 throw;
             }
         }
 
         public async Task<Budget> GetByUserId(string userId)
         {
-            _log.LogInformation($"BudgetsService ctor: DatabaseName: {_settings.DatabaseName}, BudgetsCollectionName: {_settings.BudgetsCollectionName}, connection string: {_settings.MongoDBConnectionString}");
             var budgets = await _budgets.FindAsync(x => x.UserId == userId);
             return await budgets?.FirstOrDefaultAsync();
         }

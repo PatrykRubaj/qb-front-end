@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d2484266-73c3-444a-b2b9-67ae3a62e928" name="patry@PATRYK-LAPTOP 2021-03-03 13:14:39" runUser="PATRYK-LAPTOP\patry" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2021-03-03T13:14:39.6212980+01:00" queuing="2021-03-03T13:14:39.6212988+01:00" start="2021-03-03T13:14:38.3355134+01:00" finish="2021-03-03T13:14:39.6259843+01:00" />
+  <TestSettings name="default" id="7b8064ad-7f32-44af-9c15-c13330e5f9d7">
+    <Deployment runDeploymentRoot="patry_PATRYK-LAPTOP_2021-03-03_13_14_39" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3aa76f6f-1791-455b-803c-045b9933b6fb" testId="38d72cad-3ec2-56a0-70a5-47292376db68" testName="QuantumBudget.Services.Tests.StripePaymentServiceTest.WhenCreatingCustomer_UpdateAppMetadataInAuth0" computerName="PATRYK-LAPTOP" duration="00:00:00.0056175" startTime="2021-03-03T13:14:39.5124379+01:00" endTime="2021-03-03T13:14:39.5124874+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3aa76f6f-1791-455b-803c-045b9933b6fb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="QuantumBudget.Services.Tests.StripePaymentServiceTest.WhenCreatingCustomer_UpdateAppMetadataInAuth0" storage="c:\business\clients\myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\quantumbudget.services.tests\bin\debug\net5.0\quantumbudget.services.tests.dll" id="38d72cad-3ec2-56a0-70a5-47292376db68">
+      <Execution id="3aa76f6f-1791-455b-803c-045b9933b6fb" />
+      <TestMethod codeBase="C:\Business\Clients\Myself\quantumbudget\quantumbudget-backend\src\quantumbudget-api\QuantumBudget.Services.Tests\bin\Debug\net5.0\QuantumBudget.Services.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="QuantumBudget.Services.Tests.StripePaymentServiceTest" name="WhenCreatingCustomer_UpdateAppMetadataInAuth0" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="38d72cad-3ec2-56a0-70a5-47292376db68" executionId="3aa76f6f-1791-455b-803c-045b9933b6fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.3+1b45f5407b (64-bit .NET 5.0.3)&#xD;
+[xUnit.net 00:00:00.56]   Discovering: QuantumBudget.Services.Tests&#xD;
+[xUnit.net 00:00:00.59]   Discovered:  QuantumBudget.Services.Tests&#xD;
+[xUnit.net 00:00:00.59]   Starting:    QuantumBudget.Services.Tests&#xD;
+[xUnit.net 00:00:00.65]   Finished:    QuantumBudget.Services.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

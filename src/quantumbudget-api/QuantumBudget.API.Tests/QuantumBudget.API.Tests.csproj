@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuantumBudget.API\QuantumBudget.API.csproj" />
+    <ProjectReference Include="..\QuantumBudget.Services.Tests\QuantumBudget.Services.Tests.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,143 +7,60 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QuantumBudget.Model.DTOs.Auth0;
+using QuantumBudget.Model.Mappers;
+using QuantumBudget.Repositories.Auth0;
+using QuantumBudget.Repositories.HttpClients;
 
 namespace QuantumBudget.Services
 {
     public interface IUserManagementService
     {
-        Task<UserInfoDto> GetUserInfo(string userAccessToken);
-        Task<Auth0UserDto> GetAuth0User(string userId);
-        Task UpdateAppMetadata(string userId, object userAppMetadataDto);
-        Task AssignRole(string userId, Auth0Role role);
-        Task DeleteRole(string userId, Auth0Role role);
+        Task<UserInfoDto> GetUserInfoAsync(string userAccessToken);
+        Task<Auth0UserDto> GetAuth0UserAsync(string userId);
+        Task UpdateAppMetadataAsync(string userId, UserAppMetadataWriteDto userAppMetadataDto);
+        Task AssignRoleAsync(string userId, string roleName);
+        Task DeleteRoleAsync(string userId, string roleName);
     }
 
     public class UserManagementService : IUserManagementService
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<UserManagementService> _log;
+        private readonly IAuth0RoleMapper _auth0RoleMapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IUserInfoRepository _userInfoRepository;
 
-        private readonly string _tenant;
-        private readonly string _clientId;
-        private readonly string _clientSecret;
-
-
-        public UserManagementService(IHttpClientFactory clientFactory, IConfiguration configuration,
-            ILogger<UserManagementService> log)
+        public UserManagementService(IAuth0RoleMapper auth0RoleMapper,
+            IUserRepository userRepository, IRoleRepository roleRepository, IUserInfoRepository userInfoRepository)
         {
-            _clientFactory = clientFactory;
-            _configuration = configuration;
-            _log = log;
-            _tenant = configuration.GetValue<string>("Auth0_Instance");
-            _clientId = configuration.GetValue<string>("Auth0_ClientId");
-            _clientSecret = configuration.GetValue<string>("Auth0_ClientSecret");
+            _auth0RoleMapper = auth0RoleMapper;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _userInfoRepository = userInfoRepository;
         }
 
-        public async Task<UserInfoDto> GetUserInfo(string userAccessToken)
+        public async Task<UserInfoDto> GetUserInfoAsync(string userAccessToken)
         {
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"{userAccessToken}");
-            using var httpResponse = await client.GetAsync($"{_tenant}userinfo");
-            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
-            var userInfo = JsonConvert.DeserializeObject<UserInfoDto>(responseAsString);
-
-            return userInfo;
+            return await _userInfoRepository.GetUserInfo(userAccessToken);
         }
 
-        public async Task<Auth0UserDto> GetAuth0User(string userId)
+        public async Task<Auth0UserDto> GetAuth0UserAsync(string userId)
         {
-            var managementToken = await GetManagementToken();
-
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {managementToken.AccessToken}");
-
-            using var httpResponse = await client.GetAsync($"{_tenant}api/v2/users/{userId}");
-            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
-            Console.WriteLine(responseAsString);
-            var auth0User = JsonConvert.DeserializeObject<Auth0UserDto>(responseAsString);
-            return auth0User;
+            return await _userRepository.GetAsync(userId);
         }
 
-        public async Task UpdateAppMetadata(string userId, object userAppMetadataDto)
+        public async Task UpdateAppMetadataAsync(string userId, UserAppMetadataWriteDto userAppMetadataDto)
         {
-            var jsonContent = JsonConvert.SerializeObject(new {app_metadata = userAppMetadataDto});
-            var stringContent = new StringContent(jsonContent,
-                Encoding.UTF8, "application/json");
-            var managementToken = await GetManagementToken();
-
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {managementToken.AccessToken}");
-
-            using var httpResponse = await client.PatchAsync($"{_tenant}api/v2/users/{userId}", stringContent);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception(httpResponse.ReasonPhrase);
-            }
+            await _userRepository.UpdateAppMetadata(userId, userAppMetadataDto);
         }
 
-        public async Task AssignRole(string userId, Auth0Role role)
+        public async Task AssignRoleAsync(string userId, string roleName)
         {
-            var stringContent = new StringContent(JsonConvert.SerializeObject(new {roles = new string[] {role.RoleId}}),
-                Encoding.UTF8, "application/json");
-            var managementToken = await GetManagementToken();
-
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {managementToken.AccessToken}");
-
-            using var httpResponse = await client.PostAsync($"{_tenant}api/v2/users/{userId}/roles", stringContent);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception($"Error: {httpResponse.StatusCode}: {httpResponse.Content}");
-            }
+            await _roleRepository.AssignRole(userId, _auth0RoleMapper.MapToId(roleName));
         }
 
-        public async Task DeleteRole(string userId, Auth0Role role)
+        public async Task DeleteRoleAsync(string userId, string roleName)
         {
-            var stringContent = new StringContent(JsonConvert.SerializeObject(new {roles = new string[] {role.RoleId}}),
-                Encoding.UTF8, "application/json");
-            var managementToken = await GetManagementToken();
-
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {managementToken.AccessToken}");
-
-            var requestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Delete,
-                Content = stringContent,
-                RequestUri = new Uri($"{_tenant}api/v2/users/{userId}/roles")
-            };
-            using var httpResponse = await client.SendAsync(requestMessage);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception($"Error: {httpResponse.StatusCode}: {httpResponse.Content}");
-            }
-        }
-        
-        private async Task<TokenResponseDto> GetManagementToken()
-        {
-            var tokenRequest = new TokenRequestDto()
-            {
-                ClientId = _clientId,
-                ClientSecret = _clientSecret,
-                Audience = $"{_tenant}api/v2/",
-                GrantType = "client_credentials"
-            };
-            var tokenRequestJson = new StringContent(JsonConvert.SerializeObject(tokenRequest), Encoding.UTF8,
-                "application/json");
-
-            var client = _clientFactory.CreateClient();
-            using var httpResponse =
-                await client.PostAsync($"{_tenant}oauth/token", tokenRequestJson);
-
-            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
-            var authToken = JsonConvert.DeserializeObject<TokenResponseDto>(responseAsString);
-
-            return authToken;
+            await _roleRepository.DeleteRole(userId, _auth0RoleMapper.MapToId(roleName));
         }
     }
 }
