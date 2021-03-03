@@ -17,6 +17,28 @@ variables:
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
 
 stages:
+- stage: Test
+  displayName: Test build
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - job: Test
+    displayName: Test
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '$(workingDirectory)/src/quantumbudget-api/*Tests/*.csproj'
+        arguments: '-r $(workingDirectory)/TestResults --logger trx'
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: '$(workingDirectory)/TestResults/*.trx'
 - stage: Build
   displayName: Build stage
 
@@ -50,26 +72,3 @@ stages:
 
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
-
-- stage: Test
-  displayName: Test build
-  dependsOn: Build
-  condition: succeeded()
-
-  jobs:
-  - job: Test
-    displayName: Test
-    pool:
-      vmImage: $(vmImageName)
-
-    steps:
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'test'
-        projects: '$(workingDirectory)/src/quantumbudget-api/*Tests/*.csproj'
-        arguments: '-r $(workingDirectory)/TestResults --logger trx'
-    - task: PublishTestResults@2
-      condition: succeededOrFailed()
-      inputs:
-        testRunner: VSTest
-        testResultsFiles: '$(workingDirectory)/TestResults/*.trx'
