@@ -51,19 +51,25 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
-#- stage: Test
-#  displayName: Test build
-#  dependsOn: Build
-#  condition: succeeded()
-#
-#  jobs:
-#  - job: Test
-#    displayName: Test
-#    pool:
-#      vmImage: $(vmImageName)
-#
-#    steps:
-#    - task: DotNetCoreCLI@2
-#      inputs:
-#        command: 'test'
-#        projects: 'src/quantumbudget-api/QuantumBudget.API.Tests/*.csproj'
+- stage: Test
+  displayName: Test build
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - job: Test
+    displayName: Test
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        arguments: '-r ./TestResults --logger trx'
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: './TestResults/*.trx'
