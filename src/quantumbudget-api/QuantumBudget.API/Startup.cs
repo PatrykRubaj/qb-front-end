@@ -200,6 +200,8 @@ namespace QuantumBudget.API
             services.AddScoped<IStripeCheckoutSessionRepository, StripeCheckoutSessionRepository>();
             services.AddScoped<IStripeBillingPortalSessionRepository, StripeBillingPortalSessionRepository>();
             services.AddSingleton<IBudgetsDatabaseSettings>(GetMongoDBSettings());
+            
+            services.AddScoped<IStripePaymentService, StripePaymentService>();
             services.AddSingleton<IBudgetsService, BudgetsService>();
         }
 

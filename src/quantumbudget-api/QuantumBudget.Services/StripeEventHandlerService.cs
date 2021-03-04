@@ -14,14 +14,14 @@ namespace QuantumBudget.Services
     public class StripeEventHandlerService
     {
         private readonly IUserManagementService _userManagementService;
-        private readonly IStripeCustomerRepository _stripeCustomerRepository;
+        private readonly IStripePaymentService _stripePaymentService;
         private readonly StripeOptions _stripeOptions;
 
         public StripeEventHandlerService(IUserManagementService userManagementService,
-            IOptions<StripeOptions> stripeOptions, IStripeCustomerRepository stripeCustomerRepository)
+            IOptions<StripeOptions> stripeOptions, IStripePaymentService stripePaymentService)
         {
             _userManagementService = userManagementService;
-            _stripeCustomerRepository = stripeCustomerRepository;
+            _stripePaymentService = stripePaymentService;
             _stripeOptions = stripeOptions.Value;
         }
 
@@ -55,7 +55,7 @@ namespace QuantumBudget.Services
 
         public async Task InvoicePaidAsync(Invoice invoice)
         {
-            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(invoice.CustomerId);
+            StripeCustomerDto customer = await _stripePaymentService.GetCustomerAsync(invoice.CustomerId);
 
             await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
                 new UserAppMetadataWriteDto()
@@ -67,7 +67,7 @@ namespace QuantumBudget.Services
 
         public async Task InvoiceFailedAsync(Invoice invoice)
         {
-            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(invoice.CustomerId);
+            StripeCustomerDto customer = await _stripePaymentService.GetCustomerAsync(invoice.CustomerId);
 
             await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
                 new UserAppMetadataWriteDto()
@@ -82,7 +82,7 @@ namespace QuantumBudget.Services
 
         public async Task SubscriptionDeletedAsync(Subscription subscriptionDeleted)
         {
-            StripeCustomerDto customer = await _stripeCustomerRepository.GetAsync(subscriptionDeleted.CustomerId);
+            StripeCustomerDto customer = await _stripePaymentService.GetCustomerAsync(subscriptionDeleted.CustomerId);
 
             await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
                 new UserAppMetadataWriteDto()

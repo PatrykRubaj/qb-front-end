@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
-using QuantumBudget.Model.DTOs.Stripe;
 using Stripe;
 
-namespace QuantumBudget.Repositories.Stripe
+namespace QuantumBudget.Services
 {
-    public interface IStripeCustomerRepository
+    public interface IStripeCustomerService
     {
         Task<Customer> GetAsync(string customerId);
         Task<Customer> CreateAsync(CustomerCreateOptions newCustomer);

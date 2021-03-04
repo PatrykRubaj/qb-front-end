@@ -21,7 +21,7 @@ namespace QuantumBudget.API.Tests
         [Fact]
         public void Test1()
         {
-            Assert.Equal(true, true);
+            Assert.Equal(false, true);
         }
 
         [Fact]
@@ -34,9 +34,9 @@ namespace QuantumBudget.API.Tests
                 AccessToken = "accessToken",
             };
             IUserManagementService userManagementServiceMock = new UserManagementServiceMock();
-            StripeCustomerRepositoryMock stripeCustomerRepositoryMock = new StripeCustomerRepositoryMock();
+            StripePaymentServiceMock stripePaymentServiceMock = new StripePaymentServiceMock();
 
-            StripeEventHandlerService stripeEventHandlerService = new StripeEventHandlerService(userManagementServiceMock, stripeOptions, stripeCustomerRepositoryMock);
+            StripeEventHandlerService stripeEventHandlerService = new StripeEventHandlerService(userManagementServiceMock, stripeOptions, stripePaymentServiceMock);
                 
             var controller = new PaymentsController(jwtToken, stripeEventHandlerService, userManagementServiceMock, null);
             controller.ControllerContext = new ControllerContext()
@@ -67,10 +67,10 @@ namespace QuantumBudget.API.Tests
                 UserId = "google|patryk1",
                 AccessToken = "accessToken",
             };
-            IUserManagementService userManagementServiceMock = new UserManagementServiceMock();
-            StripeCustomerRepositoryMock stripeCustomerRepositoryMock = new StripeCustomerRepositoryMock();
+            UserManagementServiceMock userManagementServiceMock = new UserManagementServiceMock();
+            StripePaymentServiceMock stripePaymentServiceMock = new StripePaymentServiceMock();
 
-            StripeEventHandlerService stripeEventHandlerService = new StripeEventHandlerService(userManagementServiceMock, stripeOptions, stripeCustomerRepositoryMock);
+            StripeEventHandlerService stripeEventHandlerService = new StripeEventHandlerService(userManagementServiceMock, stripeOptions, stripePaymentServiceMock);
                 
             var controller = new PaymentsController(jwtToken, stripeEventHandlerService, userManagementServiceMock, null);
             controller.ControllerContext = new ControllerContext()

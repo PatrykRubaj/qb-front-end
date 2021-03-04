@@ -15,7 +15,7 @@ namespace QuantumBudget.Repositories.Stripe
             _customerService = customerService;
         }
 
-        public async Task<StripeCustomerDto> GetAsync(string customerId)
+        public async Task<Customer> GetAsync(string customerId)
         {
             Customer customer = await _customerService.GetAsync(customerId, new CustomerGetOptions()
             {
@@ -25,24 +25,10 @@ namespace QuantumBudget.Repositories.Stripe
                 }
             });
 
-            var stripeSubscription = new StripeSubscriptionDto()
-            {
-                Id = customer.Subscriptions?.FirstOrDefault()?.Id,
-                CustomerId = customer.Subscriptions?.FirstOrDefault()?.CustomerId,
-                Status = customer.Subscriptions?.FirstOrDefault()?.Status,
-            };
-            
-            var stripeCustomer = new StripeCustomerDto()
-            {
-                Id = customer.Id,
-                Auth0Id = customer.Metadata?.GetValueOrDefault("auth0UserId"),
-                Subscription = stripeSubscription,
-            };
-            
-            return stripeCustomer;
+            return customer;
         }
 
-        public async Task<StripeCustomerDto> CreateAsync(CreateCustomerDto newCustomer)
+        public async Task<Customer> CreateAsync(CustomerCreateOptions newCustomer)
         {
             var customerCreateOptions = new CustomerCreateOptions
             {
@@ -51,13 +37,7 @@ namespace QuantumBudget.Repositories.Stripe
                 Metadata = newCustomer.Metadata,
             };
 
-            var customer = await _customerService.CreateAsync(customerCreateOptions);
-
-            return new StripeCustomerDto()
-            {
-                Id = customer.Id,
-                Auth0Id = customer.Metadata?.GetValueOrDefault("auth0UserId"),
-            };
+            return await _customerService.CreateAsync(newCustomer);
         }
     }
 }

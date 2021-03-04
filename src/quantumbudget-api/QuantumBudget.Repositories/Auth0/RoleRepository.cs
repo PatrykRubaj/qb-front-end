@@ -48,7 +48,7 @@ namespace QuantumBudget.Repositories.Auth0
             {
                 Method = HttpMethod.Delete,
                 Content = stringContent,
-                RequestUri = new Uri($"api/v2/users/{userId}/roles"),
+                RequestUri = new Uri(httpClient.BaseAddress, $"api/v2/users/{userId}/roles"),
             };
 
             using var httpResponse = await httpClient.SendAsync(requestMessage);

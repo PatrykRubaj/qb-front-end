@@ -13,7 +13,7 @@ using Stripe.Checkout;
 
 namespace QuantumBudget.Services
 {
-    public class StripePaymentService
+    public class StripePaymentService : IStripePaymentService
     {
         private readonly IStripeCustomerRepository _stripeCustomerRepository;
         private readonly IUserManagementService _userManagementService;
@@ -35,21 +35,55 @@ namespace QuantumBudget.Services
 
         public async Task<StripeCustomerDto> GetCustomerAsync(string customerId)
         {
-            return await _stripeCustomerRepository.GetAsync(customerId);
+            var customer = await _stripeCustomerRepository.GetAsync(customerId);
+
+            var customersSubscription = customer.Subscriptions?.FirstOrDefault();
+            StripeSubscriptionDto stripeSubscription = null;
+            
+            if (customersSubscription != null)
+            {
+                stripeSubscription = new StripeSubscriptionDto()
+                {
+                    Id = customersSubscription.Id,
+                    CustomerId = customersSubscription.CustomerId,
+                    Status = customersSubscription.Status,
+                };
+            }
+
+            var stripeCustomer = new StripeCustomerDto()
+            {
+                Id = customer.Id,
+                Auth0Id = customer.Metadata?.GetValueOrDefault("auth0UserId"),
+                Subscription = stripeSubscription,
+            };
+
+            return stripeCustomer;
         }
 
         public async Task<StripeCustomerDto> CreateCustomerAsync(CreateCustomerDto newCustomer)
         {
-            var customer = await _stripeCustomerRepository.CreateAsync(newCustomer);
+            var customerCreateOptions = new CustomerCreateOptions
+            {
+                Email = newCustomer.Email,
+                Name = newCustomer.Name,
+                Metadata = newCustomer.Metadata,
+            };
+
+            var customer = await _stripeCustomerRepository.CreateAsync(customerCreateOptions);
+            var createdCustomer = new StripeCustomerDto()
+            {
+                Id = customer.Id,
+                Auth0Id = customer.Metadata?.GetValueOrDefault("auth0UserId"),
+            };
 
             //Update app_metadata for the user with Stripe Customer ID
-            await _userManagementService.UpdateAppMetadataAsync(customer.Auth0Id,
+            await _userManagementService.UpdateAppMetadataAsync(createdCustomer.Auth0Id,
                 new UserAppMetadataWriteDto()
                 {
-                    StripeCustomerId = customer.Id
+                    StripeCustomerId = createdCustomer.Id
                 });
 
-            return customer;
+            return createdCustomer;
         }
 
         public async Task<CreateCheckoutSessionResponseDto> CreateCheckoutSessionAsync(string stripeCustomerId,
