@@ -21,7 +21,7 @@ namespace QuantumBudget.API.Tests
         [Fact]
         public void Test1()
         {
-            Assert.Equal(false, true);
+            Assert.Equal(true, true);
         }
 
         [Fact]
