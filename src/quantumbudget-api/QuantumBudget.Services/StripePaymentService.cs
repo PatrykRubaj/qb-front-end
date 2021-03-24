@@ -18,41 +18,37 @@ namespace QuantumBudget.Services
         private readonly IStripeCustomerRepository _stripeCustomerRepository;
         private readonly IUserManagementService _userManagementService;
         private readonly IPriceNameToIdMapper _priceNameToIdMapper;
-        private readonly CustomerService _customerService;
         private readonly IStripeCheckoutSessionRepository _stripeCheckoutSessionRepository;
         private readonly IStripeBillingPortalSessionRepository _stripeBillingPortalSessionRepository;
 
         public StripePaymentService(IStripeCustomerRepository stripeCustomerRepository,
             IStripeCheckoutSessionRepository stripeCheckoutSessionRepository,
             IStripeBillingPortalSessionRepository stripeBillingPortalSessionRepository,
-            IUserManagementService userManagementService, IPriceNameToIdMapper priceNameToIdMapper,
-            CustomerService customerService)
+            IUserManagementService userManagementService, IPriceNameToIdMapper priceNameToIdMapper)
         {
             _stripeCustomerRepository = stripeCustomerRepository;
             _userManagementService = userManagementService;
             _priceNameToIdMapper = priceNameToIdMapper;
-            _customerService = customerService;
             _stripeCheckoutSessionRepository = stripeCheckoutSessionRepository;
             _stripeBillingPortalSessionRepository = stripeBillingPortalSessionRepository;
         }
 
         public async Task<StripeCustomerDto> GetCustomerAsync(string customerId)
         {
-            Customer customer = await _customerService.GetAsync(customerId, new CustomerGetOptions()
-            {
-                Expand = new List<string>()
-                {
-                    "subscriptions"
-                }
-            });
+            var customer = await _stripeCustomerRepository.GetAsync(customerId);
 
             var customersSubscription = customer.Subscriptions?.FirstOrDefault();
-            StripeSubscriptionDto stripeSubscription = new StripeSubscriptionDto()
+            StripeSubscriptionDto stripeSubscription = null;
+            
+            if (customersSubscription != null)
             {
-                Id = customersSubscription?.Id,
-                CustomerId = customersSubscription?.CustomerId,
-                Status = customersSubscription?.Status,
-            };
+                stripeSubscription = new StripeSubscriptionDto()
+                {
+                    Id = customersSubscription.Id,
+                    CustomerId = customersSubscription.CustomerId,
+                    Status = customersSubscription.Status,
+                };
+            }
 
             var stripeCustomer = new StripeCustomerDto()
             {
