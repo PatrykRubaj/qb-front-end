@@ -86,7 +86,7 @@ namespace QuantumBudget.API.Controllers
 
             if (_jwtToken.UserId == null)
             {
-                return Unauthorized();
+                return new UnauthorizedResult();
             }
 
             _log.LogInformation($"Budget: {JsonConvert.SerializeObject(_budget)}");
@@ -112,9 +112,9 @@ namespace QuantumBudget.API.Controllers
 
             CleanUpTheData(_budget);
             var googleSpreadsheet = GetRequestJsonForGoogle();
-            string googleResponse = await CreateSpreadsheet(auth0User, googleSpreadsheet);
+            string googleRespone = await CreateSpreadsheet(auth0User, googleSpreadsheet);
 
-            return Ok(googleResponse);
+            return Ok(googleRespone);
         }
 
         private async Task SaveBudgetAsync(string userId)

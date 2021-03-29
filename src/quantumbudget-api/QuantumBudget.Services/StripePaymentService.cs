@@ -83,6 +83,9 @@ namespace QuantumBudget.Services
                     StripeCustomerId = createdCustomer.Id
                 });
 
+            //TODO: Delete later - it should only be called when subscription is actually paid. 
+            await _userManagementService.AssignRoleAsync(createdCustomer.Auth0Id, "basic");
+            
             return createdCustomer;
         }
 
