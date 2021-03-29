@@ -1,0 +1,51 @@
+import { take, put, select, call } from 'redux-saga/effects';
+import paymentActions from '../actions/paymentActions';
+import * as paymentTypes from '../types/paymentTypes';
+import StripePaymentService from '../../services/stripePaymentsService';
+import { RootState } from '../reducers';
+import { PriceTier, User } from '../state';
+import { loadStripe } from '@stripe/stripe-js';
+import { saveState, getState } from './authSagas';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
+const getUser = (state: RootState): User => state.userSection.user;
+
+async function getSessionId(
+  accessToken: string,
+  price: PriceTier
+): Promise<string> {
+  const stripeService = new StripePaymentService(accessToken);
+  const sessionId = await stripeService.requestSessionId(price);
+
+  return sessionId;
+}
+
+async function redirectToStripeCheckout(
+  sessionId: string,
+  state: RootState
+): Promise<void> {
+  saveState(state);
+  const stripe = await stripePromise;
+  const { error } = await stripe.redirectToCheckout({
+    sessionId,
+  });
+}
+
+export function* requestSessionId() {
+  while (true) {
+    const { price } = yield take(paymentTypes.REQUEST_SESSION_ID);
+
+    const user: User = yield select(getUser);
+    const state: RootState = yield select(getState);
+
+    const sessionId = yield call(getSessionId, user.accessToken, price);
+    yield put(paymentActions.requestSessionIdFinished(sessionId));
+
+    if (sessionId != null) {
+      yield call(redirectToStripeCheckout, sessionId, state);
+    }
+  }
+}
+
+export default [requestSessionId];
