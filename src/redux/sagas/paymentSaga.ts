@@ -3,9 +3,10 @@ import paymentActions from '../actions/paymentActions';
 import * as paymentTypes from '../types/paymentTypes';
 import StripePaymentService from '../../services/stripePaymentsService';
 import { RootState } from '../reducers';
-import { PriceTier, User } from '../state';
+import { PriceTier, Route, User } from '../state';
 import { loadStripe } from '@stripe/stripe-js';
 import { saveState, getState } from './authSagas';
+import { useRouter } from 'next/router';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
@@ -16,9 +17,11 @@ async function getSessionId(
   price: PriceTier
 ): Promise<string> {
   const stripeService = new StripePaymentService(accessToken);
-  const sessionId = await stripeService.requestSessionId(price);
+  // const sessionId = await stripeService.requestSessionId(price);
+  // return sessionId;
 
-  return sessionId;
+  await stripeService.requestSessionId(price);
+  return '';
 }
 
 async function redirectToStripeCheckout(
@@ -32,6 +35,11 @@ async function redirectToStripeCheckout(
   });
 }
 
+function redirectToPaymentSuccessful() {
+  const history = useRouter();
+  history.push(Route.PaymentSuccessful);
+}
+
 export function* requestSessionId() {
   while (true) {
     const { price } = yield take(paymentTypes.REQUEST_SESSION_ID);
@@ -43,7 +51,8 @@ export function* requestSessionId() {
     yield put(paymentActions.requestSessionIdFinished(sessionId));
 
     if (sessionId != null) {
-      yield call(redirectToStripeCheckout, sessionId, state);
+      // yield call(redirectToStripeCheckout, sessionId, state);
+      yield call(redirectToPaymentSuccessful);
     }
   }
 }
