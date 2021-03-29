@@ -59,7 +59,7 @@ export default function ProfileMenu(props: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownVisible, setDropdownVisible] = React.useState(false);
   const router = useRouter();
-  const container = useRef();
+  const container = useRef(null);
 
   const closeDropdown = (event: MouseEvent) => {
     // event.preventDefault();
@@ -67,8 +67,8 @@ export default function ProfileMenu(props: Props) {
     console.log(event.target);
     if (
       container &&
-      container.current &&
-      !container.current.contains(event.target)
+      container?.current &&
+      !container?.current?.contains(event.target)
     ) {
       setDropdownVisible(false);
     }

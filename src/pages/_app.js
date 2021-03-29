@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }) {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        {process.env === 'production' ? (
+        {process.env.NODE_ENV === 'production' ? (
           <>
             <script
               async
@@ -24,7 +24,6 @@ function MyApp({ Component, pageProps }) {
             <script src="/ganalytics.js"></script>
           </>
         ) : null}
-
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"

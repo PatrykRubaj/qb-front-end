@@ -2,7 +2,6 @@ import { take, put, call } from 'redux-saga/effects';
 import * as appTypes from '../types/appTypes';
 import appActions from '../actions/appActions';
 import { RootState } from '../reducers';
-import { stateLoadFinished } from '../../features/user/slice';
 
 const getStateFromLocalStorage = (): RootState | null => {
   const state = localStorage.getItem('state');
