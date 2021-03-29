@@ -111,7 +111,7 @@ export function* budgetSave() {
           month < 10 ? '0' + month : month
         }-01`,
         user: {
-          agreedToNewsletter: userSection.agreedToNewsletter,
+          agreedToNewsletter: false,
           agreedToPrivacyPolicy: userSection.agreedToPrivacyPolicy,
           agreedToTermsOfService: userSection.agreedToTos,
         },

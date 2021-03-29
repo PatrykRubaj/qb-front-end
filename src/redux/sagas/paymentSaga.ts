@@ -6,7 +6,7 @@ import { RootState } from '../reducers';
 import { PriceTier, Route, User } from '../state';
 import { loadStripe } from '@stripe/stripe-js';
 import { saveState, getState } from './authSagas';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
@@ -35,9 +35,9 @@ async function redirectToStripeCheckout(
   });
 }
 
-function redirectToPaymentSuccessful() {
-  const history = useRouter();
-  history.push(Route.PaymentSuccessful);
+async function redirectToPaymentSuccessful(state: RootState) {
+  saveState(state);
+  await router.push(Route.PaymentSuccessful);
 }
 
 export function* requestSessionId() {
@@ -52,7 +52,7 @@ export function* requestSessionId() {
 
     if (sessionId != null) {
       // yield call(redirectToStripeCheckout, sessionId, state);
-      yield call(redirectToPaymentSuccessful);
+      yield call(redirectToPaymentSuccessful, state);
     }
   }
 }
