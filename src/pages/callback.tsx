@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { NextRouter, useRouter } from "next/router";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -16,7 +16,7 @@ interface DispatchProps {
 
 type Props = DispatchProps;
 
-const Callback: React.FC<Props> = ({ loadState, handleCallback }: Props) => {
+const Callback = ({ loadState, handleCallback }: Props) => {
   const router = useRouter();
   React.useEffect(() => {
     loadState(router);
@@ -28,10 +28,7 @@ const Callback: React.FC<Props> = ({ loadState, handleCallback }: Props) => {
       <Head>
         <title>Callback - Quantum Budget</title>
       </Head>
-      <LoaderWheel
-        description="It can take some time if the website wasn't used for a while."
-        title="Generating"
-      />
+      <LoaderWheel title="Logging in" description="Please wait." />
     </>
   );
 };

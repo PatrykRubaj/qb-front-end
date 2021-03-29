@@ -7,6 +7,7 @@ import authSagas from "./authSagas";
 import budgetSagas from "./budgetSagas";
 import appSagas from "./appSagas";
 import monthSagas from "./monthSagas";
+import paymentSagas from "./paymentSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -16,7 +17,7 @@ export default function* rootSaga() {
     incomeSagas.setIncomeFormValues(),
     incomeSagas.setPromptVisibility(),
     incomeSagas.moveIncome(),
-    ...categorySagas.map(cs => fork(cs)),
+    ...categorySagas.map((cs) => fork(cs)),
     subcategorySagas.deleteSubcategory(),
     subcategorySagas.addSubcategory(),
     subcategorySagas.editSubcategory(),
@@ -25,9 +26,10 @@ export default function* rootSaga() {
     subcategorySagas.enterSubcategoryAmountVisibility(),
     subcategorySagas.moveSubcategory(),
     countrySagas.setCountry(),
-    ...authSagas.map(as => fork(as)),
-    ...budgetSagas.map(as => fork(as)),
-    ...appSagas.map(as => fork(as)),
-    ...monthSagas.map(ms => fork(ms)),
+    ...authSagas.map((as) => fork(as)),
+    ...budgetSagas.map((as) => fork(as)),
+    ...appSagas.map((as) => fork(as)),
+    ...monthSagas.map((ms) => fork(ms)),
+    ...paymentSagas.map((ps) => fork(ps)),
   ]);
 }

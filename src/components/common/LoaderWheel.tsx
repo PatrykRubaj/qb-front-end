@@ -6,7 +6,7 @@ interface Props {
   description: string;
 }
 
-const WarningDialog: React.FC<Props> = (props: Props) => {
+const WarningDialog = (props: Props) => {
   const { title, description } = props;
 
   return (

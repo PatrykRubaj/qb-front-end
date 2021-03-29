@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, EntityStatus } from "../../../redux/state";
@@ -35,7 +35,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-const CategoryComponent: React.FC<Props> = ({
+const CategoryComponent = ({
   categories,
   formValues,
   setCategoryFormValues,
@@ -157,7 +157,7 @@ const CategoryComponent: React.FC<Props> = ({
                               <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={(e): void => onEditClick(e, category)}
+                                onClick={(e) => onEditClick(e, category)}
                                 disabled={
                                   category.status === EntityStatus.Editing
                                 }

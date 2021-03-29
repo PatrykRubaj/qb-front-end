@@ -10,7 +10,7 @@ interface Props {
   incomes: Income[];
 }
 
-const IncomeForm: React.FC<Props> = ({
+const IncomeForm = ({
   initialValues,
   addSaveNewIncome,
   incomeNameInputRef,

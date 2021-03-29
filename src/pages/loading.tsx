@@ -15,7 +15,7 @@ interface DispatchProps {
 
 type Props = DispatchProps;
 
-const Callback: React.FC<Props> = ({ loadState }: Props) => {
+const Callback = ({ loadState }: Props) => {
   const router = useRouter();
   React.useEffect(() => {
     // loadState(router);

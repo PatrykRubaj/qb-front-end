@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const PrivacyPolicy: React.FC = () => {
+const PrivacyPolicy = () => {
   return (
     <>
       <Head>

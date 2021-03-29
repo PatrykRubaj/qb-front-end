@@ -7,10 +7,7 @@ interface Props {
   placeholder?: string;
 }
 
-const FormikFieldWithErrorMessage: React.FC<Props> = ({
-  name,
-  placeholder,
-}: Props) => {
+const FormikFieldWithErrorMessage = ({ name, placeholder }: Props) => {
   return (
     <Field name={name}>
       {({ form, field }: FieldProps): JSX.Element | null => {

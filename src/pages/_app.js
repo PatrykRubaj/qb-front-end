@@ -1,9 +1,9 @@
-import Head from "next/head";
-import "../styles/BootstrapCustomization.scss";
-import NavigationBar from "../components/common/navigation-bar";
-import Footer from "../components/common/footer";
-import { Provider } from "react-redux";
-import getStore from "../redux/getStore";
+import Head from 'next/head';
+import '../styles/BootstrapCustomization.scss';
+import NavigationBar from '../components/common/navigation-bar';
+import Footer from '../components/common/footer';
+import { Provider } from 'react-redux';
+import getStore from '../redux/getStore';
 
 const store = getStore();
 
@@ -13,9 +13,9 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=yes"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        {process.env === "production" ? (
+        {process.env === 'production' ? (
           <>
             <script
               async

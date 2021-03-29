@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { RootState } from "../../../redux/reducers";
 import { Dispatch } from "redux";
@@ -31,7 +31,7 @@ const months = [
   { name: "December", number: 12 },
 ];
 
-const MonthSelector: React.FC<Props> = (props: Props) => {
+const MonthSelector = (props: Props) => {
   const { setMonth } = props;
   React.useEffect(() => {
     const currentMonth = new Date().getMonth() + 1;

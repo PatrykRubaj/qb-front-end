@@ -1,10 +1,10 @@
-import { Income, IncomeSection, EntityStatus } from "../state";
-import { IncomeActionTypes } from "../types/incomeTypes";
-import { initialState } from "../initialsState";
-import * as types from "../types/incomeTypes";
-import arrayMove from "array-move";
-import * as appTypes from "../types/appTypes";
-import * as budgetTypes from "../types/budgetTypes";
+import { Income, IncomeSection, EntityStatus } from '../state';
+import { IncomeActionTypes } from '../types/incomeTypes';
+import { initialState } from '../initialsState';
+import * as types from '../types/incomeTypes';
+import arrayMove from 'array-move';
+import * as appTypes from '../types/appTypes';
+import * as budgetTypes from '../types/budgetTypes';
 
 export default function incomeReducer(
   incomeSection: IncomeSection = initialState.incomeSection,
@@ -75,7 +75,7 @@ export default function incomeReducer(
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
       return {
         ...initialState.incomeSection,
-        ...action.state.incomeSection,
+        ...action.payload.incomeSection,
       };
     case budgetTypes.REQUEST_BUDGET_READ_FINISHED:
       return {

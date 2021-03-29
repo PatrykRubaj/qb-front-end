@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Route } from "../../redux/state";
+import Link from 'next/link';
+import { Route } from '../../redux/state';
 
 const footer = () => (
   <footer className="pt-4 my-md-5 pt-md-5 border-top mt-4">
@@ -31,6 +31,13 @@ const footer = () => (
             <Link href={`${Route.PrivacyPolicy}#cookie-policy`}>
               <a className="text-muted" rel="nofollow">
                 Cookie policy
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href={Route.TermsOfService}>
+              <a className="text-muted" rel="nofollow">
+                Terms of Service
               </a>
             </Link>
           </li>

@@ -1,10 +1,10 @@
-import { SubcategorySection, EntityStatus, Subcategory } from "../state";
-import { SubcategoryActionTypes } from "../types/subcategoryTypes";
-import { initialState } from "../initialsState";
-import * as types from "../types/subcategoryTypes";
-import arrayMove from "array-move";
-import * as appTypes from "../types/appTypes";
-import * as budgetTypes from "../types/budgetTypes";
+import { SubcategorySection, EntityStatus, Subcategory } from '../state';
+import { SubcategoryActionTypes } from '../types/subcategoryTypes';
+import { initialState } from '../initialsState';
+import * as types from '../types/subcategoryTypes';
+import arrayMove from 'array-move';
+import * as appTypes from '../types/appTypes';
+import * as budgetTypes from '../types/budgetTypes';
 
 export default function subcategoryReducer(
   subcategorySection: SubcategorySection = initialState.subcategorySection,
@@ -109,7 +109,7 @@ export default function subcategoryReducer(
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
       return {
         ...initialState.subcategorySection,
-        ...action.state.subcategorySection,
+        ...action.payload.subcategorySection,
       };
 
     case budgetTypes.REQUEST_BUDGET_READ_FINISHED:

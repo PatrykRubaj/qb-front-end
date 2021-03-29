@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { Category, Subcategory } from "../../../redux/state";
-import { Formik, Form, FieldArray, useFormikContext } from "formik";
-import * as Yup from "yup";
-import FormikFieldWithErrorMessage from "../../common/FormikFieldWithErrorMessage";
-import { RootState } from "../../../redux/reducers";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import subcategoryActions from "../../../redux/actions/subcategoryActions";
-import * as subcategoryTypes from "../../../redux/types/subcategoryTypes";
+import React, { useEffect } from 'react';
+import { Category, Subcategory } from '../../../redux/state';
+import { Formik, Form, FieldArray, useFormikContext } from 'formik';
+import * as Yup from 'yup';
+import FormikFieldWithErrorMessage from '../../common/FormikFieldWithErrorMessage';
+import { RootState } from '../../../redux/reducers';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import subcategoryActions from '../../../redux/actions/subcategoryActions';
+import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
 
 interface DispatchProps {
   enterSubcategoryAmount: (id: string, amount: number) => void;
@@ -24,7 +24,7 @@ interface FormFields {
   subcategories: Subcategory[];
 }
 
-const SpendingPredictionComponent: React.FC<Props> = ({
+const SpendingPredictionComponent = ({
   categories,
   subcategories,
   enterSubcategoryAmount,
@@ -34,12 +34,12 @@ const SpendingPredictionComponent: React.FC<Props> = ({
       .of(
         Yup.object().shape({
           amount: Yup.number()
-            .typeError("Amount must be a number")
-            .required("Amount is required")
-            .min(0, "Amount must be >= 0"),
+            .typeError('Amount must be a number')
+            .required('Amount is required')
+            .min(0, 'Amount must be >= 0'),
         })
       )
-      .required("Must have subcategories"), // these constraints are shown if and only if inner constraints are satisfied
+      .required('Must have subcategories'), // these constraints are shown if and only if inner constraints are satisfied
   });
 
   const SaveDataToState = (): null => {
@@ -86,7 +86,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
               validateOnBlur={true}
               initialValues={initialValues}
               onSubmit={(values): void => {
-                console.log("sent ", values);
+                console.log('sent ', values);
               }}
               validationSchema={schema}
             >
@@ -114,7 +114,7 @@ const SpendingPredictionComponent: React.FC<Props> = ({
                           })
                         ) : (
                           <div className="alert alert-secondary" role="alert">
-                            You didn&apos;t add any subcategories to{" "}
+                            You didn&apos;t add any subcategories to{' '}
                             {category.name}
                           </div>
                         )}

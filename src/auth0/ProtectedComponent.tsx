@@ -1,10 +1,10 @@
-import * as React from "react";
+import React from 'react';
 
 interface ProtectedComponentProps {
   children?: React.ReactNode;
   notAuthenticated?: React.ReactNode;
-  currentTime?: Number;
-  expiresAt: Number;
+  currentTime?: number;
+  expiresAt: number;
 }
 
 const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = (
@@ -14,7 +14,6 @@ const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = (
     ? props.currentTime
     : new Date().getTime();
   const isAuthenticated = currentTime < props.expiresAt;
-  console.log("Authenticated: ", isAuthenticated);
   return <>{isAuthenticated ? props.children : props.notAuthenticated}</>;
 };
 

@@ -20,7 +20,7 @@ interface StateProps {
 
 type Props = StateProps;
 
-export const GeneratorResponse: React.FC<Props> = ({
+export const GeneratorResponse = ({
   spreadsheetUrl,
   errors,
   isNewsletterSubscriber,

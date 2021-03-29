@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Category, Subcategory, EntityStatus } from "../../../redux/state";
@@ -36,7 +36,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps;
 
-const SubcategoryComponent: React.FC<Props> = ({
+const SubcategoryComponent = ({
   categories,
   subcategories,
   addSubcategory,
@@ -179,9 +179,7 @@ const SubcategoryComponent: React.FC<Props> = ({
                         <button
                           type="button"
                           className="btn btn-secondary btn-sm ml-1"
-                          onClick={(e): void =>
-                            onSelectCategoryClick(e, category)
-                          }
+                          onClick={(e) => onSelectCategoryClick(e, category)}
                         >
                           Select category
                         </button>
@@ -230,7 +228,7 @@ const SubcategoryComponent: React.FC<Props> = ({
                                           }
                                           type="button"
                                           className="btn btn-secondary"
-                                          onClick={(e): void =>
+                                          onClick={(e) =>
                                             onSubcategoryEditClick(
                                               e,
                                               subcategory
@@ -280,7 +278,7 @@ const SubcategoryComponent: React.FC<Props> = ({
                                     <button
                                       type="button"
                                       className="btn btn-link p-0 alert-link border-0 align-baseline"
-                                      onClick={(e): void =>
+                                      onClick={(e) =>
                                         onSelectCategoryClick(e, category)
                                       }
                                     >

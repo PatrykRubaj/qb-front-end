@@ -10,7 +10,7 @@ interface Props {
   placeholder?: string;
 }
 
-const FieldWithErrorMessage: React.FC<Props> = (props: Props) => {
+const FieldWithErrorMessage = (props: Props) => {
   return (
     <>
       <input

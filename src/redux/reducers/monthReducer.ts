@@ -1,7 +1,7 @@
-import { MonthActionTypes } from "../types/monthTypes";
-import { initialState } from "../initialsState";
-import * as types from "../types/monthTypes";
-import * as appTypes from "../types/appTypes";
+import { MonthActionTypes } from '../types/monthTypes';
+import { initialState } from '../initialsState';
+import * as types from '../types/monthTypes';
+import * as appTypes from '../types/appTypes';
 
 export default function monthReducer(
   month: number = initialState.month,
@@ -11,7 +11,7 @@ export default function monthReducer(
     case types.SET_MONTH_FINISHED:
       return action.month;
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
-      return action.state.month || initialState.month;
+      return action.payload.month || initialState.month;
     default:
       return month;
   }

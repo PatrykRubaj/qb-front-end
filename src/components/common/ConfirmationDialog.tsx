@@ -16,7 +16,7 @@ interface State {
   callback: Function | null;
 }
 
-const ConfirmationDialog: React.FC<Props> = (props: Props) => {
+const ConfirmationDialog = (props: Props) => {
   const { title, description } = props;
 
   const [state, setState] = useState<State>({
@@ -68,14 +68,14 @@ const ConfirmationDialog: React.FC<Props> = (props: Props) => {
             <button
               type="button"
               className="btn btn-primary"
-              onClick={(): void => hide()}
+              onClick={() => hide()}
             >
               Cancel
             </button>
             <button
               type="button"
               className="btn btn-primary"
-              onClick={(): void => confirm()}
+              onClick={() => confirm()}
             >
               Delete
             </button>

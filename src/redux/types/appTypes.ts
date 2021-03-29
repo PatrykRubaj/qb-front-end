@@ -1,8 +1,8 @@
-import { NextRouter } from "next/router";
-import { RootState } from "../reducers";
+import { NextRouter } from 'next/router';
+import { RootState } from '../reducers';
 
-export const REQUEST_STATE_LOAD = "REQUEST_STATE_LOAD";
-export const REQUEST_STATE_LOAD_FINISHED = "REQUEST_STATE_LOAD_FINISHED";
+export const REQUEST_STATE_LOAD = 'REQUEST_STATE_LOAD';
+export const REQUEST_STATE_LOAD_FINISHED = 'REQUEST_STATE_LOAD_FINISHED';
 
 interface RequestStateLoadAction {
   type: typeof REQUEST_STATE_LOAD;
@@ -11,7 +11,7 @@ interface RequestStateLoadAction {
 
 interface RequestStateLoadFinishedAction {
   type: typeof REQUEST_STATE_LOAD_FINISHED;
-  state: RootState;
+  payload: RootState;
 }
 
 export type AppActionTypes =

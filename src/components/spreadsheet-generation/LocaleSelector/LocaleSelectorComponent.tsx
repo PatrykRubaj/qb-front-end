@@ -26,10 +26,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-const LocaleSelectorComponent: React.FC<Props> = ({
-  setLocale,
-  country,
-}: Props) => {
+const LocaleSelectorComponent = ({ setLocale, country }: Props) => {
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
     value: "",

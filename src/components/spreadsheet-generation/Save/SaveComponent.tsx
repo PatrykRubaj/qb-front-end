@@ -1,55 +1,89 @@
-import * as React from "react";
-import SaveIcon from "@material-ui/icons/Save";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import { RootState } from "../../../redux/reducers";
-import authActions from "../../../redux/actions/authActions";
-import { AuthActionTypes } from "../../../redux/types/authTypes";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import Link from "next/link";
-import { NextRouter, useRouter } from "next/router";
-import NewsletterComponent from "./NewsletterComponent";
-import { Route } from "../../../redux/state";
-import { BudgetActionTypes } from "../../../redux/types/budgetTypes";
-import budgetActions from "../../../redux/actions/budgetActions";
+import React, { useEffect, useRef, useState } from 'react';
+import SaveIcon from '@material-ui/icons/Save';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { RootState } from '../../../redux/reducers';
+import authActions from '../../../redux/actions/authActions';
+import { AuthActionTypes } from '../../../redux/types/authTypes';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import Link from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
+import NewsletterComponent from './NewsletterComponent';
+import { Permission, PriceTier, Route } from '../../../redux/state';
+import { BudgetActionTypes } from '../../../redux/types/budgetTypes';
+import budgetActions from '../../../redux/actions/budgetActions';
+import { CheckoutForm } from './CheckoutForm';
+import { Elements } from '@stripe/react-stripe-js';
+import { PaymentActionType } from '../../../redux/types/paymentTypes';
+import paymentActions from '../../../redux/actions/paymentActions';
+import PricingTiers from '../../payments/PricingTiers';
+import ProtectedComponent from '../../../auth0/ProtectedComponent';
+import SignInWithGoogleComponent from '../../../auth0/SignInWithGoogleComponent';
+import {
+  setNewsletter,
+  setNewsletterPrompt,
+  setPrivacyPolicy,
+  setRedirectUrl,
+  setAgreedToTos,
+} from '../../../features/user/slice';
 
 interface StateProps {
-  agreedToNewsletter: boolean;
-  agreedToPrivacyPolicy: boolean;
+  agreedToNewsletter: boolean | null;
+  agreedToPrivacyPolicy: boolean | null;
+  agreedToTos: boolean | null;
   showNewsletterPrompt: boolean;
+  sessionId: string;
+  canGenerateBudget: boolean;
+  expiresAt: number;
 }
 
 interface DispatchProps {
-  setNewsletterAgreement: (agreedToNewsletter: boolean) => AuthActionTypes;
-  setPrivacyPolicyAgreement: (
-    agreedToPrivacyPolicy: boolean
-  ) => AuthActionTypes;
-  setDisplayNewsletterPrompt: (
-    showNewsletterPrompt: boolean
-  ) => AuthActionTypes;
-  setRedirectUrl: (redirectUrl: string) => AuthActionTypes;
+  setNewsletterAgreement: (agreedToNewsletter: boolean) => void;
+  setPrivacyPolicyAgreement: (agreedToPrivacyPolicy: boolean) => void;
+  setDisplayNewsletterPrompt: (showNewsletterPrompt: boolean) => void;
+  setAgreedToTos: (agreedToTos: boolean) => void;
+  setRedirectUrl: (redirectUrl: string) => void;
   saveBudget: (history: NextRouter) => BudgetActionTypes;
 }
 
 type Props = StateProps & DispatchProps;
 
-const SaveComponent: React.FC<Props> = ({
+const SaveComponent = ({
   agreedToPrivacyPolicy,
+  agreedToTos,
+  agreedToNewsletter,
   showNewsletterPrompt,
   setNewsletterAgreement,
   setPrivacyPolicyAgreement,
+  setAgreedToTos,
   setDisplayNewsletterPrompt,
   setRedirectUrl,
   saveBudget,
+  sessionId,
+  canGenerateBudget,
+  expiresAt,
 }: Props) => {
+  const [shouldDisplayTermsRow, setShouldDisplayTermsRow] = useState(false);
+
+  const nearlyDoneHeader = React.useRef<HTMLHeadingElement>(null);
+  React.useEffect(() => {
+    if (agreedToPrivacyPolicy === null || agreedToTos === null) {
+      setShouldDisplayTermsRow(true);
+    }
+  }, []);
+
   const [
     displayPrivacyRequiredInfo,
     setDisplayPrivacyRequiredInfo,
+  ] = React.useState<boolean>(false);
+  const [
+    displayTosRequiredInfo,
+    setDisplayTosRequiredInfo,
   ] = React.useState<boolean>(false);
 
   const router = useRouter();
@@ -62,20 +96,37 @@ const SaveComponent: React.FC<Props> = ({
     }
   };
 
-  const onSaveClick = (): void => {
-    if (agreedToPrivacyPolicy) {
-      setDisplayNewsletterPrompt(true);
-    } else {
-      setDisplayPrivacyRequiredInfo(true);
+  const onTermsOfServiceChecboxClick = (): void => {
+    setAgreedToTos(!agreedToTos);
+
+    if (!agreedToTos) {
+      setDisplayTosRequiredInfo(false);
     }
   };
 
-  const onSave = (agreed: boolean): void => {
+  const onSaveClick = (): void => {
+    if (agreedToPrivacyPolicy && agreedToTos) {
+      if (agreedToNewsletter === null) {
+        setDisplayNewsletterPrompt(true);
+      } else {
+        generateBudget(agreedToNewsletter);
+      }
+    } else {
+      if (!agreedToTos) {
+        setDisplayTosRequiredInfo(true);
+      }
+
+      if (!agreedToPrivacyPolicy) {
+        setDisplayPrivacyRequiredInfo(true);
+      }
+    }
+  };
+
+  const generateBudget = (agreed: boolean): void => {
     setNewsletterAgreement(agreed);
     setDisplayNewsletterPrompt(false);
     setRedirectUrl(Route.GeneratorResponse);
     saveBudget(router);
-    // router.push(Route.Login);
   };
 
   const closingNewsletterPrompt = (): void => {
@@ -87,89 +138,164 @@ const SaveComponent: React.FC<Props> = ({
       {showNewsletterPrompt && (
         <NewsletterComponent
           show={showNewsletterPrompt}
-          handleClose={onSave}
+          handleClose={generateBudget}
           onClose={closingNewsletterPrompt}
         />
       )}
-      <div className="row">
-        <div className="col">
-          <h2 className="mt-2">Nearly done</h2>
-          <div className="form-check pl-0">
-            <FormControl
-              component="fieldset"
-              error={displayPrivacyRequiredInfo}
-              required
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />}
-                    checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
-                    checked={agreedToPrivacyPolicy}
-                    id="privacyPolicyCheck"
-                    onChange={onPrivacyPolicyChecboxClick}
-                    className={
-                      "form-check-input" +
-                      (displayPrivacyRequiredInfo ? " is-invalid" : "")
-                    }
-                    value="agreedToPrivacyPolicy"
-                    color="primary"
-                  />
-                }
-                label="Agree to privacy policy (required)"
-              />
-              <FormHelperText>
-                You must agree to{" "}
-                <Link href={Route.PrivacyPolicy}>
-                  <a rel="nofollow">privacy policy</a>
-                </Link>{" "}
-                before submitting.
-              </FormHelperText>
-            </FormControl>
+      {shouldDisplayTermsRow ? (
+        <div className="row">
+          <div className="col">
+            <h2 className="mt-2" ref={nearlyDoneHeader}>
+              Nearly done
+            </h2>
+            <div className="form-check pl-0">
+              <FormControl
+                component="fieldset"
+                error={displayPrivacyRequiredInfo}
+                required
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={
+                        <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
+                      }
+                      checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
+                      checked={agreedToPrivacyPolicy || false}
+                      id="privacyPolicyCheck"
+                      onChange={onPrivacyPolicyChecboxClick}
+                      className={
+                        'form-check-input' +
+                        (displayPrivacyRequiredInfo ? ' is-invalid' : '')
+                      }
+                      value="agreedToPrivacyPolicy"
+                      color="primary"
+                    />
+                  }
+                  label="Agree to privacy policy (required)"
+                />
+                <FormHelperText>
+                  You must agree to{' '}
+                  <Link href={Route.PrivacyPolicy}>
+                    <a rel="nofollow">privacy policy</a>
+                  </Link>{' '}
+                  before submitting.
+                </FormHelperText>
+              </FormControl>
+            </div>
+            <div className="form-check pl-0">
+              <FormControl
+                component="fieldset"
+                error={displayTosRequiredInfo}
+                required
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={
+                        <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
+                      }
+                      checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
+                      checked={agreedToTos || false}
+                      id="privacyPolicyCheck"
+                      onChange={onTermsOfServiceChecboxClick}
+                      className={
+                        'form-check-input' +
+                        (displayTosRequiredInfo ? ' is-invalid' : '')
+                      }
+                      value="agreedToTos"
+                      color="primary"
+                    />
+                  }
+                  label="Agree to Terms of Service (required)"
+                />
+                <FormHelperText>
+                  You must agree to{' '}
+                  <Link href={Route.TermsOfService}>
+                    <a rel="nofollow">terms of service</a>
+                  </Link>{' '}
+                  before submitting.
+                </FormHelperText>
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="row">
-        <div className="col">
-          <button
-            className="btn btn-primary btn-lg btn-block mb-4 mt-2"
-            onClick={onSaveClick}
-          >
-            <SaveIcon fontSize="large" className="mr-2 align-middle"></SaveIcon>
-            <span className="align-middle">Save budget spreadsheet</span>
-          </button>
-        </div>
-      </div>
+      ) : null}
+      <ProtectedComponent
+        expiresAt={expiresAt}
+        notAuthenticated={
+          <div className="row justify-content-center">
+            <div className="col">
+              <h2 className="mt-2">Sign in (required)</h2>
+              <SignInWithGoogleComponent />
+            </div>
+          </div>
+        }
+      >
+        {canGenerateBudget ? (
+          <div className="row">
+            <div className="col">
+              <button
+                className="btn btn-primary btn-lg btn-block mb-4 mt-2"
+                onClick={onSaveClick}
+              >
+                <SaveIcon
+                  fontSize="large"
+                  className="mr-2 align-middle"
+                ></SaveIcon>
+                <span className="align-middle">Save budget spreadsheet</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="row justify-content-around">
+            <PricingTiers
+              privacyPolicyAccepted={agreedToPrivacyPolicy}
+              tosAccepted={agreedToTos}
+              setDisplayPrivacyRequiredInfo={setDisplayPrivacyRequiredInfo}
+              setDisplayTosRequiredInfo={setDisplayTosRequiredInfo}
+              refToPolicies={nearlyDoneHeader}
+            />
+          </div>
+        )}
+      </ProtectedComponent>
     </>
   );
 };
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
-    agreedToNewsletter: state.userSection.agreedToNewsletter,
     agreedToPrivacyPolicy: state.userSection.agreedToPrivacyPolicy,
+    agreedToTos: state.userSection.agreedToTos,
+    agreedToNewsletter: state.userSection.agreedToNewsletter,
     showNewsletterPrompt: state.userSection.showNewsletterPrompt,
+    sessionId: state.paymentSection.stripeSessionId,
+    canGenerateBudget:
+      state.userSection.user.permissions.find(
+        (x) => x == Permission.GenerateBudget
+      ) !== undefined,
+    expiresAt: state.userSection.user?.expiresAt,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    setNewsletterAgreement: (agreedToNewsletter: boolean): AuthActionTypes =>
-      dispatch(authActions.requestSetNewsletter(agreedToNewsletter)),
-    setPrivacyPolicyAgreement: (
-      agreedToPrivacyPolicy: boolean
-    ): AuthActionTypes =>
-      dispatch(authActions.requestSetPrivacyPolicy(agreedToPrivacyPolicy)),
-    setDisplayNewsletterPrompt: (
-      showNewsletterPrompt: boolean
-    ): AuthActionTypes =>
-      dispatch(authActions.requestSetNewsletterPrompt(showNewsletterPrompt)),
-    setRedirectUrl: (redirectUrl: string): AuthActionTypes =>
-      dispatch(authActions.requestSetRedirectUrl(redirectUrl)),
+    setNewsletterAgreement: (agreedToNewsletter: boolean) =>
+      dispatch(setNewsletter(agreedToNewsletter)),
+    setPrivacyPolicyAgreement: (agreedToPrivacyPolicy: boolean) =>
+      dispatch(setPrivacyPolicy(agreedToPrivacyPolicy)),
+    setAgreedToTos: (agreedToTos: boolean) =>
+      dispatch(setAgreedToTos(agreedToTos)),
+    setDisplayNewsletterPrompt: (showNewsletterPrompt: boolean) =>
+      dispatch(setNewsletterPrompt(showNewsletterPrompt)),
+    setRedirectUrl: (redirectUrl: string) =>
+      dispatch(setRedirectUrl(redirectUrl)),
     saveBudget: (history: NextRouter): BudgetActionTypes =>
       dispatch(budgetActions.requestBudgetSave(history)),
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SaveComponent);
+// 2021-02-01 tokeny
+// {"access_token":"ya29.a0AfH6SMBzA2Vcy2QOXnGAMKbZF_BT9dG5tVj1yFrxS-igZjGHHlS3Ge_MJWj6Paqub3dS-0nruI3iQD9P0bvSaH9AhitVUuLZ-q_vqMZaiYfP2YpZNYU5RK8wBqxuOGl3ll9FKxpvEv09rVZgYOZcNYV1ynQJtIpnhxZZetB9fcM",
+// "refresh_token":"1//09pn4OCuuI1yTCgYIARAAGAkSNwF-L9Ir2B-c6VoqxOhxjrlEL6R5HitvloXOT5BZyCqnpbAh3tz4m5vGPIh8VWOZ5c5GeGsM3ms"}

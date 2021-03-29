@@ -11,7 +11,7 @@ interface Props {
   subcategories: Subcategory[];
 }
 
-const SubcategoryForm: React.FC<Props> = ({
+const SubcategoryForm = ({
   newSubcategory,
   addSaveNewSubcategory,
   categories,

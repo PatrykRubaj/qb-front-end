@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import LoaderWheel from "../components/common/LoaderWheel";
 import { useEffect } from "react";
 
-const Logout: React.FC = () => {
+const Logout = () => {
   const router = useRouter();
 
   useEffect(() => {

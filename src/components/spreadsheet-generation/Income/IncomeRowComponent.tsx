@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Income, EntityStatus } from "../../../redux/state";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import ConfirmationDialog from "../../common/ConfirmationDialog";
-import { Draggable } from "react-beautiful-dnd";
+import React from 'react';
+import { Income, EntityStatus } from '../../../redux/state';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import ConfirmationDialog from '../../common/ConfirmationDialog';
+import { Draggable } from 'react-beautiful-dnd';
 
 interface Props {
   income: Income;
@@ -13,7 +13,7 @@ interface Props {
   index: number;
 }
 
-const IncomeRowComponent: React.FC<Props> = (props: Props) => {
+const IncomeRowComponent = (props: Props) => {
   return (
     <Draggable draggableId={props.income.id} index={props.index}>
       {(provided) => (
@@ -23,19 +23,19 @@ const IncomeRowComponent: React.FC<Props> = (props: Props) => {
           // eslint-disable-next-line @typescript-eslint/unbound-method
           ref={provided.innerRef}
         >
-          <td className="align-middle" style={{ width: "60%" }}>
+          <td className="align-middle" style={{ width: '60%' }}>
             {props.income.name}
           </td>
-          <td className="align-middle text-center" style={{ width: "30%" }}>
+          <td className="align-middle text-center" style={{ width: '30%' }}>
             {props.formatter.format(props.income?.amount || 0)}
           </td>
-          <td className="align-middle text-center" style={{ width: "10%" }}>
+          <td className="align-middle text-center" style={{ width: '10%' }}>
             <div className="btn-group" role="group">
               <button
                 disabled={props.income.status === EntityStatus.Editing}
                 type="button"
                 className="btn btn-secondary"
-                onClick={(e): void => props.onEditIncome(e, props.income)}
+                onClick={(e) => props.onEditIncome(e, props.income)}
               >
                 <EditIcon />
               </button>

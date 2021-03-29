@@ -1,6 +1,6 @@
-import { take, put, call, select } from "redux-saga/effects";
-import budgetActions from "../actions/budgetActions";
-import * as budgetTypes from "../types/budgetTypes";
+import { take, put, call, select } from 'redux-saga/effects';
+import budgetActions from '../actions/budgetActions';
+import * as budgetTypes from '../types/budgetTypes';
 import {
   User,
   BudgetToGenerate,
@@ -11,13 +11,16 @@ import {
   Route,
   BudgetResponse,
   ReadState,
-} from "../state";
-import axios from "axios";
-import { getState } from "./authSagas";
-import { RootState } from "../reducers";
-import authActions from "../actions/authActions";
-import { NextRouter } from "next/router";
-import { initialState } from "../initialsState";
+  UserSection,
+} from '../state';
+import axios from 'axios';
+import { getState } from './authSagas';
+import { RootState } from '../reducers';
+import authActions from '../actions/authActions';
+import { NextRouter } from 'next/router';
+import { initialState } from '../initialsState';
+import BudgetService from '../../services/budgetService';
+import { setRedirectUrl } from '../../features/user/slice';
 
 export const getCountry = (state: RootState): Country | null => state.country;
 export const getIncomes = (state: RootState): Array<Income> =>
@@ -32,6 +35,8 @@ export const getNewsletterAgreement = (state: RootState): boolean =>
 export const getRedirectUrl = (state: RootState): string =>
   state.userSection.redirectUrl;
 export const getUser = (state: RootState): User => state.userSection.user;
+export const getUserSection = (state: RootState): UserSection =>
+  state.userSection;
 
 const saveState = (state: RootState): void => {
   const modifiedState: RootState = {
@@ -39,103 +44,30 @@ const saveState = (state: RootState): void => {
     userSection: {
       agreedToNewsletter: false,
       agreedToPrivacyPolicy: false,
+      agreedToTos: false,
       showNewsletterPrompt: false,
       isLoading: false,
       user: { ...state.userSection.user },
-      redirectUrl: "",
+      redirectUrl: '',
     },
   };
-  console.log("Saving to local storage after budget generated");
-  localStorage.setItem("state", JSON.stringify(modifiedState));
+  localStorage.setItem('state', JSON.stringify(modifiedState));
 };
 
-export const apiCall = async (
+export const generateBudgetCall = async (
   user: User,
   budget: BudgetToGenerate
 ): Promise<BudgetResponse | null> => {
-  let responseToReturn: BudgetResponse | null = null;
-  const url = `${process.env.NEXT_PUBLIC_AZURE_FUNCTIONS_API}/api/GenerateBudget`;
-  console.log(url);
-  try {
-    const response = await axios.post(url, budget, {
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    });
-    console.log("Response", response);
-    if (response.data?.error != null) {
-      responseToReturn = {
-        errors: {
-          code: response.data?.error.code,
-          message: response.data?.error.message,
-        },
-      };
-    } else {
-      responseToReturn = response.data as BudgetResponse;
-    }
-  } catch (ex) {
-    console.log("Exception", ex);
+  const budgetService = new BudgetService(user.accessToken, user.userId);
+  const responseToReturn = await budgetService.generateBudget(budget);
 
-    if (ex.response) {
-      responseToReturn = {
-        errors: {
-          code: ex.response.status,
-          message: ex.response.data,
-        },
-      };
-    } else if (ex.request) {
-      responseToReturn = {
-        errors: {
-          code: 0,
-          message: ex.request,
-        },
-      };
-    } else {
-      responseToReturn = {
-        errors: {
-          code: 0,
-          message: ex.message,
-        },
-      };
-    }
-  }
-
-  console.log("Returned response: ", responseToReturn);
   return responseToReturn;
 };
 
 export const readBudgetCall = async (user: User): Promise<ReadState | null> => {
-  let responseToReturn: ReadState | null = null;
-  const url = `${
-    process.env.NEXT_PUBLIC_AZURE_FUNCTIONS_API
-  }/api/GetBudget/${encodeURI(user.userId)}`;
-  console.log("readBudgetCall GET: ", url);
+  const budgetService = new BudgetService(user.accessToken, user.userId);
+  const responseToReturn = await budgetService.get();
 
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    });
-    console.log("Response", response);
-
-    if (response.data?.error != null) {
-      return null;
-    } else {
-      const returnedResponse = response.data as any;
-
-      responseToReturn = {
-        categories: returnedResponse.categories,
-        subcategories: returnedResponse.subcategories,
-        incomes: returnedResponse.incomes,
-        country: returnedResponse.country,
-      };
-    }
-  } catch (ex) {
-    console.log("Exception", ex);
-  }
-
-  console.log("Returned response: ", responseToReturn);
   return responseToReturn;
 };
 
@@ -145,17 +77,14 @@ export function* generate() {
       budgetTypes.REQUEST_BUDGET_GENERATION
     );
 
-    console.log("Budget to send: ", budget);
     const budgetResponse: BudgetResponse | null = yield call(
-      apiCall,
+      generateBudgetCall,
       user,
       budget
     );
-    console.log(history);
-    console.log("Generate saga run ", budgetResponse);
     history.push(Route.GeneratorResponse);
     yield put(budgetActions.requestBudgetGenerationFinished(budgetResponse));
-    yield put(authActions.requestSetRedirectUrlFinished(Route.HomePage));
+    yield put(setRedirectUrl(Route.HomePage));
 
     const state = yield select(getState);
     yield call(saveState, state);
@@ -168,6 +97,7 @@ export function* budgetSave() {
     const typedHistory = history as NextRouter;
     typedHistory.push(Route.Loading);
     const user: User = yield select(getUser);
+    const userSection: UserSection = yield select(getUserSection);
 
     if (user && user.accessToken && user.expiresAt > new Date().getTime()) {
       const month = yield select(getMonth);
@@ -177,8 +107,14 @@ export function* budgetSave() {
         incomes: yield select(getIncomes),
         categories: yield select(getCategories),
         subcategories: yield select(getSubcategories),
-        month: `${new Date().getFullYear()}-${month}-01`,
-        agreedToNewsletter: yield select(getNewsletterAgreement),
+        month: `${new Date().getFullYear()}-${
+          month < 10 ? '0' + month : month
+        }-01`,
+        user: {
+          agreedToNewsletter: userSection.agreedToNewsletter,
+          agreedToPrivacyPolicy: userSection.agreedToPrivacyPolicy,
+          agreedToTermsOfService: userSection.agreedToTos,
+        },
       };
 
       yield put(
@@ -196,7 +132,6 @@ export function* budgetRead() {
     yield take(budgetTypes.REQUEST_BUDGET_READ);
     const user: User = yield select(getUser);
     const readState = yield call(readBudgetCall, user);
-    console.log("budgetRead saga", readState);
 
     if (readState != null) {
       yield put(budgetActions.requestBudgetReadFinished(readState));

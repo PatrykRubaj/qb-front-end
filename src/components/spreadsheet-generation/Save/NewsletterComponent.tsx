@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -25,9 +25,7 @@ export interface NewsletterProps {
   onClose: Function;
 }
 
-const NewsletterComponent: React.FC<NewsletterProps> = (
-  props: NewsletterProps
-) => {
+const NewsletterComponent = (props: NewsletterProps) => {
   return (
     <Dialog
       open={props.show}
@@ -84,14 +82,14 @@ const NewsletterComponent: React.FC<NewsletterProps> = (
       </DialogContent>
       <DialogActions style={{ display: "block" }} className="text-center">
         <button
-          onClick={(): void => props.handleClose(true)}
+          onClick={() => props.handleClose(true)}
           type="button"
           className="btn btn-primary btn-lg btn-block"
         >
           Yes, I want to control my finances
         </button>
         <button
-          onClick={(): void => props.handleClose(false)}
+          onClick={() => props.handleClose(false)}
           type="button"
           className="btn btn-link btn-sm mt-2"
         >

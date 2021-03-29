@@ -1,4 +1,6 @@
-import * as React from "react";
+import React from 'react';
+import PaymentIcon from '@material-ui/icons/Payment';
+import SmallLoader from '../components/common/SmallLoader/SmallLoader.component';
 
 export interface IDevDemoProps {}
 
@@ -11,7 +13,7 @@ export default function DevDemo(props: IDevDemoProps) {
         <div className="text-center">
           <span
             className="d-inline-block font-weight-bold mr-4 mt-auto align-middle"
-            style={{ fontSize: "2em" }}
+            style={{ fontSize: '2em' }}
           >
             $9.99
           </span>
@@ -23,6 +25,24 @@ export default function DevDemo(props: IDevDemoProps) {
         <ul className="list-unstyled">
           <li>✔ Ability to generate Google Spreadsheet</li>
         </ul>
+        <button
+          type="button"
+          className="btn btn-warning btn-lg btn-block mb-2 mt-3"
+        >
+          <PaymentIcon
+            fontSize="large"
+            className="mr-2 align-middle"
+          ></PaymentIcon>
+          Pay &amp; Generate
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning btn-lg btn-block mb-2 mt-3"
+          disabled={true}
+        >
+          <SmallLoader className="mx-auto align-middle"></SmallLoader>
+          Redirecting to payment
+        </button>
       </div>
       <div className="col-sm-4">
         <h3>Premium</h3>

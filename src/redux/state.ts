@@ -5,15 +5,25 @@ export enum EntityStatus {
 }
 
 export enum Route {
-  HomePage = "/",
-  Generator = "/generator",
-  GeneratorResponse = "/generator-response",
-  Login = "/login",
-  Logout = "/logout",
-  PrivacyPolicy = "/privacy",
-  Callback = "/callback",
-  Loading = "/loading",
-  MessangerBot = "https://m.me/1PatrickDaniel?ref=w14091837",
+  HomePage = '/',
+  Generator = '/generator',
+  GeneratorResponse = '/generator-response',
+  Login = '/login',
+  Logout = '/logout',
+  PrivacyPolicy = '/privacy',
+  TermsOfService = '/terms-of-service',
+  Callback = '/callback',
+  Loading = '/loading',
+  MessangerBot = 'https://m.me/1PatrickDaniel?ref=w14091837',
+  RedirectToBillingPortal = '/billing-portal',
+  PaymentCanceled = '/payment-canceled',
+  PaymentSuccessful = '/payment-successful',
+}
+
+export enum PriceTier {
+  Basic = 'basic',
+  Premium = 'premium',
+  Pro = 'pro',
 }
 
 export interface Country {
@@ -63,6 +73,12 @@ export interface SubcategorySection {
   subcategories: Subcategory[];
 }
 
+export enum Permission {
+  ReadBudget = 'budget:read',
+  WriteBudget = 'budget:write',
+  GenerateBudget = 'budget:generate',
+}
+
 export interface User {
   userId: string;
   idToken: string;
@@ -71,13 +87,15 @@ export interface User {
   imageUrl: string;
   email: string;
   emailVerified: boolean;
-  expiresAt: Number;
+  expiresAt: number;
+  permissions: Permission[];
 }
 
 export interface UserSection {
   user: User;
-  agreedToNewsletter: boolean;
-  agreedToPrivacyPolicy: boolean;
+  agreedToNewsletter: boolean | null;
+  agreedToPrivacyPolicy: boolean | null;
+  agreedToTos: boolean | null;
   showNewsletterPrompt: boolean;
   isLoading: boolean;
   redirectUrl: string;
@@ -89,7 +107,7 @@ export interface BudgetToGenerate {
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
   month: string;
-  agreedToNewsletter: boolean;
+  user: UserInDatabase;
 }
 
 export interface BudgetResponse {
@@ -107,9 +125,32 @@ export interface BudgetSection {
   isLoading: boolean;
 }
 
+export interface UserInDatabase {
+  agreedToNewsletter: boolean;
+  agreedToPrivacyPolicy: boolean;
+  agreedToTermsOfService: boolean;
+}
+
 export interface ReadState {
   incomes: Income[];
   categories: Category[];
   subcategories: Subcategory[];
   country: Country;
+  user: UserInDatabase;
+}
+
+export interface PaymentSection {
+  stripeSessionId: string;
+}
+
+export interface PaymentErrorMessage {
+  message: string;
+}
+
+export interface PaymentErrorResponse {
+  errorMessage: PaymentErrorMessage;
+}
+
+export interface PaymentSessionResponse {
+  sessionId: string;
 }

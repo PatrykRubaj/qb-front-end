@@ -1,10 +1,10 @@
-import { CategorySection, EntityStatus, Category } from "../state";
-import { CategoryActionTypes } from "../types/categoryTypes";
-import { initialState } from "../initialsState";
-import * as types from "../types/categoryTypes";
-import arrayMove from "array-move";
-import * as appTypes from "../types/appTypes";
-import * as budgetTypes from "../types/budgetTypes";
+import { CategorySection, EntityStatus, Category } from '../state';
+import { CategoryActionTypes } from '../types/categoryTypes';
+import { initialState } from '../initialsState';
+import * as types from '../types/categoryTypes';
+import arrayMove from 'array-move';
+import * as appTypes from '../types/appTypes';
+import * as budgetTypes from '../types/budgetTypes';
 
 export default function categoryReducer(
   categorySection: CategorySection = initialState.categoriesSection,
@@ -81,7 +81,7 @@ export default function categoryReducer(
     case appTypes.REQUEST_STATE_LOAD_FINISHED:
       return {
         ...initialState.categoriesSection,
-        ...action.state.categoriesSection,
+        ...action.payload.categoriesSection,
       };
 
     case budgetTypes.REQUEST_BUDGET_READ_FINISHED:

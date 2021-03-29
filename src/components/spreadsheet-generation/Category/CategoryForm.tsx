@@ -10,7 +10,7 @@ interface Props {
   categories: Category[];
 }
 
-const CategoryForm: React.FC<Props> = ({
+const CategoryForm = ({
   newCategory,
   addSaveCategory,
   categoryNameInputRef,

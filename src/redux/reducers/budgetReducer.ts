@@ -19,19 +19,16 @@ export default function budgetReducer(
         response: action.response,
       };
     case REQUEST_BUDGET_READ:
-      debugger;
       return {
         ...budgetSection,
         isLoading: true,
       };
     case REQUEST_BUDGET_READ_FINISHED:
-      debugger;
       return {
         ...budgetSection,
         isLoading: false,
       };
     case REQUEST_BUDGET_READ_FAILED:
-      debugger;
       return {
         ...budgetSection,
         isLoading: false,

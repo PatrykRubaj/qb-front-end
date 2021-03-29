@@ -1,15 +1,15 @@
-import Link from "next/link";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Route } from "../../redux/state";
+import Link from 'next/link';
+import React from 'react';
+import { connect } from 'react-redux';
+import { Route } from '../../redux/state';
 // import { NavLink } from "react-router-dom";
-import { User } from "../../redux/state";
-import { RootState } from "../../redux/reducers";
-import ProtectedComponent from "../../auth0/ProtectedComponent";
-import { Dispatch } from "redux";
-import { NextRouter, useRouter } from "next/router";
-import authActions from "../../redux/actions/authActions";
-import ProfileMenu from "./profileMenu";
+import { User } from '../../redux/state';
+import { RootState } from '../../redux/reducers';
+import ProtectedComponent from '../../auth0/ProtectedComponent';
+import { Dispatch } from 'redux';
+import { NextRouter, useRouter } from 'next/router';
+import authActions from '../../redux/actions/authActions';
+import ProfileMenu from './profileMenu';
 
 interface StateProps {
   user: User;
@@ -21,7 +21,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-const navigationBar: React.FC<Props> = ({ user, logout }: Props) => {
+const navigationBar = ({ user, logout }: Props) => {
   const history = useRouter();
 
   const onLogoutClick = (): void => {
@@ -31,7 +31,7 @@ const navigationBar: React.FC<Props> = ({ user, logout }: Props) => {
   return (
     <nav
       className="navbar navbar-expand navbar-dark justify-content-between"
-      style={{ backgroundColor: "#5b7191" }}
+      style={{ backgroundColor: '#5b7191' }}
     >
       <Link href={Route.HomePage}>
         <a className="navbar-brand">
@@ -39,13 +39,13 @@ const navigationBar: React.FC<Props> = ({ user, logout }: Props) => {
             src="/images/logo.png"
             height="30"
             alt="Quantum Budget"
-            style={{ margin: "15px 7px 15px 15px" }}
+            style={{ margin: '15px 7px 15px 15px' }}
             className="d-inline-block align-middle"
           />
           <span
             style={{
-              fontFamily: "Silka Bold",
-              margin: "15px 7px 15px 0",
+              fontFamily: 'Silka Bold',
+              margin: '15px 7px 15px 0',
             }}
             className="align-middle d-none d-sm-inline-block"
           >
@@ -53,8 +53,8 @@ const navigationBar: React.FC<Props> = ({ user, logout }: Props) => {
           </span>
           <span
             style={{
-              fontFamily: "Silka Medium",
-              margin: "15px 15px 15px 0",
+              fontFamily: 'Silka Medium',
+              margin: '15px 15px 15px 0',
             }}
             className="d-none d-sm-inline-block align-middle"
           >

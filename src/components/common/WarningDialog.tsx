@@ -12,13 +12,13 @@ interface Props {
   onExit: Function;
 }
 
-const WarningDialog: React.FC<Props> = (props: Props) => {
+const WarningDialog = (props: Props) => {
   const { title, description, show, onExit } = props;
 
   return (
     <Dialog
       open={show}
-      onClose={(): void => onExit()}
+      onClose={() => onExit()}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -32,7 +32,7 @@ const WarningDialog: React.FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={(): void => onExit()}
+          onClick={() => onExit()}
         >
           Close
         </button>

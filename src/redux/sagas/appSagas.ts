@@ -1,14 +1,13 @@
-import { take, put, call } from "redux-saga/effects";
-import * as appTypes from "../types/appTypes";
-import appActions from "../actions/appActions";
-import { RootState } from "../reducers";
+import { take, put, call } from 'redux-saga/effects';
+import * as appTypes from '../types/appTypes';
+import appActions from '../actions/appActions';
+import { RootState } from '../reducers';
+import { stateLoadFinished } from '../../features/user/slice';
 
 const getStateFromLocalStorage = (): RootState | null => {
-  console.log("Reading local storage");
-  const state = localStorage.getItem("state");
+  const state = localStorage.getItem('state');
   if (state !== null) {
     const parsedState = JSON.parse(state);
-    console.log(parsedState);
     return parsedState;
   }
 
@@ -18,7 +17,7 @@ const getStateFromLocalStorage = (): RootState | null => {
 export function* requestStateSaga() {
   while (true) {
     yield take(appTypes.REQUEST_STATE_LOAD);
-    const state = yield call(getStateFromLocalStorage);
+    const state: RootState | null = yield call(getStateFromLocalStorage);
 
     if (state !== null) {
       try {
