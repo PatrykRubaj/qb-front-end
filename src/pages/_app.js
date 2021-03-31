@@ -2,6 +2,7 @@ import Head from 'next/head';
 import '../styles/BootstrapCustomization.scss';
 import NavigationBar from '../components/common/navigation-bar';
 import Footer from '../components/common/footer';
+import CookieConsentDialog from '../components/common/CookiesConsentDialog';
 import { Provider } from 'react-redux';
 import getStore from '../redux/getStore';
 
@@ -66,6 +67,7 @@ function MyApp({ Component, pageProps }) {
       <div className="container-flex">
         <NavigationBar />
         <div className="container">
+          <CookieConsentDialog open={true} />
           <Component {...pageProps} />
           <Footer />
         </div>
