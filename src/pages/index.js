@@ -1,10 +1,10 @@
-import Head from "next/head";
-import Link from "next/link";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import LockIcon from "@material-ui/icons/Lock";
-import { Button } from "@material-ui/core";
-import TouchAppIcon from "@material-ui/icons/TouchApp";
-import { Route } from "../redux/state";
+import Head from 'next/head';
+import Link from 'next/link';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LockIcon from '@material-ui/icons/Lock';
+import { Button } from '@material-ui/core';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
+import { Route } from '../redux/state';
 
 export default function Home() {
   return (

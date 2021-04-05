@@ -12,6 +12,7 @@ import {
   BudgetResponse,
   ReadState,
   UserSection,
+  DialogState,
 } from '../state';
 import axios from 'axios';
 import { getState } from './authSagas';
@@ -48,6 +49,15 @@ const saveState = (state: RootState): void => {
       showNewsletterPrompt: false,
       isLoading: false,
       user: { ...state.userSection.user },
+      cookieConsentDialog: {
+        open: false,
+        state: DialogState.BasicInformation,
+      },
+      cookiesConsent: {
+        essential: true,
+        statistics: false,
+        marketing: false,
+      },
       redirectUrl: '',
     },
   };

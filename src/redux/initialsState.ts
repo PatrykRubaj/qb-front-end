@@ -1,6 +1,6 @@
 import { RootState } from './reducers';
 import { v4 as uuidv4 } from 'uuid';
-import { EntityStatus } from './state';
+import { DialogState, EntityStatus } from './state';
 
 export const initialState: RootState = {
   incomeSection: {
@@ -87,6 +87,15 @@ export const initialState: RootState = {
     agreedToTos: false,
     showNewsletterPrompt: false,
     isLoading: false,
+    cookieConsentDialog: {
+      open: false,
+      state: DialogState.BasicInformation,
+    },
+    cookiesConsent: {
+      essential: true,
+      statistics: false,
+      marketing: false,
+    },
     user: {
       userId: '',
       idToken: '',
