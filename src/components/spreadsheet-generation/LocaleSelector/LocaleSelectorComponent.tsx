@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Country } from "../../../redux/state";
-import Select, { ValueType } from "react-select";
+import React, { useState, useEffect } from 'react';
+import { Country } from '../../../redux/state';
+import Select, { ValueType } from 'react-select';
 import {
   getUsersCountry,
   countriesList,
   findCountryBasedOnKey,
-} from "../../../lib/LocaleHelper";
-import { RootState } from "../../../redux/reducers";
-import { Dispatch } from "redux";
-import countryActions from "../../../redux/actions/countryActions";
-import { connect } from "react-redux";
-import { CountryActionTypes } from "../../../redux/types/countryTypes";
+} from '../../../lib/LocaleHelper';
+import { RootState } from '../../../redux/reducers';
+import { Dispatch } from 'redux';
+import countryActions from '../../../redux/actions/countryActions';
+import { connect } from 'react-redux';
+import { CountryActionTypes } from '../../../redux/types/countryTypes';
 interface SelectOption {
   value: string;
   label: string;
@@ -29,8 +29,8 @@ type Props = StateProps & DispatchProps;
 const LocaleSelectorComponent = ({ setLocale, country }: Props) => {
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
-    value: "",
-    label: "",
+    value: '',
+    label: '',
   });
 
   useEffect(() => {
@@ -77,14 +77,14 @@ const LocaleSelectorComponent = ({ setLocale, country }: Props) => {
   }, [country]);
 
   const onCountryChange = (
-    selection?: ValueType<SelectOption> | null | undefined
+    selection?: ValueType<SelectOption, false> | null | undefined
   ): void => {
     const countryCode = (selection as SelectOption)?.value;
     const country: Country | null = findCountryBasedOnKey(countryCode);
 
     setSelectedCountry({
-      value: country?.key || "",
-      label: (selection as SelectOption)?.label || "",
+      value: country?.key || '',
+      label: (selection as SelectOption)?.label || '',
     });
 
     if (country !== null) {

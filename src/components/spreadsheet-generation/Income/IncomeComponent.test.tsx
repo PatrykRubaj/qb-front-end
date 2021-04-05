@@ -2,7 +2,12 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { IncomeComponent, mapStateToProps } from './IncomeComponent';
 import { RootState } from '../../../redux/reducers';
-import { EntityStatus, Income, Country } from '../../../redux/state';
+import {
+  EntityStatus,
+  Income,
+  Country,
+  DialogState,
+} from '../../../redux/state';
 import ReactTestUtils from 'react-dom/test-utils';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 
@@ -72,6 +77,15 @@ describe('Income Component', () => {
           agreedToTos: false,
           showNewsletterPrompt: false,
           redirectUrl: '',
+          cookiesConsent: {
+            essential: true,
+            statistics: false,
+            marketing: false,
+          },
+          cookieConsentDialog: {
+            open: false,
+            state: DialogState.BasicInformation,
+          },
         },
         budgetSection: {
           response: null,

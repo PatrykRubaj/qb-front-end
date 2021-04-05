@@ -1,57 +1,110 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import Link from 'next/link';
-import { Route } from '../../redux/state';
+import { Dispatch } from 'redux';
+import {
+  CookieConsent,
+  CookieConsentDialogState,
+  DialogState,
+  Route,
+} from '../../redux/state';
+import { setCookies, setCookieConsentDialog } from '../../features/user/slice';
+import { connect } from 'react-redux';
+import { RootState } from '../../redux/reducers';
+import appActions from '../../redux/actions/appActions';
+import GoogleAnalytics from './googleAnalytics';
+import Head from 'next/head';
 
-interface Props {
-  children?(confirm: Function): React.ReactElement | null | undefined;
-}
-
-interface State {
+interface StateProps {
   open: boolean;
-  callback: Function | null;
+  display: DialogState;
+  essential: boolean;
+  statistics: boolean;
+  marketing: boolean;
 }
 
-const CookieConsentDialog = (props: Props) => {
-  const [state, setState] = useState<State>({
-    open: true,
-    callback: null,
-  });
+interface DispatchProps {
+  setCookies: (cookiesConsent: CookieConsent) => void;
+  setCookieConsentDialog: (cookiesConsent: CookieConsentDialogState) => void;
+  persistConsentInCookie: (cookieConsent: CookieConsent) => void;
+  requestReadCookieConsent: () => void;
+}
 
-  function show(callback: Function, param: any): Function {
-    return function (event: React.MouseEvent<HTMLButtonElement>): void {
-      event.preventDefault();
-      event = {
-        ...event,
-        target: { ...event.target },
-      };
+type Props = StateProps & DispatchProps;
 
-      setState({
-        open: true,
-        callback: () => callback(event, param),
-      });
-    };
-  }
+function CookieConsentDialog(props: Props) {
+  const {
+    open,
+    display,
+    essential,
+    statistics,
+    marketing,
+    setCookies,
+    setCookieConsentDialog,
+    persistConsentInCookie,
+    requestReadCookieConsent,
+  } = props;
 
-  const hide = (): void => setState({ open: false, callback: null });
+  useEffect(() => {
+    requestReadCookieConsent();
+  }, []);
+
+  const showAdvencedSettings = (): void => {
+    setCookieConsentDialog({ open, state: DialogState.AdvencedSettings });
+  };
+  const hide = (): void =>
+    setCookieConsentDialog({
+      open: false,
+      state: DialogState.BasicInformation,
+    });
 
   const confirm = (): void => {
-    if (state.callback) {
-      state.callback();
-    }
+    setCookies({ essential: true, marketing: true, statistics: true });
+    persistConsentInCookie({
+      essential: true,
+      statistics: true,
+      marketing: true,
+    });
     hide();
   };
 
-  return (
+  const onSwitchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    const cookiesConsent = {
+      essential: true,
+      statistics,
+      marketing,
+    };
+    const sentObject = { ...cookiesConsent, [event.target.name]: checked };
+    setCookies(sentObject);
+  };
+
+  const saveChanges = (): void => {
+    persistConsentInCookie({ essential, statistics, marketing });
+    hide();
+  };
+  const acceptAll = (): void => {
+    const sentObject = { essential: true, statistics: true, marketing: true };
+    setCookies(sentObject);
+  };
+
+  const basicInformationComponent = () => (
     <>
-      {props.children ? props.children(show) : <></>}
-      {state.open && (
+      <GoogleAnalytics />
+      {open && (
         <Dialog
-          open={state.open}
+          open={open}
           onClose={(): void => hide()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -61,29 +114,24 @@ const CookieConsentDialog = (props: Props) => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <p>
-                ⚙ Necessary - these cookies can't be turned off and are required
-                for proper functioning of the website.
-              </p>
-              <p>
-                📈 Statistics - these cookies allow me to measure user's
-                sattisfaction from using my website.
-              </p>
-              <p>
-                📣 Marketing - these types of cookies help my website to grow.
-              </p>
-              <p>
-                <a>
-                  <Link href={Route.PrivacyPolicy}>Cookies policy</Link>
-                </a>
-              </p>
+              ⚙ Necessary - these cookies can't be turned off and are required
+              for proper functioning of the website.
+              <br />
+              📈 Statistics - these cookies allow me to measure user's
+              sattisfaction from using my website.
+              <br />
+              📣 Marketing - these types of cookies help my website to grow.
+              <br />
+              <Link href={Route.PrivacyPolicy}>
+                <a>Cookie policy</a>
+              </Link>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <button
               type="button"
               className="btn btn-link"
-              onClick={() => hide()}
+              onClick={() => showAdvencedSettings()}
             >
               Advenced options
             </button>
@@ -99,6 +147,133 @@ const CookieConsentDialog = (props: Props) => {
       )}
     </>
   );
+
+  const advencedSettingsComponent = () => (
+    <>
+      {open && (
+        <Dialog
+          open={open}
+          onClose={(): void => hide()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Advenced cookies settings 🍪
+          </DialogTitle>
+          <DialogContent>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Select cookies You allow</FormLabel>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={essential}
+                      onChange={onSwitchChange}
+                      name="essential"
+                      disabled={true}
+                      required={true}
+                      color="primary"
+                    />
+                  }
+                  label="Essential (required)"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={statistics}
+                      onChange={onSwitchChange}
+                      name="statistics"
+                      color="primary"
+                    />
+                  }
+                  label="Statistics"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={marketing}
+                      onChange={onSwitchChange}
+                      name="marketing"
+                      color="primary"
+                    />
+                  }
+                  label="Marketing"
+                />
+              </FormGroup>
+            </FormControl>
+            <DialogContentText id="alert-dialog-description">
+              ⚙ Necessary - these cookies can't be turned off and are required
+              for proper functioning of the website.
+              <br />
+              📈 Statistics - these cookies allow me to measure user's
+              sattisfaction from using my website.
+              <br />
+              📣 Marketing - these types of cookies help my website to grow.
+              <br />
+              <Link href={Route.PrivacyPolicy}>
+                <a>Cookie policy</a>
+              </Link>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <button
+              type="button"
+              className="btn btn-link"
+              onClick={() => saveChanges()}
+            >
+              Save changes
+            </button>
+            <button
+              type="button"
+              className="btn btn-warning"
+              onClick={() => acceptAll()}
+            >
+              Accept all cookies
+            </button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </>
+  );
+
+  if (open) {
+    switch (display) {
+      case DialogState.BasicInformation:
+        return basicInformationComponent();
+      case DialogState.AdvencedSettings:
+        return advencedSettingsComponent();
+      default:
+        return basicInformationComponent();
+    }
+  }
+
+  return null;
+}
+
+const mapStateToProps = (state: RootState): StateProps => {
+  return {
+    open: state.userSection.cookieConsentDialog.open,
+    display: state.userSection.cookieConsentDialog.state,
+    essential: state.userSection.cookiesConsent.essential,
+    statistics: state.userSection.cookiesConsent.statistics,
+    marketing: state.userSection.cookiesConsent.marketing,
+  };
 };
 
-export default CookieConsentDialog;
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    setCookies: (cookiesConsent: CookieConsent) =>
+      dispatch(setCookies(cookiesConsent)),
+    setCookieConsentDialog: (cookiesConsent: CookieConsentDialogState) =>
+      dispatch(setCookieConsentDialog(cookiesConsent)),
+    persistConsentInCookie: (cookiesConsent: CookieConsent) =>
+      dispatch(appActions.requestSaveCookiesConsent(cookiesConsent)),
+    requestReadCookieConsent: () =>
+      dispatch(appActions.requestReadCookiesConsent()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CookieConsentDialog);

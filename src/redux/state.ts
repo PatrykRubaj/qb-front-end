@@ -99,6 +99,8 @@ export interface UserSection {
   showNewsletterPrompt: boolean;
   isLoading: boolean;
   redirectUrl: string;
+  cookiesConsent: CookieConsent;
+  cookieConsentDialog: CookieConsentDialogState;
 }
 
 export interface BudgetToGenerate {
@@ -153,4 +155,20 @@ export interface PaymentErrorResponse {
 
 export interface PaymentSessionResponse {
   sessionId: string;
+}
+
+export interface CookieConsent {
+  essential: boolean;
+  statistics: boolean;
+  marketing: boolean;
+}
+
+export enum DialogState {
+  BasicInformation,
+  AdvencedSettings,
+}
+
+export interface CookieConsentDialogState {
+  open: boolean;
+  state: DialogState;
 }

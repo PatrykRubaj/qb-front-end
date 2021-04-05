@@ -1,4 +1,4 @@
-import Head from "next/head";
+import Head from 'next/head';
 
 const PrivacyPolicy = () => {
   return (
@@ -21,7 +21,6 @@ const PrivacyPolicy = () => {
             My service enables visitors to design and then generate a budget
             spreadsheet.
           </p>
-
           <h3>B. Key terms</h3>
           <p>
             <strong>&quot;Visitor&quot;</strong> means, depending on the
@@ -36,7 +35,6 @@ const PrivacyPolicy = () => {
             but are not limited to, first and last name, email address or other
             demographic information.
           </p>
-
           <h2>2. Privacy for Visitors</h2>
           <p>
             This section applies to Personal Information that I collect and
@@ -44,7 +42,6 @@ const PrivacyPolicy = () => {
             course of my business, such as in connection with my sales and
             marketing activities.
           </p>
-
           <h3>A. Information I Collect</h3>
           <p>
             (i) Information you provide to me on the Quantum Budget Site or
@@ -63,7 +60,6 @@ const PrivacyPolicy = () => {
               <li>IP Address</li>
             </ul>
           </p>
-
           <p>
             (ii) Information I collect automatically through the Quantum Budget
             Site: When you visit my Quantum Budget Site or interact with my
@@ -159,7 +155,6 @@ const PrivacyPolicy = () => {
               </li>
             </ul>
           </p>
-
           <h3>C. Public Information and Third-Party Websites</h3>
           <p>
             <ul>
@@ -191,7 +186,6 @@ const PrivacyPolicy = () => {
               </li>
             </ul>
           </p>
-
           <h3>D. Cookies and Tracking Technologies</h3>
           <p>
             I use cookies and similar tracking technologies to collect and use
@@ -200,7 +194,6 @@ const PrivacyPolicy = () => {
             tracking technologies I use, why, and how you can control them,
             please see my Cookie Statement available here.
           </p>
-
           <h3>E. Other Data Protection Rights</h3>
           <p>
             Depending on the country in which you reside, you may have the
@@ -230,9 +223,7 @@ const PrivacyPolicy = () => {
               </li>
             </ul>
           </p>
-
           <h2>3. General Information</h2>
-
           <h3>A. How I Share Information</h3>
           <p>
             <strong>My service providers:</strong> Sometimes, I share your
@@ -248,9 +239,19 @@ const PrivacyPolicy = () => {
             I use Auth0 services in connection with my Service to provide
             certain features, such as user authentication. As such, you
             acknowledge and agree that by using spreadsheet generator and using
-            the Service, you are also bound by{" "}
+            the Service, you are also bound by{' '}
             <a href="https://auth0.com/privacy" rel="nofollow">
               Auth0’s Privacy Policy
+            </a>
+            .
+          </p>
+          <p>
+            I use Stripe to process payments. If You decide to use this webiste
+            Your First name and last name are passed to the Stripe. Also any
+            information that You'll provide during checkout process after being
+            redirected to Stripe will be stored on their servers.{' '}
+            <a href="https://stripe.com/privacy" rel="nofollow" target="_blank">
+              Stripe's Privacy Policy
             </a>
             .
           </p>
@@ -262,7 +263,7 @@ const PrivacyPolicy = () => {
             a newsletter, Mailchimp may need to collect and process certain
             Personal Information about you as a controller to provide such
             services. To learn more about Mailchimp&apos;s privacy practices,
-            please visit{" "}
+            please visit{' '}
             <a href="https://mailchimp.com/legal/privacy/" rel="nofollow">
               https://mailchimp.com/legal/privacy/
             </a>
@@ -274,15 +275,15 @@ const PrivacyPolicy = () => {
             by signing up for an account and using the Service, you are also
             bound by Google&apos;s Privacy Policy. In addition to the rights set
             forth in Section 2, you may manage your Google Drive API data by
-            visiting Google&apos;s security settings page at{" "}
+            visiting Google&apos;s security settings page at{' '}
             <a
               href="https://security.google.com/settings/security/permissions"
               rel="nofollow"
               style={{
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                display: "block",
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                display: 'block',
               }}
             >
               https://security.google.com/settings/security/permissions
@@ -290,24 +291,23 @@ const PrivacyPolicy = () => {
           </p>
           <p>
             Scopes requested from You when using Google Sign In allow me to:
-            <ul>
-              <li>
-                View your basic profile info - to personalize experience on the
-                website
-              </li>
-              <li>
-                View your email address - to allow email marketing if additional
-                consent was given
-              </li>
-              <li>
-                View and manage Google Drive files and folders that you have
-                opened or created with this app - to allow creation of the
-                budget spreadsheet. I am unable to access any other files than
-                this website has created.
-              </li>
-            </ul>
           </p>
-
+          <ul>
+            <li>
+              View your basic profile info - to personalize experience on the
+              website
+            </li>
+            <li>
+              View your email address - to allow email marketing if additional
+              consent was given
+            </li>
+            <li>
+              View and manage Google Drive files and folders that you have
+              opened or created with this app - to allow creation of the budget
+              spreadsheet. I am unable to access any other files than this
+              website has created.
+            </li>
+          </ul>
           <h3>B. Your Choices and Opt-Outs</h3>
           <p>
             Visitors who have opted in to my marketing emails can opt out of
@@ -317,7 +317,6 @@ const PrivacyPolicy = () => {
             contact details provided in the &quot;Questions and Concerns&quot;
             section below.
           </p>
-
           <h3>C. Security</h3>
           <p>
             I take appropriate and reasonable technical and organizational
@@ -339,14 +338,12 @@ const PrivacyPolicy = () => {
               </li>
             </ul>
           </p>
-
           <h3>D. International Transfers</h3>
           <h4>(i) I operate in Poland</h4>
           <p>
             Quantum Budget is hosted by OVH with servers located in Limburg,
             Germany and Microsoft Azure located in West Europe.
           </p>
-
           <h3>E. Changes to this Policy</h3>
           <p>
             I may change this privacy policy at any time and from time to time.
@@ -363,7 +360,6 @@ const PrivacyPolicy = () => {
             in effect on each respective date you visited the Quantum Budget
             site.
           </p>
-
           <h3>F. Questions &amp; Concerns</h3>
           <p>
             If you have any questions or comments, or if you have a concern
@@ -375,7 +371,6 @@ const PrivacyPolicy = () => {
             d/b/a Quantum Budget is the controller of your Personal Information.
             Data Protection Officer can be contacted at gdpr@quantumbudget.com.
           </p>
-
           <h1 id="cookie-policy">Cookie Policy</h1>
           <h2>1. Strictly Necessary Cookies</h2>
           <p>
@@ -387,25 +382,58 @@ const PrivacyPolicy = () => {
             but some parts of the site will not then work. These cookies do not
             store any personally identifiable information.
           </p>
-          <p>
-            Cookies used:
-            <ul>
-              <li>_cflb</li>
-              <li>_cf_bm</li>
-              <li>_cfduid</li>
-              <li>auth0.ssodata</li>
-            </ul>
-          </p>
-
-          <h2>2. Performance Cookies</h2>
-          <p>Empty</p>
-
+          Cookies used:
+          <ul>
+            <li>_cflb</li>
+            <li>_cf_bm</li>
+            <li>_cfduid</li>
+            <li>auth0.ssodata</li>
+            <li>
+              cookieConsent - this cookie saves preferences for the type of
+              cookies and tracking You allowed me to do.
+            </li>
+            <li>
+              My site uses Stripe to handle payments. You can see what types of
+              cookies Stripe uses to process your payment{' '}
+              <a
+                href="https://stripe.com/en-pl/cookie-settings"
+                rel="nofollow"
+                target="_blank"
+              >
+                by following this link
+              </a>
+            </li>
+            {/* <li></li> */}
+          </ul>
+          <h2>2. Statistics cookies</h2>
+          <ul>
+            <li>_ga - Used to distinguish users.</li>
+            <li>_gid - Used to distinguish users.</li>
+            <li>
+              _gat - Used to throttle request rate. If Google Analytics is
+              deployed via Google Tag.
+            </li>
+            <li>
+              _gac_&lt;property-id&gt; - Contains campaign related information
+              for the user. If you have linked your Google Analytics and Google
+              Ads accounts
+            </li>
+            <li>
+              Here You can read more about cookies used by Google -{' '}
+              <a
+                href="https://policies.google.com/technologies/cookies#types-of-cookies"
+                rel="nofollow"
+                target="_blank"
+              >
+                link to Google's Privacy Terms
+              </a>
+              .
+            </li>
+          </ul>
           <h2>3. Functional Cookies</h2>
           <p>Empty</p>
-
           <h2>4. Targeting Cookies</h2>
           <p>Empty</p>
-
           <h2>5. Changes to this Policy</h2>
           <p>
             I may change this privacy policy at any time and from time to time.

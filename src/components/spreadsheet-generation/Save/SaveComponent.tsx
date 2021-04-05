@@ -296,6 +296,3 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SaveComponent);
-// 2021-02-01 tokeny
-// {"access_token":"ya29.a0AfH6SMBzA2Vcy2QOXnGAMKbZF_BT9dG5tVj1yFrxS-igZjGHHlS3Ge_MJWj6Paqub3dS-0nruI3iQD9P0bvSaH9AhitVUuLZ-q_vqMZaiYfP2YpZNYU5RK8wBqxuOGl3ll9FKxpvEv09rVZgYOZcNYV1ynQJtIpnhxZZetB9fcM",
-// "refresh_token":"1//09pn4OCuuI1yTCgYIARAAGAkSNwF-L9Ir2B-c6VoqxOhxjrlEL6R5HitvloXOT5BZyCqnpbAh3tz4m5vGPIh8VWOZ5c5GeGsM3ms"}

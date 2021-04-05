@@ -1,8 +1,10 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import '../styles/BootstrapCustomization.scss';
 import NavigationBar from '../components/common/navigation-bar';
 import Footer from '../components/common/footer';
 import CookieConsentDialog from '../components/common/CookiesConsentDialog';
+import GoogleAnalytics from '../components/common/googleAnalytics';
 import { Provider } from 'react-redux';
 import getStore from '../redux/getStore';
 
@@ -16,26 +18,12 @@ function MyApp({ Component, pageProps }) {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        {process.env.NODE_ENV === 'production' ? (
-          <>
-            <script
-              async
-              src="https://www.googletagmanager.com/gtag/js?id=UA-176564324-1"
-            ></script>
-            <script src="/ganalytics.js"></script>
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                  })(window,document,'script','dataLayer','GTM-T3TW6FS');
-                  `,
-              }}
-            />
-          </>
-        ) : null}
+        {/* {process.env.NODE_ENV === 'production' ? (
+          <DynamicGoogleAnalytics />
+        ) : (
+          <DynamicGoogleAnalytics />
+        )} */}
+
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"
@@ -56,6 +44,7 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
+      <GoogleAnalytics />
       <noscript>
         <iframe
           src="https://www.googletagmanager.com/ns.html?id=GTM-T3TW6FS"
@@ -67,7 +56,7 @@ function MyApp({ Component, pageProps }) {
       <div className="container-flex">
         <NavigationBar />
         <div className="container">
-          <CookieConsentDialog open={true} />
+          <CookieConsentDialog />
           <Component {...pageProps} />
           <Footer />
         </div>

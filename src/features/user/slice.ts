@@ -1,4 +1,11 @@
-import { ReadState, User, UserSection } from '../../redux/state';
+import {
+  CookieConsent,
+  CookieConsentDialogState,
+  DialogState,
+  ReadState,
+  User,
+  UserSection,
+} from '../../redux/state';
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as appTypes from '../../redux/types/appTypes';
 import * as budgetTypes from '../../redux/types/budgetTypes';
@@ -10,6 +17,10 @@ const stateLoaded = createAction<RootState>(
 
 const budgetReadFromDatabase = createAction<ReadState>(
   budgetTypes.REQUEST_BUDGET_READ_FINISHED
+);
+
+const cookieConsentRead = createAction<CookieConsent>(
+  appTypes.REQUEST_READ_COOKIES_CONSENT_FINISHED
 );
 
 export const slice = createSlice({
@@ -30,6 +41,15 @@ export const slice = createSlice({
       expiresAt: 0,
       userId: '',
       permissions: [] as string[],
+    },
+    cookiesConsent: {
+      essential: true,
+      statistics: false,
+      marketing: false,
+    },
+    cookieConsentDialog: {
+      open: false,
+      state: DialogState.BasicInformation,
     },
     redirectUrl: '',
   } as UserSection,
@@ -70,6 +90,25 @@ export const slice = createSlice({
         user: action.payload,
       };
     },
+    setCookies: (state, action: PayloadAction<CookieConsent>) => {
+      return {
+        ...state,
+        cookiesConsent: {
+          essential: action.payload.essential,
+          statistics: action.payload.statistics,
+          marketing: action.payload.marketing,
+        },
+      };
+    },
+    setCookieConsentDialog: (
+      state,
+      action: PayloadAction<CookieConsentDialogState>
+    ) => {
+      return {
+        ...state,
+        cookieConsentDialog: action.payload,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -87,6 +126,21 @@ export const slice = createSlice({
           agreedToTos: action.payload.user.agreedToTermsOfService,
           agreedToNewsletter: action.payload.user.agreedToNewsletter,
         };
+      })
+      .addCase(cookieConsentRead, (state, action) => {
+        console.log('extraReducers - cookieConsentRead = ', action);
+        return {
+          ...state,
+          cookiesConsent: {
+            essential: true,
+            statistics: action.payload?.statistics ?? false,
+            marketing: action.payload?.marketing ?? false,
+          },
+          cookieConsentDialog: {
+            ...state.cookieConsentDialog,
+            open: action.payload === null,
+          },
+        };
       });
   },
 });
@@ -98,5 +152,7 @@ export const {
   setAgreedToTos,
   setRedirectUrl,
   callbackFinished,
+  setCookies,
+  setCookieConsentDialog,
 } = slice.actions;
 export default slice.reducer;
