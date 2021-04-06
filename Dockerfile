@@ -1,4 +1,4 @@
-FROM node:14 as build
+FROM node:15 as build
 
 # Create app directory
 WORKDIR /usr/src/quantumbudget

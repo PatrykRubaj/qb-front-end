@@ -5,10 +5,16 @@ import NavigationBar from '../components/common/navigation-bar';
 import Footer from '../components/common/footer';
 import CookieConsentDialog from '../components/common/CookiesConsentDialog';
 import GoogleAnalytics from '../components/common/googleAnalytics';
+import FacebookPixel from '../components/common/facebookPixel';
 import { Provider } from 'react-redux';
 import getStore from '../redux/getStore';
 
 const store = getStore();
+
+const DynamicFacebookPixel = dynamic(
+  () => import('../components/common/facebookPixel'),
+  { ssr: false }
+);
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -45,18 +51,11 @@ function MyApp({ Component, pageProps }) {
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <GoogleAnalytics />
-      <noscript>
-        <iframe
-          src="https://www.googletagmanager.com/ns.html?id=GTM-T3TW6FS"
-          height="0"
-          width="0"
-          style={{ display: 'none', visibility: 'hidden' }}
-        ></iframe>
-      </noscript>
       <div className="container-flex">
         <NavigationBar />
         <div className="container">
           <CookieConsentDialog />
+          <DynamicFacebookPixel />
           <Component {...pageProps} />
           <Footer />
         </div>
