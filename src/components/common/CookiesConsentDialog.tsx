@@ -108,6 +108,8 @@ function CookieConsentDialog(props: Props) {
           onClose={(): void => hide()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          disableBackdropClick={true}
+          disableEscapeKeyDown={true}
         >
           <DialogTitle id="alert-dialog-title">
             My website uses cookies 🍪
