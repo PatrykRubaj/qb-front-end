@@ -22,7 +22,6 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/reducers';
 import appActions from '../../redux/actions/appActions';
 import GoogleAnalytics from './googleAnalytics';
-import Head from 'next/head';
 
 interface StateProps {
   open: boolean;
@@ -45,9 +44,6 @@ function CookieConsentDialog(props: Props) {
   const {
     open,
     display,
-    essential,
-    statistics,
-    marketing,
     setCookies,
     setCookieConsentDialog,
     persistConsentInCookie,
@@ -58,6 +54,12 @@ function CookieConsentDialog(props: Props) {
     requestReadCookieConsent();
   }, []);
 
+  const [cookieConsentState, setCookieConsentState] = useState<CookieConsent>({
+    essential: true,
+    statistics: false,
+    marketing: false,
+  });
+
   const showAdvencedSettings = (): void => {
     setCookieConsentDialog({ open, state: DialogState.AdvencedSettings });
   };
@@ -67,189 +69,177 @@ function CookieConsentDialog(props: Props) {
       state: DialogState.BasicInformation,
     });
 
-  const confirm = (): void => {
-    setCookies({ essential: true, marketing: true, statistics: true });
-    persistConsentInCookie({
-      essential: true,
-      statistics: true,
-      marketing: true,
-    });
-    hide();
-  };
-
   const onSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    const cookiesConsent = {
+    setCookieConsentState({
+      ...cookieConsentState,
       essential: true,
-      statistics,
-      marketing,
-    };
-    const sentObject = { ...cookiesConsent, [event.target.name]: checked };
-    setCookies(sentObject);
+      [event.target.name]: checked,
+    });
   };
 
   const saveChanges = (): void => {
-    persistConsentInCookie({ essential, statistics, marketing });
+    debugger;
+    setCookies(cookieConsentState);
+    persistConsentInCookie(cookieConsentState);
     hide();
   };
+
   const acceptAll = (): void => {
-    const sentObject = { essential: true, statistics: true, marketing: true };
-    setCookies(sentObject);
+    const agreedToAllCookies = {
+      essential: true,
+      statistics: true,
+      marketing: true,
+    };
+
+    debugger;
+    setCookieConsentState(agreedToAllCookies);
+    setCookies(agreedToAllCookies);
+    persistConsentInCookie(agreedToAllCookies);
+
+    hide();
   };
+
+  const outerComponent = () => (
+    <>
+      <GoogleAnalytics />
+      <Dialog
+        open={open}
+        onClose={(): void => hide()}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        disableBackdropClick={true}
+        disableEscapeKeyDown={true}
+      >
+        <DialogTitle id="alert-dialog-title">
+          My website uses cookies 🍪
+        </DialogTitle>
+        {display == DialogState.BasicInformation
+          ? basicInformationComponent()
+          : display == DialogState.AdvencedSettings
+          ? advencedSettingsComponent()
+          : basicInformationComponent()}
+      </Dialog>
+    </>
+  );
 
   const basicInformationComponent = () => (
     <>
-      <GoogleAnalytics />
-      {open && (
-        <Dialog
-          open={open}
-          onClose={(): void => hide()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          disableBackdropClick={true}
-          disableEscapeKeyDown={true}
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          ⚙ Necessary - these cookies can't be turned off and are required for
+          proper functioning of the website.
+          <br />
+          📈 Statistics - these cookies allow me to measure user's sattisfaction
+          from using my website.
+          <br />
+          📣 Marketing - these types of cookies help my website to grow.
+          <br />
+          <Link href={Route.PrivacyPolicy}>
+            <a>Cookie policy</a>
+          </Link>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <button
+          type="button"
+          className="btn btn-link"
+          onClick={() => showAdvencedSettings()}
         >
-          <DialogTitle id="alert-dialog-title">
-            My website uses cookies 🍪
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              ⚙ Necessary - these cookies can't be turned off and are required
-              for proper functioning of the website.
-              <br />
-              📈 Statistics - these cookies allow me to measure user's
-              sattisfaction from using my website.
-              <br />
-              📣 Marketing - these types of cookies help my website to grow.
-              <br />
-              <Link href={Route.PrivacyPolicy}>
-                <a>Cookie policy</a>
-              </Link>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <button
-              type="button"
-              className="btn btn-link"
-              onClick={() => showAdvencedSettings()}
-            >
-              Advenced options
-            </button>
-            <button
-              type="button"
-              className="btn btn-warning"
-              onClick={() => confirm()}
-            >
-              I Accept
-            </button>
-          </DialogActions>
-        </Dialog>
-      )}
+          Advenced options
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning"
+          onClick={() => acceptAll()}
+        >
+          I Accept
+        </button>
+      </DialogActions>
     </>
   );
 
   const advencedSettingsComponent = () => (
     <>
-      {open && (
-        <Dialog
-          open={open}
-          onClose={(): void => hide()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+      <DialogContent>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Select cookies You allow</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={cookieConsentState.essential}
+                  onChange={onSwitchChange}
+                  name="essential"
+                  disabled={true}
+                  required={true}
+                  color="primary"
+                />
+              }
+              label="Essential (required)"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={cookieConsentState.statistics}
+                  onChange={onSwitchChange}
+                  name="statistics"
+                  color="primary"
+                />
+              }
+              label="Statistics"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={cookieConsentState.marketing}
+                  onChange={onSwitchChange}
+                  name="marketing"
+                  color="primary"
+                />
+              }
+              label="Marketing"
+            />
+          </FormGroup>
+        </FormControl>
+        <DialogContentText id="alert-dialog-description">
+          ⚙ Necessary - these cookies can't be turned off and are required for
+          proper functioning of the website.
+          <br />
+          📈 Statistics - these cookies allow me to measure user's sattisfaction
+          from using my website.
+          <br />
+          📣 Marketing - these types of cookies help my website to grow.
+          <br />
+          <Link href={Route.PrivacyPolicy}>
+            <a>Cookie policy</a>
+          </Link>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <button
+          type="button"
+          className="btn btn-link"
+          onClick={() => saveChanges()}
         >
-          <DialogTitle id="alert-dialog-title">
-            Advenced cookies settings 🍪
-          </DialogTitle>
-          <DialogContent>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Select cookies You allow</FormLabel>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={essential}
-                      onChange={onSwitchChange}
-                      name="essential"
-                      disabled={true}
-                      required={true}
-                      color="primary"
-                    />
-                  }
-                  label="Essential (required)"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={statistics}
-                      onChange={onSwitchChange}
-                      name="statistics"
-                      color="primary"
-                    />
-                  }
-                  label="Statistics"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={marketing}
-                      onChange={onSwitchChange}
-                      name="marketing"
-                      color="primary"
-                    />
-                  }
-                  label="Marketing"
-                />
-              </FormGroup>
-            </FormControl>
-            <DialogContentText id="alert-dialog-description">
-              ⚙ Necessary - these cookies can't be turned off and are required
-              for proper functioning of the website.
-              <br />
-              📈 Statistics - these cookies allow me to measure user's
-              sattisfaction from using my website.
-              <br />
-              📣 Marketing - these types of cookies help my website to grow.
-              <br />
-              <Link href={Route.PrivacyPolicy}>
-                <a>Cookie policy</a>
-              </Link>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <button
-              type="button"
-              className="btn btn-link"
-              onClick={() => saveChanges()}
-            >
-              Save changes
-            </button>
-            <button
-              type="button"
-              className="btn btn-warning"
-              onClick={() => acceptAll()}
-            >
-              Accept all cookies
-            </button>
-          </DialogActions>
-        </Dialog>
-      )}
+          Save changes
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning"
+          onClick={() => acceptAll()}
+        >
+          Accept all cookies
+        </button>
+      </DialogActions>
     </>
   );
 
-  if (open) {
-    switch (display) {
-      case DialogState.BasicInformation:
-        return basicInformationComponent();
-      case DialogState.AdvencedSettings:
-        return advencedSettingsComponent();
-      default:
-        return basicInformationComponent();
-    }
+  {
+    return open && outerComponent();
   }
-
-  return null;
 }
 
 const mapStateToProps = (state: RootState): StateProps => {
