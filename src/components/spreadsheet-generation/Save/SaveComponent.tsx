@@ -142,85 +142,7 @@ const SaveComponent = ({
           onClose={closingNewsletterPrompt}
         />
       )}
-      {shouldDisplayTermsRow ? (
-        <div className="row">
-          <div className="col">
-            <h2 className="mt-2" ref={nearlyDoneHeader}>
-              Nearly done
-            </h2>
-            <div className="form-check pl-0">
-              <FormControl
-                component="fieldset"
-                error={displayPrivacyRequiredInfo}
-                required
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
-                      }
-                      checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
-                      checked={agreedToPrivacyPolicy || false}
-                      id="privacyPolicyCheck"
-                      onChange={onPrivacyPolicyChecboxClick}
-                      className={
-                        'form-check-input' +
-                        (displayPrivacyRequiredInfo ? ' is-invalid' : '')
-                      }
-                      value="agreedToPrivacyPolicy"
-                      color="primary"
-                    />
-                  }
-                  label="Agree to privacy policy (required)"
-                />
-                <FormHelperText>
-                  You must agree to{' '}
-                  <Link href={Route.PrivacyPolicy}>
-                    <a rel="nofollow">privacy policy</a>
-                  </Link>{' '}
-                  before submitting.
-                </FormHelperText>
-              </FormControl>
-            </div>
-            <div className="form-check pl-0">
-              <FormControl
-                component="fieldset"
-                error={displayTosRequiredInfo}
-                required
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
-                      }
-                      checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
-                      checked={agreedToTos || false}
-                      id="privacyPolicyCheck"
-                      onChange={onTermsOfServiceChecboxClick}
-                      className={
-                        'form-check-input' +
-                        (displayTosRequiredInfo ? ' is-invalid' : '')
-                      }
-                      value="agreedToTos"
-                      color="primary"
-                    />
-                  }
-                  label="Agree to Terms of Service (required)"
-                />
-                <FormHelperText>
-                  You must agree to{' '}
-                  <Link href={Route.TermsOfService}>
-                    <a rel="nofollow">terms of service</a>
-                  </Link>{' '}
-                  before submitting.
-                </FormHelperText>
-              </FormControl>
-            </div>
-          </div>
-        </div>
-      ) : null}
+
       <ProtectedComponent
         expiresAt={expiresAt}
         notAuthenticated={
@@ -232,6 +154,85 @@ const SaveComponent = ({
           </div>
         }
       >
+        {shouldDisplayTermsRow ? (
+          <div className="row">
+            <div className="col">
+              <h2 className="mt-2" ref={nearlyDoneHeader}>
+                Nearly done
+              </h2>
+              <div className="form-check pl-0">
+                <FormControl
+                  component="fieldset"
+                  error={displayPrivacyRequiredInfo}
+                  required
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        icon={
+                          <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
+                        }
+                        checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
+                        checked={agreedToPrivacyPolicy || false}
+                        id="privacyPolicyCheck"
+                        onChange={onPrivacyPolicyChecboxClick}
+                        className={
+                          'form-check-input' +
+                          (displayPrivacyRequiredInfo ? ' is-invalid' : '')
+                        }
+                        value="agreedToPrivacyPolicy"
+                        color="primary"
+                      />
+                    }
+                    label="Agree to privacy policy (required)"
+                  />
+                  <FormHelperText>
+                    You must agree to{' '}
+                    <Link href={Route.PrivacyPolicy}>
+                      <a rel="nofollow">privacy policy</a>
+                    </Link>{' '}
+                    before submitting.
+                  </FormHelperText>
+                </FormControl>
+              </div>
+              <div className="form-check pl-0">
+                <FormControl
+                  component="fieldset"
+                  error={displayTosRequiredInfo}
+                  required
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        icon={
+                          <CheckBoxOutlineBlankIcon style={{ fontSize: 32 }} />
+                        }
+                        checkedIcon={<CheckBoxIcon style={{ fontSize: 32 }} />}
+                        checked={agreedToTos || false}
+                        id="privacyPolicyCheck"
+                        onChange={onTermsOfServiceChecboxClick}
+                        className={
+                          'form-check-input' +
+                          (displayTosRequiredInfo ? ' is-invalid' : '')
+                        }
+                        value="agreedToTos"
+                        color="primary"
+                      />
+                    }
+                    label="Agree to Terms of Service (required)"
+                  />
+                  <FormHelperText>
+                    You must agree to{' '}
+                    <Link href={Route.TermsOfService}>
+                      <a rel="nofollow">terms of service</a>
+                    </Link>{' '}
+                    before submitting.
+                  </FormHelperText>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+        ) : null}
         {canGenerateBudget ? (
           <div className="row">
             <div className="col">

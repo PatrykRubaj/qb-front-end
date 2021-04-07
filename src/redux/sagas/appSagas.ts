@@ -37,7 +37,10 @@ const saveCookiesConsent = async (
   cookiesConsent: CookieConsent
 ): Promise<void> => {
   const cookies = new Cookies();
-  cookies.set('cookieConsent', cookiesConsent);
+  cookies.set('cookieConsent', cookiesConsent, {
+    maxAge: 60 * 60 * 24 * 30,
+    secure: true,
+  });
 };
 
 const readCookiesConsent = async (): Promise<CookieConsent | null> => {
