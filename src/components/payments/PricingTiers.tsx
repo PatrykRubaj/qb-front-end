@@ -9,11 +9,14 @@ import PricingTier from './PricingTier';
 import NewsletterComponent from '../spreadsheet-generation/Save/NewsletterComponent';
 import { setNewsletter, setNewsletterPrompt } from '../../features/user/slice';
 
+interface StateProps {
+  agreedToNewsletter?: boolean;
+  showNewsletterPrompt: boolean;
+}
+
 interface OwnProps {
   privacyPolicyAccepted: boolean;
   tosAccepted: boolean;
-  agreedToNewsletter?: boolean;
-  showNewsletterPrompt: boolean;
   setDisplayPrivacyRequiredInfo: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayTosRequiredInfo: React.Dispatch<React.SetStateAction<boolean>>;
   refToPolicies?: React.MutableRefObject<HTMLHeadingElement>;
@@ -25,7 +28,7 @@ interface DispatchProps {
   setDisplayNewsletterPrompt: (showNewsletterPrompt: boolean) => void;
 }
 
-type Props = OwnProps & DispatchProps;
+type Props = OwnProps & DispatchProps & StateProps;
 
 const PricingTiers = (props: Props) => {
   const [redirectInProgress, setRedirectInProgress] = useState(false);
@@ -123,7 +126,10 @@ const PricingTiers = (props: Props) => {
   );
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps): OwnProps => {
+const mapStateToProps = (
+  state: RootState,
+  ownProps: OwnProps
+): StateProps & OwnProps => {
   return {
     privacyPolicyAccepted: ownProps.privacyPolicyAccepted,
     tosAccepted: ownProps.tosAccepted,
