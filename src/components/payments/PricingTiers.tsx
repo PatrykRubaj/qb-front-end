@@ -6,10 +6,14 @@ import { RootState } from '../../redux/reducers';
 import { PriceTier } from '../../redux/state';
 import { PaymentActionType } from '../../redux/types/paymentTypes';
 import PricingTier from './PricingTier';
+import NewsletterComponent from '../spreadsheet-generation/Save/NewsletterComponent';
+import { setNewsletter, setNewsletterPrompt } from '../../features/user/slice';
 
 interface OwnProps {
   privacyPolicyAccepted: boolean;
   tosAccepted: boolean;
+  agreedToNewsletter?: boolean;
+  showNewsletterPrompt: boolean;
   setDisplayPrivacyRequiredInfo: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayTosRequiredInfo: React.Dispatch<React.SetStateAction<boolean>>;
   refToPolicies?: React.MutableRefObject<HTMLHeadingElement>;
@@ -17,12 +21,15 @@ interface OwnProps {
 
 interface DispatchProps {
   requestPayment: (tier: PriceTier) => void;
+  setNewsletterAgreement: (agreedToNewsletter: boolean) => void;
+  setDisplayNewsletterPrompt: (showNewsletterPrompt: boolean) => void;
 }
 
 type Props = OwnProps & DispatchProps;
 
 const PricingTiers = (props: Props) => {
   const [redirectInProgress, setRedirectInProgress] = useState(false);
+  const [selectedPriceTier, setSelectedPriceTier] = useState<PriceTier>(null);
 
   const handlePaymentClick = (tier: PriceTier) => {
     const {
@@ -31,9 +38,15 @@ const PricingTiers = (props: Props) => {
       setDisplayPrivacyRequiredInfo,
       setDisplayTosRequiredInfo,
     } = props;
+    setSelectedPriceTier(tier);
+
     if (privacyPolicyAccepted && tosAccepted) {
-      setRedirectInProgress(true);
-      props.requestPayment(tier);
+      if (props.agreedToNewsletter == null) {
+        props.setDisplayNewsletterPrompt(true);
+      } else {
+        setRedirectInProgress(true);
+        props.requestPayment(tier);
+      }
       return;
     }
 
@@ -53,8 +66,25 @@ const PricingTiers = (props: Props) => {
     // using `error.message`.
   };
 
+  const generateBudget = (agreed: boolean): void => {
+    props.setNewsletterAgreement(agreed);
+    props.setDisplayNewsletterPrompt(false);
+    handlePaymentClick(selectedPriceTier);
+  };
+
+  const closingNewsletterPrompt = (): void => {
+    props.setDisplayNewsletterPrompt(false);
+  };
+
   return (
     <React.Fragment>
+      {props.showNewsletterPrompt && (
+        <NewsletterComponent
+          show={props.showNewsletterPrompt}
+          handleClose={generateBudget}
+          onClose={closingNewsletterPrompt}
+        />
+      )}
       <PricingTier
         name="Pro"
         price={20}
@@ -99,6 +129,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps): OwnProps => {
     tosAccepted: ownProps.tosAccepted,
     setDisplayPrivacyRequiredInfo: ownProps.setDisplayPrivacyRequiredInfo,
     setDisplayTosRequiredInfo: ownProps.setDisplayTosRequiredInfo,
+    agreedToNewsletter: state.userSection.agreedToNewsletter,
+    showNewsletterPrompt: state.userSection.showNewsletterPrompt,
   };
 };
 
@@ -106,6 +138,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     requestPayment: (price: PriceTier): PaymentActionType =>
       dispatch(paymentActions.requestSessionId(price)),
+    setNewsletterAgreement: (agreedToNewsletter: boolean) =>
+      dispatch(setNewsletter(agreedToNewsletter)),
+    setDisplayNewsletterPrompt: (showNewsletterPrompt: boolean) =>
+      dispatch(setNewsletterPrompt(showNewsletterPrompt)),
   };
 };
 
