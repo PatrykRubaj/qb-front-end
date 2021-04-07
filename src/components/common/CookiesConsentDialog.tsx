@@ -81,7 +81,6 @@ function CookieConsentDialog(props: Props) {
   };
 
   const saveChanges = (): void => {
-    debugger;
     setCookies(cookieConsentState);
     persistConsentInCookie(cookieConsentState);
     hide();
@@ -94,7 +93,6 @@ function CookieConsentDialog(props: Props) {
       marketing: true,
     };
 
-    debugger;
     setCookieConsentState(agreedToAllCookies);
     setCookies(agreedToAllCookies);
     persistConsentInCookie(agreedToAllCookies);
