@@ -34,26 +34,14 @@ const PricingTiers = (props: Props) => {
   const [redirectInProgress, setRedirectInProgress] = useState(false);
   const [selectedPriceTier, setSelectedPriceTier] = useState<PriceTier>(null);
 
-  const handlePaymentClick = (tier: PriceTier) => {
-    const {
-      privacyPolicyAccepted,
-      tosAccepted,
-      setDisplayPrivacyRequiredInfo,
-      setDisplayTosRequiredInfo,
-    } = props;
-    setSelectedPriceTier(tier);
+  const remaindToAcceptPolicies = (
+    privacyPolicyAccepted: boolean,
+    tosAccepted: boolean,
+    refToPolicies?: React.MutableRefObject<HTMLHeadingElement>
+  ) => {
+    const { setDisplayPrivacyRequiredInfo, setDisplayTosRequiredInfo } = props;
 
-    if (privacyPolicyAccepted && tosAccepted) {
-      if (props.agreedToNewsletter == null) {
-        props.setDisplayNewsletterPrompt(true);
-      } else {
-        setRedirectInProgress(true);
-        props.requestPayment(tier);
-      }
-      return;
-    }
-
-    props.refToPolicies?.current.scrollIntoView({ behavior: 'smooth' });
+    refToPolicies?.current.scrollIntoView({ behavior: 'smooth' });
 
     if (privacyPolicyAccepted != true) {
       setDisplayPrivacyRequiredInfo(true);
@@ -62,20 +50,49 @@ const PricingTiers = (props: Props) => {
     if (tosAccepted != true) {
       setDisplayTosRequiredInfo(true);
     }
-    // When the customer clicks on the button, redirect them to Checkout.
-
-    // If `redirectToCheckout` fails due to a browser or network
-    // error, display the localized error message to your customer
-    // using `error.message`.
   };
 
-  const generateBudget = (agreed: boolean): void => {
-    props.setNewsletterAgreement(agreed);
-    props.setDisplayNewsletterPrompt(false);
-    handlePaymentClick(selectedPriceTier);
+  const startPaymenProcess = (tier: PriceTier) => {
+    setRedirectInProgress(true);
+    debugger;
+    props.requestPayment(tier);
   };
 
-  const closingNewsletterPrompt = (): void => {
+  const handlePaymentClick = (tier: PriceTier) => {
+    const {
+      privacyPolicyAccepted,
+      tosAccepted,
+      agreedToNewsletter,
+      refToPolicies,
+      setDisplayNewsletterPrompt,
+    } = props;
+    setSelectedPriceTier(tier);
+    debugger;
+    if (privacyPolicyAccepted && tosAccepted) {
+      if (agreedToNewsletter == null) {
+        setDisplayNewsletterPrompt(true);
+      } else {
+        startPaymenProcess(tier);
+      }
+      return;
+    } else {
+      remaindToAcceptPolicies(
+        privacyPolicyAccepted,
+        tosAccepted,
+        refToPolicies
+      );
+    }
+  };
+
+  const handleNewsletterOptionSelected = (agreed: boolean): void => {
+    const { setNewsletterAgreement, setDisplayNewsletterPrompt } = props;
+
+    setNewsletterAgreement(agreed);
+    setDisplayNewsletterPrompt(false);
+    startPaymenProcess(selectedPriceTier);
+  };
+
+  const onNewsletterPromptClose = (): void => {
     props.setDisplayNewsletterPrompt(false);
   };
 
@@ -84,8 +101,8 @@ const PricingTiers = (props: Props) => {
       {props.showNewsletterPrompt && (
         <NewsletterComponent
           show={props.showNewsletterPrompt}
-          handleClose={generateBudget}
-          onClose={closingNewsletterPrompt}
+          handleClose={handleNewsletterOptionSelected}
+          onClose={onNewsletterPromptClose}
         />
       )}
       <PricingTier
