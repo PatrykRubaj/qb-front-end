@@ -1,26 +1,29 @@
-import React from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import { Category, EntityStatus } from "../../../redux/state";
-import { v4 as uuidv4 } from "uuid";
-import WarngingDialog from "../../common/WarningDialog";
-import ConfirmationDialog from "../../common/ConfirmationDialog";
-import CategoryForm from "./CategoryForm";
-import { RootState } from "../../../redux/reducers";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import categoryActions from "../../../redux/actions/categoryActions";
-import * as categoryTypes from "../../../redux/types/categoryTypes";
+import React, { useEffect } from 'react';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Category, EntityStatus, Subcategory } from '../../../redux/state';
+import { v4 as uuidv4 } from 'uuid';
+import WarngingDialog from '../../common/WarningDialog';
+import ConfirmationDialog from '../../common/ConfirmationDialog';
+import CategoryForm from './CategoryForm';
+import { RootState } from '../../../redux/reducers';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import categoryActions from '../../../redux/actions/categoryActions';
+import * as categoryTypes from '../../../redux/types/categoryTypes';
+import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
 import {
   DragDropContext,
   DropResult,
   Droppable,
   Draggable,
-} from "react-beautiful-dnd";
+} from 'react-beautiful-dnd';
+import subcategoryActions from '../../../redux/actions/subcategoryActions';
 
 interface StateProps {
   categories: Array<Category>;
   formValues: Category;
+  subcategoryFormValues: Subcategory;
   onlyOneEditAllowedPrompt: boolean;
 }
 
@@ -31,6 +34,7 @@ interface DispatchProps {
   setCategoryFormValues: (category: Category) => void;
   setCategoryPromptVisibility: (isVisible: boolean) => void;
   moveElement: (startIndex: number, endIndex: number, id: string) => void;
+  setSubcategoryFormValues: (subcategory: Subcategory) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -45,8 +49,24 @@ const CategoryComponent = ({
   onlyOneEditAllowedPrompt,
   setCategoryPromptVisibility,
   moveElement,
+  subcategoryFormValues,
+  setSubcategoryFormValues,
 }: Props) => {
   const categoryInput = React.createRef<HTMLInputElement>();
+
+  useEffect(() => {
+    setSubcategoryFormValues({
+      ...subcategoryFormValues,
+      categoryId: categories.find((x) => x.status === EntityStatus.Saved)?.id,
+    });
+  }, []);
+
+  const selectFirstSavedCategory = () => {
+    setSubcategoryFormValues({
+      ...subcategoryFormValues,
+      categoryId: categories.find((x) => x.status === EntityStatus.Saved)?.id,
+    });
+  };
 
   const onEditClick = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -71,6 +91,15 @@ const CategoryComponent = ({
     category: Category
   ): void => {
     deleteCategory(category);
+    if (subcategoryFormValues.categoryId == category.id) {
+      selectFirstSavedCategory();
+    }
+    setSubcategoryFormValues({
+      ...subcategoryFormValues,
+      categoryId: categories.find(
+        (x) => x.status === EntityStatus.Saved && x.id !== category.id
+      )?.id,
+    });
   };
 
   const onFormSubmit = (category: Category): void => {
@@ -82,9 +111,16 @@ const CategoryComponent = ({
       : addCategory(categoryToSave);
     setCategoryFormValues({
       id: uuidv4(),
-      name: "",
+      name: '',
       status: EntityStatus.New,
     });
+
+    if ((subcategoryFormValues.categoryId || '') === '') {
+      setSubcategoryFormValues({
+        ...subcategoryFormValues,
+        categoryId: categoryToSave.id,
+      });
+    }
   };
 
   const onDragEnd = (result: DropResult): void => {
@@ -123,8 +159,8 @@ const CategoryComponent = ({
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
-              <th style={{ width: "90%" }}>Category</th>
-              <th className="text-center" style={{ width: "10%" }}>
+              <th style={{ width: '90%' }}>Category</th>
+              <th className="text-center" style={{ width: '10%' }}>
                 Actions
               </th>
             </tr>
@@ -146,12 +182,12 @@ const CategoryComponent = ({
                           // eslint-disable-next-line @typescript-eslint/unbound-method
                           ref={prov.innerRef}
                         >
-                          <td className="align-middle" style={{ width: "90%" }}>
+                          <td className="align-middle" style={{ width: '90%' }}>
                             {category.name}
                           </td>
                           <td
                             className="align-middle text-center"
-                            style={{ width: "10%" }}
+                            style={{ width: '10%' }}
                           >
                             <div className="btn-group" role="group">
                               <button
@@ -202,6 +238,7 @@ const mapStateToProps = (state: RootState): StateProps => {
   return {
     categories: state.categoriesSection.categories,
     formValues: state.categoriesSection.formValues,
+    subcategoryFormValues: state.subcategorySection.formValues,
     onlyOneEditAllowedPrompt: state.categoriesSection.onlyOneEditAllowedPrompt,
   };
 };
@@ -224,6 +261,10 @@ export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       dispatch(categoryActions.setCategoryPromptVisibility(isVisible)),
     moveElement: (startIndex: number, endIndex: number, id: string) =>
       dispatch(categoryActions.moveCategory(startIndex, endIndex, id)),
+    setSubcategoryFormValues: (
+      subcategory: Subcategory
+    ): subcategoryTypes.SubcategoryActionTypes =>
+      dispatch(subcategoryActions.setSubcategoryFormValues(subcategory)),
   };
 };
 

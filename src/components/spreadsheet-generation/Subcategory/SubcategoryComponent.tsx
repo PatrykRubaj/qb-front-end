@@ -1,22 +1,22 @@
-import React from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import { Category, Subcategory, EntityStatus } from "../../../redux/state";
-import { v4 as uuidv4 } from "uuid";
-import WarningDialog from "../../common/WarningDialog";
-import ConfirmationDialog from "../../common/ConfirmationDialog";
-import SubcategoryForm from "./SubcategoryForm";
-import { RootState } from "../../../redux/reducers";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import subcategoryActions from "../../../redux/actions/subcategoryActions";
-import * as subcategoryTypes from "../../../redux/types/subcategoryTypes";
+import React, { useEffect } from 'react';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Category, Subcategory, EntityStatus } from '../../../redux/state';
+import { v4 as uuidv4 } from 'uuid';
+import WarningDialog from '../../common/WarningDialog';
+import ConfirmationDialog from '../../common/ConfirmationDialog';
+import SubcategoryForm from './SubcategoryForm';
+import { RootState } from '../../../redux/reducers';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import subcategoryActions from '../../../redux/actions/subcategoryActions';
+import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
 import {
   DragDropContext,
   DropResult,
   Droppable,
   Draggable,
-} from "react-beautiful-dnd";
+} from 'react-beautiful-dnd';
 
 interface DispatchProps {
   addSubcategory: (subcategory: Subcategory) => void;
@@ -62,8 +62,8 @@ const SubcategoryComponent = ({
     setSubcategoryFormValues({ ...formValues, categoryId: category.id });
 
     subcategoriesHeader.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
+      behavior: 'smooth',
+      block: 'start',
     });
   };
 
@@ -83,14 +83,14 @@ const SubcategoryComponent = ({
     setSubcategoryFormValues({
       ...subcategory,
       id: uuidv4(),
-      name: "",
+      name: '',
       amount: null,
       status: EntityStatus.New,
     });
 
     subcategoriesHeader.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
+      behavior: 'smooth',
+      block: 'start',
     });
   };
 
@@ -115,8 +115,8 @@ const SubcategoryComponent = ({
       subcategory = { ...subcategory, status: EntityStatus.Editing };
       setSubcategoryFormValues(subcategory);
       subcategoriesHeader.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+        behavior: 'smooth',
+        block: 'start',
       });
     } else {
       setSubcategoryPromptVisibility(true);
@@ -184,7 +184,7 @@ const SubcategoryComponent = ({
                           Select category
                         </button>
                       </th>
-                      <th className="text-center" style={{ width: "10%" }}>
+                      <th className="text-center" style={{ width: '10%' }}>
                         Actions
                       </th>
                     </tr>
@@ -212,13 +212,13 @@ const SubcategoryComponent = ({
                                   >
                                     <td
                                       className="align-middle"
-                                      style={{ width: "90%" }}
+                                      style={{ width: '90%' }}
                                     >
                                       {subcategory.name}
                                     </td>
                                     <td
                                       className="align-middle text-center"
-                                      style={{ width: "10%" }}
+                                      style={{ width: '10%' }}
                                     >
                                       <div className="btn-group" role="group">
                                         <button
@@ -274,7 +274,7 @@ const SubcategoryComponent = ({
                                   role="alert"
                                 >
                                   <span>
-                                    No subcategories -{" "}
+                                    No subcategories -{' '}
                                     <button
                                       type="button"
                                       className="btn btn-link p-0 alert-link border-0 align-baseline"
