@@ -1,5 +1,5 @@
-import { Subcategory } from "../state";
-import * as subcategoryTypes from "../types/subcategoryTypes";
+import { Subcategory } from '../state';
+import * as subcategoryTypes from '../types/subcategoryTypes';
 
 const deleteSubcategory = (
   subcategoryToDelete: Subcategory
@@ -98,7 +98,7 @@ const enterSubcategoryAmount = (
   return {
     type: subcategoryTypes.ENTER_SUBCATEGORY_AMOUNT,
     id,
-    amount,
+    amount: amount,
   };
 };
 
