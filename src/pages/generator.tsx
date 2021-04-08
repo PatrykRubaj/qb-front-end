@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { Route } from '../redux/state';
 
 const DynamicIncomeComponent = dynamic(
-  () => import('../components/spreadsheet-generation/Income/IncomeComponent'),
+  () => import('../features/manageIncome/income.component'),
   { ssr: false }
 );
 const DynamicLocaleSelectorComponent = dynamic(
@@ -47,10 +47,7 @@ const DynamicSpendingPredictionComponent = dynamic(
 );
 
 const DynamicMonthSelectorComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/MonthSelector/MonthSelectorComponent'
-    ),
+  () => import('../features/monthSelector/component'),
   { ssr: false }
 );
 

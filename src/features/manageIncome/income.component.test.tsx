@@ -1,13 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { IncomeComponent, mapStateToProps } from './IncomeComponent';
-import { RootState } from '../../../redux/reducers';
-import {
-  EntityStatus,
-  Income,
-  Country,
-  DialogState,
-} from '../../../redux/state';
+import { IncomeComponent, mapStateToProps } from './income.component';
+import { RootState } from '../../redux/reducers';
+import { EntityStatus, Income, Country, DialogState } from '../../redux/state';
 import ReactTestUtils from 'react-dom/test-utils';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 

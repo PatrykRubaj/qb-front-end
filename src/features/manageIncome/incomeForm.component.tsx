@@ -1,7 +1,7 @@
-import React from "react";
-import { useFormik } from "formik";
-import { Income, EntityStatus } from "../../../redux/state";
-import * as Yup from "yup";
+import React from 'react';
+import { useFormik } from 'formik';
+import { Income, EntityStatus } from '../../redux/state';
+import * as Yup from 'yup';
 
 interface Props {
   addSaveNewIncome: Function;
@@ -19,17 +19,17 @@ const IncomeForm = ({
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required("Name is required")
+      .required('Name is required')
       .notOneOf(
         incomes
           .filter((x) => x.status === EntityStatus.Saved)
           .map((x) => x.name),
-        "Income name must be unique"
+        'Income name must be unique'
       ),
     amount: Yup.number()
-      .typeError("Amount must be a number")
-      .required("Amount is required")
-      .min(0, "Amount must be >= 0"),
+      .typeError('Amount must be a number')
+      .required('Amount is required')
+      .min(0, 'Amount must be >= 0'),
   });
 
   const formik = useFormik({
@@ -48,14 +48,14 @@ const IncomeForm = ({
         <div className="col">
           <input
             name="name"
-            value={formik.values.name || ""}
+            value={formik.values.name || ''}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             ref={incomeNameInputRef}
             type="text"
             className={
-              "form-control " +
-              (formik.errors.name && formik.touched.name ? "is-invalid" : "")
+              'form-control ' +
+              (formik.errors.name && formik.touched.name ? 'is-invalid' : '')
             }
             placeholder="Source"
           />
@@ -67,14 +67,14 @@ const IncomeForm = ({
           <input
             type="text"
             className={
-              "form-control " +
+              'form-control ' +
               (formik.errors.amount && formik.touched.amount
-                ? "is-invalid"
-                : "")
+                ? 'is-invalid'
+                : '')
             }
             placeholder="Amount"
             name="amount"
-            value={formik.values.amount || ""}
+            value={formik.values.amount || ''}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
@@ -84,7 +84,7 @@ const IncomeForm = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {initialValues.status === EntityStatus.Editing ? "Save" : "+ Add"}
+            {initialValues.status === EntityStatus.Editing ? 'Save' : '+ Add'}
           </button>
         </div>
       </div>

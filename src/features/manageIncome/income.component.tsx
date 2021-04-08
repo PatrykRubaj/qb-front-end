@@ -1,15 +1,21 @@
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
-import { Income, EntityStatus, Country } from "../../../redux/state";
-import WarningDialog from "../../common/WarningDialog";
-import IncomeForm from "./IncomeForm";
-import IncomeRowComponent from "./IncomeRowComponent";
-import { RootState } from "../../../redux/reducers";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import incomeActions from "../../../redux/actions/incomeActions";
-import { IncomeActionTypes } from "../../../redux/types/incomeTypes";
-import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
+import { Income, EntityStatus, Country } from '../../redux/state';
+import WarningDialog from '../../components/common/WarningDialog';
+import IncomeForm from './incomeForm.component';
+import IncomeRowComponent from './incomeRow.component';
+import { RootState } from '../../redux/reducers';
+import {
+  addIncome,
+  editIncome,
+  deleteIncome,
+  setIncomeForm,
+  setIncomePromptVisibility,
+  moveIncome,
+} from './slice';
 
 interface StateProps {
   incomes: Array<Income>;
@@ -19,7 +25,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  deleteIncome: (income: Income) => void;
+  deleteIncome: (id: string) => void;
   addIncome: (income: Income) => void;
   editIncome: (income: Income) => void;
   setIncomeFormValues: (income: Income) => void;
@@ -47,21 +53,21 @@ export const IncomeComponent = ({
     currenciesString: string | null | undefined
   ): string => {
     if (currenciesString === undefined || currenciesString === null) {
-      return "USD";
+      return 'USD';
     }
 
-    const indexOfComma = currenciesString.indexOf(",") || 0;
+    const indexOfComma = currenciesString.indexOf(',') || 0;
     if (indexOfComma > 0) {
-      return currenciesString.slice(0, indexOfComma) || "USD";
+      return currenciesString.slice(0, indexOfComma) || 'USD';
     }
 
-    return currenciesString || "USD";
+    return currenciesString || 'USD';
   };
 
   const formatter: Intl.NumberFormat = new Intl.NumberFormat(
-    locale?.key || "en-US",
+    locale?.key || 'en-US',
     {
-      style: "currency",
+      style: 'currency',
       currency: getCurrencyFromCommaString(locale?.currency),
     }
   );
@@ -78,7 +84,7 @@ export const IncomeComponent = ({
 
     setIncomeFormValues({
       id: uuidv4(),
-      name: "",
+      name: '',
       amount: undefined,
       status: EntityStatus.New,
     });
@@ -88,7 +94,7 @@ export const IncomeComponent = ({
     e: React.MouseEvent<HTMLButtonElement>,
     income: Income
   ): void => {
-    deleteIncome(income);
+    deleteIncome(income.id);
   };
 
   const onEditIncome = (
@@ -142,11 +148,11 @@ export const IncomeComponent = ({
         <table className="table table-borderless table-sm mt-2 table-striped">
           <thead className="thead-light">
             <tr>
-              <th style={{ width: "60%" }}>Source</th>
-              <th className="text-center" style={{ width: "30%" }}>
+              <th style={{ width: '60%' }}>Source</th>
+              <th className="text-center" style={{ width: '30%' }}>
                 Amount
               </th>
-              <th className="text-center" style={{ width: "10%" }}>
+              <th className="text-center" style={{ width: '10%' }}>
                 Actions
               </th>
             </tr>
@@ -198,22 +204,14 @@ export const mapStateToProps = (state: RootState): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    deleteIncome: (income: Income): IncomeActionTypes =>
-      dispatch(incomeActions.deleteIncome(income)),
-    addIncome: (income: Income): IncomeActionTypes =>
-      dispatch(incomeActions.addIncome(income)),
-    editIncome: (income: Income): IncomeActionTypes =>
-      dispatch(incomeActions.editIncome(income)),
-    setIncomeFormValues: (income: Income): IncomeActionTypes =>
-      dispatch(incomeActions.setIncomeFormValues(income)),
-    setPromptVisibility: (isVisible: boolean): IncomeActionTypes =>
-      dispatch(incomeActions.setPromptVisibility(isVisible)),
-    moveElement: (
-      startIndex: number,
-      endIndex: number,
-      id: string
-    ): IncomeActionTypes =>
-      dispatch(incomeActions.moveIncome(startIndex, endIndex, id)),
+    deleteIncome: (id: string) => dispatch(deleteIncome(id)),
+    addIncome: (income: Income) => dispatch(addIncome(income)),
+    editIncome: (income: Income) => dispatch(editIncome(income)),
+    setIncomeFormValues: (income: Income) => dispatch(setIncomeForm(income)),
+    setPromptVisibility: (isVisible: boolean) =>
+      dispatch(setIncomePromptVisibility(isVisible)),
+    moveElement: (startIndex: number, endIndex: number, id: string) =>
+      dispatch(moveIncome({ startIndex, endIndex })),
   };
 };
 

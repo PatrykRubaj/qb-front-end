@@ -1,30 +1,34 @@
-import incomeReducer from "./incomeReducer";
-import { IncomeSection, EntityStatus, Income } from "../state";
-import actions from "../actions/incomeActions";
+import incomeReducer from '../slice';
+import {
+  addIncome,
+  deleteIncome,
+  editIncome,
+  moveIncome,
+  setIncomeForm,
+  setIncomePromptVisibility,
+} from '../slice';
+import { IncomeSection, EntityStatus, Income } from '../../../redux/state';
 
-describe("Income reducer", () => {
+describe('Income reducer', () => {
   const initialIncomeSectionState: IncomeSection = {
     formValues: {
-      id: "id1",
+      id: 'id1',
       amount: 100,
-      name: "Work",
+      name: 'Work',
       status: EntityStatus.New,
     },
     incomes: [],
     onlyOneEditAllowedPrompt: false,
   };
-  it("Should return add income", () => {
+  it('Should return add income', () => {
     const income: Income = {
-      id: "id2",
-      name: "Work 2",
+      id: 'id2',
+      name: 'Work 2',
       status: EntityStatus.New,
       amount: 1000,
     };
 
-    const state = incomeReducer(
-      initialIncomeSectionState,
-      actions.addIncomeFinished(income)
-    );
+    const state = incomeReducer(initialIncomeSectionState, addIncome(income));
 
     expect(state).toEqual({
       ...initialIncomeSectionState,
@@ -35,11 +39,8 @@ describe("Income reducer", () => {
     });
   });
 
-  it("Should return delete income", () => {
-    const state = incomeReducer(
-      initialIncomeSectionState,
-      actions.deleteIncomeFinished("id1")
-    );
+  it('Should return delete income', () => {
+    const state = incomeReducer(initialIncomeSectionState, deleteIncome('id1'));
 
     expect(state.incomes).toHaveLength(0);
     expect(state).toEqual({
@@ -48,30 +49,30 @@ describe("Income reducer", () => {
     });
   });
 
-  it("Should return edited income in the same place", () => {
+  it('Should return edited income in the same place', () => {
     const initIncome: IncomeSection = {
       formValues: {
-        id: "id1",
+        id: 'id1',
         amount: 100,
-        name: "Work",
+        name: 'Work',
         status: EntityStatus.New,
       },
       incomes: [
         {
-          id: "id1",
-          name: "Lidl",
+          id: 'id1',
+          name: 'Lidl',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id2",
-          name: "Starbucks",
+          id: 'id2',
+          name: 'Starbucks',
           status: EntityStatus.Editing,
           amount: 450,
         },
         {
-          id: "id3",
-          name: "Side project",
+          id: 'id3',
+          name: 'Side project',
           status: EntityStatus.Saved,
           amount: 100,
         },
@@ -79,35 +80,32 @@ describe("Income reducer", () => {
       onlyOneEditAllowedPrompt: false,
     };
     const editedIncome: Income = {
-      id: "id2",
-      name: "Starbucks",
+      id: 'id2',
+      name: 'Starbucks',
       status: EntityStatus.Saved,
       amount: 500,
     };
 
-    const state = incomeReducer(
-      initIncome,
-      actions.editIncomeFinished(editedIncome)
-    );
+    const state = incomeReducer(initIncome, editIncome(editedIncome));
 
     expect(state).toEqual({
       ...initialIncomeSectionState,
       incomes: [
         {
-          id: "id1",
-          name: "Lidl",
+          id: 'id1',
+          name: 'Lidl',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id2",
-          name: "Starbucks",
+          id: 'id2',
+          name: 'Starbucks',
           status: EntityStatus.Saved,
           amount: 500,
         },
         {
-          id: "id3",
-          name: "Side project",
+          id: 'id3',
+          name: 'Side project',
           status: EntityStatus.Saved,
           amount: 100,
         },
@@ -115,12 +113,12 @@ describe("Income reducer", () => {
     });
   });
 
-  it("Should return display prompt", () => {
+  it('Should return display prompt', () => {
     const isPromptVisible = true;
 
     const state = incomeReducer(
       initialIncomeSectionState,
-      actions.setPromptVisibilityFinished(isPromptVisible)
+      setIncomePromptVisibility(isPromptVisible)
     );
 
     expect(state).toEqual({
@@ -129,23 +127,23 @@ describe("Income reducer", () => {
     });
   });
 
-  it("Should return new form values", () => {
+  it('Should return new form values', () => {
     const newFormValues: Income = {
-      id: "id3",
-      name: "Side project",
+      id: 'id3',
+      name: 'Side project',
       status: EntityStatus.Saved,
       amount: 100,
     };
     expect(initialIncomeSectionState.formValues).toEqual({
-      id: "id1",
+      id: 'id1',
       amount: 100,
-      name: "Work",
+      name: 'Work',
       status: EntityStatus.New,
     });
 
     const state = incomeReducer(
       initialIncomeSectionState,
-      actions.setIncomeFormValuesFinished(newFormValues)
+      setIncomeForm(newFormValues)
     );
 
     expect(state).toEqual({
@@ -154,12 +152,12 @@ describe("Income reducer", () => {
     });
   });
 
-  it("Should return trimmed name property when adding new income", () => {
+  it('Should return trimmed name property when adding new income', () => {
     const initIncome: IncomeSection = {
       formValues: {
-        id: "",
+        id: '',
         amount: undefined,
-        name: "",
+        name: '',
         status: EntityStatus.New,
       },
       incomes: [],
@@ -167,36 +165,33 @@ describe("Income reducer", () => {
     };
 
     const newIncome: Income = {
-      id: "id1",
-      name: " Lidl ",
+      id: 'id1',
+      name: ' Lidl ',
       status: EntityStatus.New,
       amount: 1000,
     };
 
-    const state = incomeReducer(
-      initIncome,
-      actions.addIncomeFinished(newIncome)
-    );
+    const state = incomeReducer(initIncome, addIncome(newIncome));
 
     expect(state.incomes[0]).toEqual({
       ...newIncome,
-      name: "Lidl",
+      name: 'Lidl',
       status: EntityStatus.Saved,
     });
   });
 
-  it("Should return trimmed name property when saving existing income", () => {
+  it('Should return trimmed name property when saving existing income', () => {
     const initIncome: IncomeSection = {
       formValues: {
-        id: "",
+        id: '',
         amount: undefined,
-        name: "",
+        name: '',
         status: EntityStatus.New,
       },
       incomes: [
         {
-          id: "id1",
-          name: " Lidl ",
+          id: 'id1',
+          name: ' Lidl ',
           status: EntityStatus.Editing,
           amount: 1000,
         },
@@ -205,48 +200,45 @@ describe("Income reducer", () => {
     };
 
     const changedIncome: Income = {
-      id: "id1",
-      name: " Lidl ",
+      id: 'id1',
+      name: ' Lidl ',
       status: EntityStatus.Editing,
       amount: 1000,
     };
 
-    const state = incomeReducer(
-      initIncome,
-      actions.editIncomeFinished(changedIncome)
-    );
+    const state = incomeReducer(initIncome, editIncome(changedIncome));
 
     expect(state.incomes[0]).toEqual({
       ...changedIncome,
-      name: "Lidl",
+      name: 'Lidl',
       status: EntityStatus.Saved,
     });
   });
 
-  it("Should return incomes in order id2, id1, id3", () => {
+  it('Should return incomes in order id2, id1, id3', () => {
     const initIncome: IncomeSection = {
       formValues: {
-        id: "",
+        id: '',
         amount: undefined,
-        name: "",
+        name: '',
         status: EntityStatus.New,
       },
       incomes: [
         {
-          id: "id1",
-          name: "Income 1",
+          id: 'id1',
+          name: 'Income 1',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id2",
-          name: "Income 2",
+          id: 'id2',
+          name: 'Income 2',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id3",
-          name: "Income 3",
+          id: 'id3',
+          name: 'Income 3',
           status: EntityStatus.Saved,
           amount: 1000,
         },
@@ -255,46 +247,46 @@ describe("Income reducer", () => {
     };
 
     const movedIncome: Income = {
-      id: "id1",
-      name: "Income 1",
+      id: 'id1',
+      name: 'Income 1',
       status: EntityStatus.Saved,
       amount: 1000,
     };
 
     const state = incomeReducer(
       initIncome,
-      actions.moveIncomeFinished(0, 1, movedIncome.id)
+      moveIncome({ startIndex: 0, endIndex: 1 })
     );
 
-    expect(state.incomes[0].id).toEqual("id2");
-    expect(state.incomes[1].id).toEqual("id1");
-    expect(state.incomes[2].id).toEqual("id3");
+    expect(state.incomes[0].id).toEqual('id2');
+    expect(state.incomes[1].id).toEqual('id1');
+    expect(state.incomes[2].id).toEqual('id3');
   });
 
-  it("Should return incomes in order id2, id3, id1", () => {
+  it('Should return incomes in order id2, id3, id1', () => {
     const initIncome: IncomeSection = {
       formValues: {
-        id: "",
+        id: '',
         amount: undefined,
-        name: "",
+        name: '',
         status: EntityStatus.New,
       },
       incomes: [
         {
-          id: "id1",
-          name: "Income 1",
+          id: 'id1',
+          name: 'Income 1',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id2",
-          name: "Income 2",
+          id: 'id2',
+          name: 'Income 2',
           status: EntityStatus.Saved,
           amount: 1000,
         },
         {
-          id: "id3",
-          name: "Income 3",
+          id: 'id3',
+          name: 'Income 3',
           status: EntityStatus.Saved,
           amount: 1000,
         },
@@ -303,19 +295,19 @@ describe("Income reducer", () => {
     };
 
     const movedIncome: Income = {
-      id: "id1",
-      name: "Income 1",
+      id: 'id1',
+      name: 'Income 1',
       status: EntityStatus.Saved,
       amount: 1000,
     };
 
     const state = incomeReducer(
       initIncome,
-      actions.moveIncomeFinished(0, 2, movedIncome.id)
+      moveIncome({ startIndex: 0, endIndex: 2 })
     );
 
-    expect(state.incomes[0].id).toEqual("id2");
-    expect(state.incomes[1].id).toEqual("id3");
-    expect(state.incomes[2].id).toEqual("id1");
+    expect(state.incomes[0].id).toEqual('id2');
+    expect(state.incomes[1].id).toEqual('id3');
+    expect(state.incomes[2].id).toEqual('id1');
   });
 });
