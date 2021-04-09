@@ -20,22 +20,15 @@ const DynamicIncomeComponent = dynamic(
   { ssr: false }
 );
 const DynamicLocaleSelectorComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/LocaleSelector/LocaleSelectorComponent'
-    ),
+  () => import('../features/country/countrySelector.component'),
   { ssr: false }
 );
 const DynamicCategoryComponent = dynamic(
-  () =>
-    import('../components/spreadsheet-generation/Category/CategoryComponent'),
+  () => import('../features/manageCategory/category.component'),
   { ssr: false }
 );
 const DynamicSubcategoryComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/Subcategory/SubcategoryComponent'
-    ),
+  () => import('../features/manageSubcategory/subcategory.component'),
   { ssr: false }
 );
 const DynamicSpendingPredictionComponent = dynamic(

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Country } from '../../../redux/state';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import Select, { ValueType } from 'react-select';
+import { Country } from '../../redux/state';
 import {
   getUsersCountry,
   countriesList,
   findCountryBasedOnKey,
-} from '../../../lib/LocaleHelper';
-import { RootState } from '../../../redux/reducers';
-import { Dispatch } from 'redux';
-import countryActions from '../../../redux/actions/countryActions';
-import { connect } from 'react-redux';
-import { CountryActionTypes } from '../../../redux/types/countryTypes';
+} from '../../lib/LocaleHelper';
+import { RootState } from '../../redux/reducers';
+import { setCountry } from './slice';
+
 interface SelectOption {
   value: string;
   label: string;
@@ -21,12 +21,15 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  setLocale: (country: Country) => CountryActionTypes;
+  setCountry: (country: Country) => void;
 }
 
 type Props = StateProps & DispatchProps;
 
-const LocaleSelectorComponent = ({ setLocale, country }: Props) => {
+const CountrySelectorComponent = ({
+  setCountry: setLocale,
+  country,
+}: Props) => {
   const [countriesOptions, setCountriesOptions] = useState<SelectOption[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<SelectOption>({
     value: '',
@@ -123,12 +126,11 @@ const mapStateToProps = (state: RootState): StateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    setLocale: (country: Country): CountryActionTypes =>
-      dispatch(countryActions.setCountry(country)),
+    setCountry: (country: Country) => dispatch(setCountry(country)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LocaleSelectorComponent);
+)(CountrySelectorComponent);

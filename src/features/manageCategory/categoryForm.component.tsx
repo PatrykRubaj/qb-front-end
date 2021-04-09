@@ -1,7 +1,7 @@
-import React from "react";
-import { useFormik } from "formik";
-import { Category, EntityStatus } from "../../../redux/state";
-import * as Yup from "yup";
+import React from 'react';
+import { useFormik } from 'formik';
+import { Category, EntityStatus } from '../../redux/state';
+import * as Yup from 'yup';
 
 interface Props {
   newCategory: Category;
@@ -25,12 +25,12 @@ const CategoryForm = ({
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required("Name is required")
+      .required('Name is required')
       .notOneOf(
         categories
           .filter((x) => x.status === EntityStatus.Saved)
           .map((x) => x.name),
-        "Category must be unique"
+        'Category must be unique'
       ),
   });
 
@@ -50,14 +50,14 @@ const CategoryForm = ({
         <div className="col">
           <input
             name="name"
-            value={formik.values.name || ""}
+            value={formik.values.name || ''}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             ref={categoryNameInputRef}
             type="text"
             className={
-              "form-control " +
-              (formik.errors.name && formik.touched.name ? "is-invalid" : "")
+              'form-control ' +
+              (formik.errors.name && formik.touched.name ? 'is-invalid' : '')
             }
             placeholder="Category"
           />
@@ -67,7 +67,7 @@ const CategoryForm = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {newCategory.status === EntityStatus.Editing ? "Save" : "+ Add"}
+            {newCategory.status === EntityStatus.Editing ? 'Save' : '+ Add'}
           </button>
         </div>
       </div>

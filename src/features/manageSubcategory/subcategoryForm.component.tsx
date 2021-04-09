@@ -1,7 +1,7 @@
-import React from "react";
-import { useFormik } from "formik";
-import { Subcategory, Category, EntityStatus } from "../../../redux/state";
-import * as Yup from "yup";
+import React from 'react';
+import { useFormik } from 'formik';
+import { Subcategory, Category, EntityStatus } from '../../redux/state';
+import * as Yup from 'yup';
 
 interface Props {
   addSaveNewSubcategory: Function;
@@ -29,19 +29,19 @@ const SubcategoryForm = ({
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required("Name is required")
+      .required('Name is required')
       .notOneOf(
         subcategories
           .filter((x) => x.status !== EntityStatus.Editing)
           .map((x) => x.name),
-        "Subcategory must be unique in a category"
+        'Subcategory must be unique in a category'
       ),
     categoryId: Yup.mixed()
       .oneOf(
         categories.map((x) => x.id),
         "Selected category doesn't exist"
       )
-      .required("Select category before adding subcategory"),
+      .required('Select category before adding subcategory'),
   });
 
   const formik = useFormik({
@@ -63,9 +63,9 @@ const SubcategoryForm = ({
           </div>
         ) : null}
         <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">
-          Category:{" "}
+          Category:{' '}
           {categories.find((x) => x.id === newSubcategory.categoryId)?.name ||
-            ""}
+            ''}
         </label>
       </div>
       <div className="form-row">
@@ -73,12 +73,12 @@ const SubcategoryForm = ({
           <input
             type="text"
             className={
-              "form-control " +
-              (formik.errors.name && formik.touched.name ? "is-invalid" : "")
+              'form-control ' +
+              (formik.errors.name && formik.touched.name ? 'is-invalid' : '')
             }
             placeholder="Subcategory"
             name="name"
-            value={formik.values.name || ""}
+            value={formik.values.name || ''}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             ref={subcategoryNameInputRef}
@@ -89,7 +89,7 @@ const SubcategoryForm = ({
         </div>
         <div className="col-auto">
           <button type="submit" className="btn btn-primary">
-            {newSubcategory.status === EntityStatus.Editing ? "Save" : "+ Add"}
+            {newSubcategory.status === EntityStatus.Editing ? 'Save' : '+ Add'}
           </button>
         </div>
       </div>

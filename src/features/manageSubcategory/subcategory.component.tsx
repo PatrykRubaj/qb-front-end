@@ -1,30 +1,41 @@
 import React, { useEffect } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { Category, Subcategory, EntityStatus } from '../../../redux/state';
-import { v4 as uuidv4 } from 'uuid';
-import WarningDialog from '../../common/WarningDialog';
-import ConfirmationDialog from '../../common/ConfirmationDialog';
-import SubcategoryForm from './SubcategoryForm';
-import { RootState } from '../../../redux/reducers';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import subcategoryActions from '../../../redux/actions/subcategoryActions';
-import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
 import {
   DragDropContext,
   DropResult,
   Droppable,
   Draggable,
 } from 'react-beautiful-dnd';
+import { v4 as uuidv4 } from 'uuid';
+import { Category, Subcategory, EntityStatus } from '../../redux/state';
+import WarningDialog from '../../components/common/WarningDialog';
+import ConfirmationDialog from '../../components/common/ConfirmationDialog';
+import SubcategoryForm from './subcategoryForm.component';
+import { RootState } from '../../redux/reducers';
+import {
+  addSubcategory,
+  editSubcategory,
+  deleteSubcategory,
+  setSubcategoryForm,
+  setSubcategoryPromptVisibility,
+  enterSubcategoryAmount,
+  moveSubcategory,
+} from './slice';
 
 interface DispatchProps {
   addSubcategory: (subcategory: Subcategory) => void;
   editSubcategory: (subcategory: Subcategory) => void;
-  deleteSubcategory: (subcategory: Subcategory) => void;
+  deleteSubcategory: (subcategoryId: string) => void;
   setSubcategoryFormValues: (subcategory: Subcategory) => void;
   setSubcategoryPromptVisibility: (isVisible: boolean) => void;
-  moveSubcategory: (startIndex: number, endIndex: number, id: string) => void;
+  moveSubcategory: (movedSubcategory: {
+    startIndex: number;
+    endIndex: number;
+    id: string;
+  }) => void;
 }
 
 interface StateProps {
@@ -98,7 +109,7 @@ const SubcategoryComponent = ({
     e: React.MouseEvent<HTMLButtonElement>,
     subcategory: Subcategory
   ): void => {
-    deleteSubcategory(subcategory);
+    deleteSubcategory(subcategory.id);
   };
 
   const onSubcategoryEditClick = (
@@ -137,7 +148,11 @@ const SubcategoryComponent = ({
       return;
     }
 
-    moveSubcategory(source.index, destination.index, draggableId);
+    moveSubcategory({
+      startIndex: source.index,
+      endIndex: destination.index,
+      id: draggableId,
+    });
   };
 
   return (
@@ -319,32 +334,21 @@ const mapStateToProps = (state: RootState): StateProps => {
 
 export const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    deleteSubcategory: (
-      subcategory: Subcategory
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.deleteSubcategory(subcategory)),
-    addSubcategory: (
-      subcategory: Subcategory
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.addSubcategory(subcategory)),
-    editSubcategory: (
-      subcategory: Subcategory
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.editSubcategory(subcategory)),
-    setSubcategoryFormValues: (
-      subcategory: Subcategory
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.setSubcategoryFormValues(subcategory)),
-    setSubcategoryPromptVisibility: (
-      isVisible: boolean
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.setSubcategoryPromptVisibility(isVisible)),
-    moveSubcategory: (
-      startIndex: number,
-      endIndex: number,
-      id: string
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(subcategoryActions.moveSubcategory(startIndex, endIndex, id)),
+    deleteSubcategory: (subcategoryId: string) =>
+      dispatch(deleteSubcategory(subcategoryId)),
+    addSubcategory: (subcategory: Subcategory) =>
+      dispatch(addSubcategory(subcategory)),
+    editSubcategory: (subcategory: Subcategory) =>
+      dispatch(editSubcategory(subcategory)),
+    setSubcategoryFormValues: (subcategory: Subcategory) =>
+      dispatch(setSubcategoryForm(subcategory)),
+    setSubcategoryPromptVisibility: (isVisible: boolean) =>
+      dispatch(setSubcategoryPromptVisibility(isVisible)),
+    moveSubcategory: (movedSubcategory: {
+      startIndex: number;
+      endIndex: number;
+      id: string;
+    }) => dispatch(moveSubcategory(movedSubcategory)),
   };
 };
 

@@ -6,11 +6,10 @@ import FormikFieldWithErrorMessage from '../../common/FormikFieldWithErrorMessag
 import { RootState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import subcategoryActions from '../../../redux/actions/subcategoryActions';
-import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
+import { enterSubcategoryAmount } from '../../../features/manageSubcategory/slice';
 
 interface DispatchProps {
-  enterSubcategoryAmount: (id: string, amount: number) => void;
+  enterSubcategoryAmount: (subcategory: { id: string; amount: number }) => void;
 }
 
 interface StateProps {
@@ -81,7 +80,10 @@ const SpendingPredictionComponent = ({
               (x) => x.id === subcategory.id
             );
             if (stateSubcategory?.amount !== subcategory.amount) {
-              enterSubcategoryAmount(subcategory.id, subcategory.amount);
+              enterSubcategoryAmount({
+                id: subcategory.id,
+                amount: subcategory.amount,
+              });
             }
           }
 
@@ -186,13 +188,8 @@ const mapStateToProps = (state: RootState): StateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    enterSubcategoryAmount: (
-      subcategoryId: string,
-      amount: number
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(
-        subcategoryActions.enterSubcategoryAmount(subcategoryId, amount)
-      ),
+    enterSubcategoryAmount: (subcategory: { id: string; amount: number }) =>
+      dispatch(enterSubcategoryAmount(subcategory)),
   };
 };
 
