@@ -16,26 +16,19 @@ import Link from 'next/link';
 import { Route } from '../redux/state';
 
 const DynamicIncomeComponent = dynamic(
-  () => import('../components/spreadsheet-generation/Income/IncomeComponent'),
+  () => import('../features/manageIncome/income.component'),
   { ssr: false }
 );
 const DynamicLocaleSelectorComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/LocaleSelector/LocaleSelectorComponent'
-    ),
+  () => import('../features/country/countrySelector.component'),
   { ssr: false }
 );
 const DynamicCategoryComponent = dynamic(
-  () =>
-    import('../components/spreadsheet-generation/Category/CategoryComponent'),
+  () => import('../features/manageCategory/category.component'),
   { ssr: false }
 );
 const DynamicSubcategoryComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/Subcategory/SubcategoryComponent'
-    ),
+  () => import('../features/manageSubcategory/subcategory.component'),
   { ssr: false }
 );
 const DynamicSpendingPredictionComponent = dynamic(
@@ -47,10 +40,7 @@ const DynamicSpendingPredictionComponent = dynamic(
 );
 
 const DynamicMonthSelectorComponent = dynamic(
-  () =>
-    import(
-      '../components/spreadsheet-generation/MonthSelector/MonthSelectorComponent'
-    ),
+  () => import('../features/monthSelector/component'),
   { ssr: false }
 );
 

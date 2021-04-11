@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
-import { Category, Subcategory } from '../../../redux/state';
+import { Category, Country, Subcategory } from '../../../redux/state';
 import { Formik, Form, FieldArray, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import FormikFieldWithErrorMessage from '../../common/FormikFieldWithErrorMessage';
 import { RootState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import subcategoryActions from '../../../redux/actions/subcategoryActions';
-import * as subcategoryTypes from '../../../redux/types/subcategoryTypes';
+import { enterSubcategoryAmount } from '../../../features/manageSubcategory/slice';
 
 interface DispatchProps {
-  enterSubcategoryAmount: (id: string, amount: number) => void;
+  enterSubcategoryAmount: (subcategory: { id: string; amount: number }) => void;
 }
 
 interface StateProps {
   categories: Array<Category>;
   subcategories: Array<Subcategory>;
+  locale: Country;
 }
 
 type Props = DispatchProps & StateProps;
@@ -28,7 +28,31 @@ const SpendingPredictionComponent = ({
   categories,
   subcategories,
   enterSubcategoryAmount,
+  locale,
 }: Props) => {
+  const getCurrencyFromCommaString = (
+    currenciesString: string | null | undefined
+  ): string => {
+    if (currenciesString === undefined || currenciesString === null) {
+      return 'USD';
+    }
+
+    const indexOfComma = currenciesString.indexOf(',') || 0;
+    if (indexOfComma > 0) {
+      return currenciesString.slice(0, indexOfComma) || 'USD';
+    }
+
+    return currenciesString || 'USD';
+  };
+
+  const formatter: Intl.NumberFormat = new Intl.NumberFormat(
+    locale?.key || 'en-US',
+    {
+      style: 'currency',
+      currency: getCurrencyFromCommaString(locale?.currency),
+    }
+  );
+
   const schema = Yup.object().shape({
     subcategories: Yup.array()
       .of(
@@ -56,7 +80,10 @@ const SpendingPredictionComponent = ({
               (x) => x.id === subcategory.id
             );
             if (stateSubcategory?.amount !== subcategory.amount) {
-              enterSubcategoryAmount(subcategory.id, subcategory.amount);
+              enterSubcategoryAmount({
+                id: subcategory.id,
+                amount: subcategory.amount,
+              });
             }
           }
 
@@ -92,7 +119,27 @@ const SpendingPredictionComponent = ({
             >
               {({ values, errors }): JSX.Element => (
                 <Form>
-                  <h3>{category.name}</h3>
+                  <h3>
+                    {category.name}{' '}
+                    <span className="badge badge-secondary">
+                      {' '}
+                      {formatter.format(
+                        values.subcategories.reduce(
+                          (sumOfSubcategories, subcategory) => {
+                            const subcategoryAmount = Number(
+                              subcategory?.amount || 0
+                            );
+                            console.log(subcategoryAmount);
+                            if (!Number.isNaN(subcategoryAmount)) {
+                              return sumOfSubcategories + subcategoryAmount;
+                            }
+                            return sumOfSubcategories;
+                          },
+                          0
+                        )
+                      )}
+                    </span>
+                  </h3>
                   <FieldArray name={`subcategories`}>
                     {(): JSX.Element => (
                       <>
@@ -135,18 +182,14 @@ const mapStateToProps = (state: RootState): StateProps => {
   return {
     categories: state.categoriesSection.categories,
     subcategories: state.subcategorySection.subcategories,
+    locale: state.country,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    enterSubcategoryAmount: (
-      subcategoryId: string,
-      amount: number
-    ): subcategoryTypes.SubcategoryActionTypes =>
-      dispatch(
-        subcategoryActions.enterSubcategoryAmount(subcategoryId, amount)
-      ),
+    enterSubcategoryAmount: (subcategory: { id: string; amount: number }) =>
+      dispatch(enterSubcategoryAmount(subcategory)),
   };
 };
 
