@@ -11,6 +11,7 @@ import * as appTypes from '../../redux/types/appTypes';
 import * as budgetTypes from '../../redux/types/budgetTypes';
 import { v4 as uuidv4 } from 'uuid';
 import arrayMove from 'array-move';
+import { deleteCategory } from '../manageCategory/slice';
 
 const stateLoaded = createAction<RootState>(
   appTypes.REQUEST_STATE_LOAD_FINISHED
@@ -167,6 +168,14 @@ export const slice = createSlice({
         return {
           ...state,
           subcategories: action.payload.subcategories,
+        };
+      })
+      .addCase(deleteCategory, (state, action) => {
+        return {
+          ...state,
+          subcategories: state.subcategories.filter(
+            (x) => x.categoryId !== action.payload
+          ),
         };
       });
   },
