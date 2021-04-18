@@ -14,7 +14,7 @@ const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
 type Props = StateProps & OwnProps;
 
-function FacebookPixel(props: Props) {
+function FacebookEventTracking(props: Props) {
   const fbOptions = {
     autoConfig: true, // set pixel's autoConfig. More info: https://developers.facebook.com/docs/facebook-pixel/advanced/
     debug: false, // enable logs
@@ -44,4 +44,4 @@ const mapStateToProps = (
   };
 };
 
-export default connect(mapStateToProps)(FacebookPixel);
+export default connect(mapStateToProps)(FacebookEventTracking);
