@@ -25,14 +25,12 @@ export function SuccessfulPayment(props: Props) {
       const { sessionId } = router.query;
       props.loadState(router);
       console.info(sessionId);
-      // if (!sessionId) {
-      //   await router.push(Route.HomePage);
-      // } else {
-      //   props.setRedirectUrl(Route.GeneratorResponse);
-      //   props.login(router);
-      // }
-      props.setRedirectUrl(Route.GeneratorResponse);
-      props.login(router);
+      if (!sessionId) {
+        await router.push(Route.HomePage);
+      } else {
+        props.setRedirectUrl(Route.GeneratorResponse);
+        props.login(router);
+      }
     }
 
     redirectAfterPayment();

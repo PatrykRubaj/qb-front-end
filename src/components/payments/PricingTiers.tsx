@@ -8,6 +8,7 @@ import { PaymentActionType } from '../../redux/types/paymentTypes';
 import PricingTier from './PricingTier';
 import NewsletterComponent from '../spreadsheet-generation/Save/NewsletterComponent';
 import { setNewsletter, setNewsletterPrompt } from '../../features/user/slice';
+import FacebookEventTracking from '../common/facebookConversionTrackingPixel';
 
 interface StateProps {
   agreedToNewsletter?: boolean;
@@ -54,7 +55,6 @@ const PricingTiers = (props: Props) => {
 
   const startPaymenProcess = (tier: PriceTier) => {
     setRedirectInProgress(true);
-    debugger;
     props.requestPayment(tier);
   };
 
@@ -139,6 +139,7 @@ const PricingTiers = (props: Props) => {
         featuresList={['Generate a budget whenever you want']}
         onClick={handlePaymentClick}
       />
+      {redirectInProgress && <FacebookEventTracking event="InitiateCheckout" />}
     </React.Fragment>
   );
 };

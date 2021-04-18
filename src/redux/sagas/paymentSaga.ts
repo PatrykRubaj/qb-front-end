@@ -17,11 +17,8 @@ async function getSessionId(
   price: PriceTier
 ): Promise<string> {
   const stripeService = new StripePaymentService(accessToken);
-  // const sessionId = await stripeService.requestSessionId(price);
-  // return sessionId;
-
-  await stripeService.requestSessionId(price);
-  return '';
+  const sessionId = await stripeService.requestSessionId(price);
+  return sessionId;
 }
 
 async function redirectToStripeCheckout(
@@ -35,11 +32,6 @@ async function redirectToStripeCheckout(
   });
 }
 
-async function redirectToPaymentSuccessful(state: RootState) {
-  saveState(state);
-  await router.push(Route.PaymentSuccessful);
-}
-
 export function* requestSessionId() {
   while (true) {
     const { price } = yield take(paymentTypes.REQUEST_SESSION_ID);
@@ -51,8 +43,7 @@ export function* requestSessionId() {
     yield put(paymentActions.requestSessionIdFinished(sessionId));
 
     if (sessionId != null) {
-      // yield call(redirectToStripeCheckout, sessionId, state);
-      yield call(redirectToPaymentSuccessful, state);
+      yield call(redirectToStripeCheckout, sessionId, state);
     }
   }
 }
