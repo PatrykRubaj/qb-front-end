@@ -39,7 +39,7 @@ namespace QuantumBudget.Services
 
             var customersSubscription = customer.Subscriptions?.FirstOrDefault();
             StripeSubscriptionDto stripeSubscription = null;
-            
+
             if (customersSubscription != null)
             {
                 stripeSubscription = new StripeSubscriptionDto()
@@ -83,9 +83,6 @@ namespace QuantumBudget.Services
                     StripeCustomerId = createdCustomer.Id
                 });
 
-            //TODO: Delete later - it should only be called when subscription is actually paid. 
-            await _userManagementService.AssignRoleAsync(createdCustomer.Auth0Id, "basic");
-            
             return createdCustomer;
         }
 
@@ -108,6 +105,36 @@ namespace QuantumBudget.Services
             var portalSession =
                 await _stripeBillingPortalSessionRepository.CreateAsync(user.AppMetadata.StripeCustomerId);
             return portalSession;
+        }
+
+        public async Task<UpdateCustomerDto> UpdateCustomerAsync(UpdateCustomerDto updatedCustomer)
+        {
+            var updateCustomerOptions = new CustomerUpdateOptions()
+            {
+                Address = new AddressOptions()
+                {
+                    City = updatedCustomer.City,
+                    Country = updatedCustomer.Country,
+                    Line1 = updatedCustomer.Line1,
+                    Line2 = updatedCustomer.Line2,
+                    State = updatedCustomer.State,
+                    PostalCode = updatedCustomer.PostalCode,
+                }
+            };
+
+            var customer =
+                await _stripeCustomerRepository.UpdateAsync(updatedCustomer.CustomerId, updateCustomerOptions);
+
+            var customerToReturn = new UpdateCustomerDto(customer.Id, customer.Address.Country)
+            {
+                City = customer?.Address?.City,
+                PostalCode = customer?.Address?.PostalCode,
+                Line1 = customer?.Address?.Line1,
+                Line2 = customer?.Address?.Line2,
+                State = customer?.Address?.State,
+            };
+
+            return customerToReturn;
         }
     }
 }

@@ -45,45 +45,43 @@ namespace QuantumBudget.API.Controllers
                 var customer = await _stripePaymentService.CreateCustomerAsync(newCustomer);
                 stripeCustomerId = customer.Id;
             }
-
-            return Ok();
-            // else
-            // {
-            //     var retrievedCustomer = await _stripePaymentService.GetCustomerAsync(user.AppMetadata.StripeCustomerId);
-            //     if (retrievedCustomer.Subscription == null)
-            //     {
-            //         stripeCustomerId = user.AppMetadata.StripeCustomerId;
-            //     }
-            //     else
-            //     {
-            //         return BadRequest(new ErrorResponseDto
-            //         {
-            //             ErrorMessage = new ErrorMessageDto
-            //             {
-            //                 Message = "This user already has a subscription.",
-            //             }
-            //         });
-            //     }
-            // }
-            //
-            // try
-            // {
-            //     CreateCheckoutSessionResponseDto checkoutSessionResponse =
-            //         await _stripePaymentService.CreateCheckoutSessionAsync(stripeCustomerId, _jwtToken.UserId,
-            //             req.PriceTier);
-            //     return Ok(checkoutSessionResponse);
-            // }
-            // catch (StripeException e)
-            // {
-            //     Console.WriteLine(e.StripeError.Message);
-            //     return BadRequest(new ErrorResponseDto
-            //     {
-            //         ErrorMessage = new ErrorMessageDto
-            //         {
-            //             Message = e.StripeError.Message,
-            //         }
-            //     });
-            // }
+            else
+            {
+                var retrievedCustomer = await _stripePaymentService.GetCustomerAsync(user.AppMetadata.StripeCustomerId);
+                if (retrievedCustomer.Subscription == null)
+                {
+                    stripeCustomerId = user.AppMetadata.StripeCustomerId;
+                }
+                else
+                {
+                    return BadRequest(new ErrorResponseDto
+                    {
+                        ErrorMessage = new ErrorMessageDto
+                        {
+                            Message = "This user already has a subscription.",
+                        }
+                    });
+                }
+            }
+            
+            try
+            {
+                CreateCheckoutSessionResponseDto checkoutSessionResponse =
+                    await _stripePaymentService.CreateCheckoutSessionAsync(stripeCustomerId, _jwtToken.UserId,
+                        req.PriceTier);
+                return Ok(checkoutSessionResponse);
+            }
+            catch (StripeException e)
+            {
+                Console.WriteLine(e.StripeError.Message);
+                return BadRequest(new ErrorResponseDto
+                {
+                    ErrorMessage = new ErrorMessageDto
+                    {
+                        Message = e.StripeError.Message,
+                    }
+                });
+            }
         }
 
         [Authorize]
@@ -129,6 +127,11 @@ namespace QuantumBudget.API.Controllers
                     var subscriptionDeleted = stripeEvent.Data.Object as Subscription;
                     await _stripeEventHandlerService.SubscriptionDeletedAsync(subscriptionDeleted);
                     break;
+                case Events.PaymentMethodAttached:
+                    var paymentMethodAttached = stripeEvent.Data.Object as PaymentMethod;
+                    await _stripeEventHandlerService.PaymentMethodAttachedAsync(paymentMethodAttached);
+                    break;
+                    
             }
 
             return Ok();

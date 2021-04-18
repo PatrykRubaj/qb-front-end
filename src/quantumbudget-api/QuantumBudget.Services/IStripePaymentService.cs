@@ -12,5 +12,7 @@ namespace QuantumBudget.Services
             string auth0UserId, string priceTier);
 
         Task<CustomerPortalSessionResponseDto> CreateBillingPortalSessionAsync(string userId);
+        
+        Task<UpdateCustomerDto> UpdateCustomerAsync(UpdateCustomerDto updatedCustomer);
     }
 }

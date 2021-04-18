@@ -8,5 +8,6 @@ namespace QuantumBudget.Repositories.Stripe
     {
         Task<Customer> GetAsync(string customerId);
         Task<Customer> CreateAsync(CustomerCreateOptions newCustomer);
+        Task<Customer> UpdateAsync(string customerId, CustomerUpdateOptions updatedCustomer);
     }
 }

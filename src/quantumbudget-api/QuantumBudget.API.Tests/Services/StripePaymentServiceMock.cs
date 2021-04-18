@@ -25,5 +25,10 @@ namespace QuantumBudget.API.Tests.Services
         {
             throw new System.NotImplementedException();
         }
+
+        public async Task<UpdateCustomerDto> UpdateCustomerAsync(UpdateCustomerDto updatedCustomer)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

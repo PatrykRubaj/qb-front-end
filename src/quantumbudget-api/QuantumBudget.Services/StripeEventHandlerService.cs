@@ -94,5 +94,20 @@ namespace QuantumBudget.Services
             await _userManagementService.DeleteRoleAsync(customer.Auth0Id, "basic");
             await _userManagementService.AssignRoleAsync(customer.Auth0Id, "free");
         }
+
+        public async Task PaymentMethodAttachedAsync(PaymentMethod paymentMethod)
+        {
+            var updatedCustomer =
+                new UpdateCustomerDto(paymentMethod.CustomerId, paymentMethod.BillingDetails?.Address?.Country)
+                {
+                    City = paymentMethod.BillingDetails?.Address?.City,
+                    Line1 = paymentMethod.BillingDetails?.Address?.Line1,
+                    Line2 = paymentMethod.BillingDetails?.Address?.Line2,
+                    State = paymentMethod.BillingDetails?.Address?.State,
+                    PostalCode = paymentMethod.BillingDetails?.Address?.PostalCode
+                };
+
+            await _stripePaymentService.UpdateCustomerAsync(updatedCustomer);
+        }
     }
 }

@@ -39,5 +39,24 @@ namespace QuantumBudget.Repositories.Stripe
 
             return await _customerService.CreateAsync(newCustomer);
         }
+
+        public async Task<Customer> UpdateAsync(string customerId, CustomerUpdateOptions updatedCustomer)
+        {
+            var customerUpdateOptions = new CustomerUpdateOptions()
+            {
+                Address = new AddressOptions()
+                {
+                    Country = updatedCustomer.Address.Country,
+                    City = updatedCustomer.Address.City,
+                    PostalCode = updatedCustomer.Address.PostalCode,
+                    Line1 = updatedCustomer.Address.Line1,
+                    Line2 = updatedCustomer.Address.Line2,
+                    State = updatedCustomer.Address.State,
+                    
+                },
+            };
+
+            return await _customerService.UpdateAsync(customerId, customerUpdateOptions);
+        }
     }
 }

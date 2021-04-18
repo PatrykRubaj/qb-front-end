@@ -63,6 +63,14 @@ namespace QuantumBudget.Services.Tests.Repositories
                                 CustomerId = "cus_id3"
                             }
                         }
+                    },
+                    Address = new Address()
+                    {
+                        City = "Lodz",
+                        Country = "PL",
+                        PostalCode = "90-608",
+                        Line1 = "Piotrkowska 60/25",
+                        State = "lodzkie",
                     }
                 },
             };
@@ -85,6 +93,23 @@ namespace QuantumBudget.Services.Tests.Repositories
             });
 
             return _stripeCustomers.First(x => x.Id == $"cus_id{_idCounter}");
+        }
+
+        public async Task<Customer> UpdateAsync(string customerId, CustomerUpdateOptions updatedCustomer)
+        {
+            var customer = _stripeCustomers.FirstOrDefault(x => x.Id == customerId);
+
+            if (customer == null) return null;
+
+            customer.Address ??= new Address();
+            customer.Address.City = updatedCustomer.Address.City ?? customer.Address.City;
+            customer.Address.Country = updatedCustomer.Address.Country ?? customer.Address.Country;
+            customer.Address.Line1 = updatedCustomer.Address.Line1 ?? customer.Address.Line1;
+            customer.Address.Line2 = updatedCustomer.Address.Line2 ?? customer.Address.Line2;
+            customer.Address.State = updatedCustomer.Address.State ?? customer.Address.State;
+            customer.Address.PostalCode = updatedCustomer.Address.PostalCode ?? customer.Address.PostalCode;
+
+            return customer;
         }
     }
 }
