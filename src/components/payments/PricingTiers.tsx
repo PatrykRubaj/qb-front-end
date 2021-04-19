@@ -8,11 +8,12 @@ import { PaymentActionType } from '../../redux/types/paymentTypes';
 import PricingTier from './PricingTier';
 import NewsletterComponent from '../spreadsheet-generation/Save/NewsletterComponent';
 import { setNewsletter, setNewsletterPrompt } from '../../features/user/slice';
-import FacebookEventTracking from '../common/facebookConversionTrackingPixel';
+import FbTrackingService from '../../services/fbService';
 
 interface StateProps {
   agreedToNewsletter?: boolean;
   showNewsletterPrompt: boolean;
+  trackingAllowed: boolean;
 }
 
 interface OwnProps {
@@ -32,6 +33,10 @@ interface DispatchProps {
 type Props = OwnProps & DispatchProps & StateProps;
 
 const PricingTiers = (props: Props) => {
+  const fbTracking = new FbTrackingService(
+    process.env.NEXT_PUBLIC_FB_PIXEL_ID,
+    props.trackingAllowed
+  );
   const [redirectInProgress, setRedirectInProgress] = useState(false);
   const [selectedPriceTier, setSelectedPriceTier] = useState<PriceTier>(null);
 
@@ -55,6 +60,7 @@ const PricingTiers = (props: Props) => {
 
   const startPaymenProcess = (tier: PriceTier) => {
     setRedirectInProgress(true);
+    fbTracking.sendEvent('InitiateCheckout');
     props.requestPayment(tier);
   };
 
@@ -67,7 +73,6 @@ const PricingTiers = (props: Props) => {
       setDisplayNewsletterPrompt,
     } = props;
     setSelectedPriceTier(tier);
-    debugger;
     if (privacyPolicyAccepted && tosAccepted) {
       if (agreedToNewsletter == null) {
         setDisplayNewsletterPrompt(true);
@@ -139,7 +144,6 @@ const PricingTiers = (props: Props) => {
         featuresList={['Generate a budget whenever you want']}
         onClick={handlePaymentClick}
       />
-      {redirectInProgress && <FacebookEventTracking event="InitiateCheckout" />}
     </React.Fragment>
   );
 };
@@ -155,6 +159,7 @@ const mapStateToProps = (
     setDisplayTosRequiredInfo: ownProps.setDisplayTosRequiredInfo,
     agreedToNewsletter: state.userSection.agreedToNewsletter,
     showNewsletterPrompt: state.userSection.showNewsletterPrompt,
+    trackingAllowed: state.userSection.cookiesConsent.marketing,
   };
 };
 

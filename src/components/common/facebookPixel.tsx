@@ -12,7 +12,7 @@ const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 function FacebookPixel(props: StateProps) {
   const router = useRouter();
   const fbOptions = {
-    autoConfig: true, // set pixel's autoConfig. More info: https://developers.facebook.com/docs/facebook-pixel/advanced/
+    autoConfig: false, // set pixel's autoConfig. More info: https://developers.facebook.com/docs/facebook-pixel/advanced/
     debug: false, // enable logs
   };
 
