@@ -1,0 +1,77 @@
+# .NET Core Function App to Windows on Azure
+# Build a .NET Core function app and deploy it to Azure as a Windows function App.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  - master
+
+paths:
+  include:
+    - "/quantumbudget-backend"
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureSubscription: "54de0977-3d6b-409e-99f0-4323ea6718aa"
+
+  # Agent VM image name
+  vmImageName: "ubuntu-latest"
+
+  # Working Directory
+  workingDirectory: "$(System.DefaultWorkingDirectory)/quantumbudget-backend"
+
+stages:
+  - stage: Test
+    displayName: Test build
+
+    jobs:
+      - job: Test
+        displayName: Test
+        pool:
+          vmImage: $(vmImageName)
+
+        steps:
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              projects: "$(workingDirectory)/src/quantumbudget-api/*Tests/*.csproj"
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testRunner: VSTest
+              testResultsFiles: "**/*.trx"
+  - stage: Build
+    displayName: Build stage
+    dependsOn: Test
+    condition: succeeded()
+
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: $(vmImageName)
+
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: "sdk"
+              version: "5.x"
+          - task: DotNetCoreCLI@2
+            displayName: Build
+            inputs:
+              command: "build"
+              projects: |
+                $(workingDirectory)/src/quantumbudget-api/QuantumBudget.API/*.csproj
+              arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "$(System.DefaultWorkingDirectory)/publish_output"
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+              replaceExistingArchive: true
+
+          - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+            artifact: drop

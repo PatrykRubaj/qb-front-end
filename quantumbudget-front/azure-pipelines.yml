@@ -1,0 +1,53 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  - master
+
+paths:
+  include:
+    - '/quantumbudget-front'
+
+resources:
+  - repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+  workingDirectory: '$(System.DefaultWorkingDirectory)/quantumbudget-front'
+
+stages:
+  - stage: Build
+    displayName: Build image
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: AzureKeyVault@1
+            inputs:
+              azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
+              KeyVaultName: 'secrets-and-certs'
+              SecretsFilter: '*'
+              RunAsPreJob: true
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'Dockerhub Key'
+              repository: 'patrykrubaj/quantumbudget-frontend'
+              command: 'build'
+              Dockerfile: '$(workingDirectory)/Dockerfile'
+              tags: |
+                $(Build.BuildId)
+                latest
+              arguments: --build-arg auth0_domain=$(auth0_domain) --build-arg auth0_clientId=$(auth0_clientId) --build-arg auth0_callbackURL=$(auth0_callbackURL) --build-arg auth0_logoutURL=$(auth0_logoutURL) --build-arg backendAPI=$(backendAPI) --build-arg stripe_publicKey=$(stripe_publicKey) --build-arg axiosTimeout=$(axiosTimeout) --build-arg fb_pixelId=$(fb_pixelId)
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'Dockerhub Key'
+              repository: 'patrykrubaj/quantumbudget-frontend'
+              command: 'push'
+              Dockerfile: '$(workingDirectory)/Dockerfile'
+              tags: |
+                $(Build.BuildId)
+                latest
