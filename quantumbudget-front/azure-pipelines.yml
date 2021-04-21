@@ -1,47 +1,53 @@
-# Node.js with React
-# Build a Node.js project that uses React.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
   - master
 
-pool:
-  vmImage: "ubuntu-latest"
+paths:
+  include:
+    - '/quantumbudget-front'
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "12.x"
-    displayName: "Install Node.js"
+resources:
+  - repo: self
 
-  - script: |
-      npm ci
-    displayName: "npm ci"
+variables:
+  tag: '$(Build.BuildId)'
 
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      customCommand: "run test-ci"
-    continueOnError: true
+  workingDirectory: '$(System.DefaultWorkingDirectory)/quantumbudget-front'
 
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: "JUnit"
-      testResultsFiles: "junit.xml"
-      mergeTestResults: true
-      testRunTitle: "React front tests"
-      failTaskOnFailedTests: true
-
-  - script: |
-      npm run build
-    displayName: "npm build"
-
-  - task: CopyFiles@1
-    inputs:
-      Contents: "build/**"
-      TargetFolder: "$(Build.ArtifactStagingDirectory)"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+stages:
+  - stage: Build
+    displayName: Build image
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: AzureKeyVault@1
+            inputs:
+              azureSubscription: 'Azure subscription 1(6add6a10-e330-415e-a37d-2ee5ab0ab8eb)'
+              KeyVaultName: 'secrets-and-certs'
+              SecretsFilter: '*'
+              RunAsPreJob: true
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'Dockerhub Key'
+              repository: 'patrykrubaj/quantumbudget-frontend'
+              command: 'build'
+              Dockerfile: '$(workingDirectory)/Dockerfile'
+              tags: |
+                $(Build.BuildId)
+                latest
+              arguments: --build-arg auth0_domain=$(auth0_domain) --build-arg auth0_clientId=$(auth0_clientId) --build-arg auth0_callbackURL=$(auth0_callbackURL) --build-arg auth0_logoutURL=$(auth0_logoutURL) --build-arg backendAPI=$(backendAPI) --build-arg stripe_publicKey=$(stripe_publicKey) --build-arg axiosTimeout=$(axiosTimeout) --build-arg fb_pixelId=$(fb_pixelId)
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'Dockerhub Key'
+              repository: 'patrykrubaj/quantumbudget-frontend'
+              command: 'push'
+              Dockerfile: '$(workingDirectory)/Dockerfile'
+              tags: |
+                $(Build.BuildId)
+                latest
