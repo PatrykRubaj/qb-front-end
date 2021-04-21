@@ -32,21 +32,6 @@
         "MongoDBDatabaseName": "MyDatabase",
         "Auth0__Instance": "https://dev.eu.auth0.com/",
         "Auth0__TenantId": "common",
-<<<<<<< HEAD:quantumbudget-backend/src/quantumbudget-api/QuantumBudget.API/Properties/launchSettings.json
-        "Auth0__Audience": "quantum-budget-api",
-        "Auth0__ClientId": "7FBbT3YcBINHUGLJQW2tc9d5tr2ZyvR8",
-        "Auth0__ClientSecret": "lNGurmsQFhDzLwO6jlTKvVoGUUXqEmXxrbyT_ANH8Ish8zTI17BPcweE6_Fnw8On",
-        "Stripe__Domain": "http://localhost:5000",
-        "Stripe__PublicKey": "pk_test_51HQqj5ARU7b93yerToBEILcN6wnAaJQDxeR6aZjRPX1l3jumodSXtxVwOly5lcbtIJE0ofkZUpeziWBbyKmwHCFO008wLQl7vm",
-        "Stripe__SecretKey": "sk_test_51HQqj5ARU7b93yerhtDqhHrCznuqjMdZAiMOQ8rPRKCUzkczlk91LcFZzWVc24NzqPLWA1a49zqbKcFoNQOqwhA4009bYBP8o4",
-        "Stripe__WebhookSecret": "whsec_g6pND8HOaUZaNpk0uUiUlTKzZP8LomW9",
-        "GoogleApiCredentials__ClientId": "112843725386-64lks4iap9d4rq8a0gjaegfqn7l4eb1u.apps.googleusercontent.com",
-        "GoogleApiCredentials__ClientSecret": "gvP19dtO6aYiKqsaQpHaihBt",
-        "Mailchimp__ApiUrl": "https://us10.api.mailchimp.com/3.0",
-        "Mailchimp__ApiKey": "f5ac65145b9078ff21c28f699404e222-us10",
-        "Mailchimp__AudienceId": "2b10af41f7",
-        "Mailchimp__MarketingPermissionIdForEmail": "b59c82458c"
-=======
         "Auth0__Audience": "api",
         "Auth0__ClientId": "",
         "Auth0__ClientSecret": "",
@@ -60,7 +45,6 @@
         "Mailchimp__ApiKey": "1-us10",
         "Mailchimp__AudienceId": "abababab",
         "Mailchimp__MarketingPermissionIdForEmail": "bcbcbcbc"
->>>>>>> cabf20b... fixing gitignore:quantumbudget-backend/src/quantumbudget-api/QuantumBudget.API/Properties/launchSettings.json.example
       }
     }
   }
