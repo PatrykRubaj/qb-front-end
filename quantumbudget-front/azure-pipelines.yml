@@ -3,11 +3,12 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-  - master
-
-paths:
-  include:
-    - '/quantumbudget-front'
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - 'quantumbudget-front'
 
 resources:
   - repo: self
