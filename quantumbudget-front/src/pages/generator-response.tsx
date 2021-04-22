@@ -1,21 +1,20 @@
-import * as React from "react";
-import { RootState } from "../redux/reducers";
-import { ErrorResponse, Route } from "../redux/state";
-import { connect } from "react-redux";
-import TableChartIcon from "@material-ui/icons/TableChart";
-import EmailIcon from "@material-ui/icons/Email";
-import ErrorIcon from "@material-ui/icons/Error";
-import Head from "next/head";
-import MessageIcon from "@material-ui/icons/Message";
-
-// interface DispatchProps {
-//   moveSubcategory: (startIndex: number, endIndex: number, id: string) => void;
-// }
+import * as React from 'react';
+import { RootState } from '../redux/reducers';
+import { ErrorResponse, Route } from '../redux/state';
+import { connect } from 'react-redux';
+import TableChartIcon from '@material-ui/icons/TableChart';
+import EmailIcon from '@material-ui/icons/Email';
+import ErrorIcon from '@material-ui/icons/Error';
+import Head from 'next/head';
+import MessageIcon from '@material-ui/icons/Message';
+import ProtectedComponent from '../auth0/ProtectedComponent';
+import RedirectComponent from '../components/common/redirectComponent';
 
 interface StateProps {
   spreadsheetUrl?: string;
   errors?: ErrorResponse;
   isNewsletterSubscriber?: boolean;
+  tokenExpiration: number;
 }
 
 type Props = StateProps;
@@ -24,9 +23,13 @@ export const GeneratorResponse = ({
   spreadsheetUrl,
   errors,
   isNewsletterSubscriber,
-}: Props) => {
-  if (!errors && spreadsheetUrl) {
-    return (
+  tokenExpiration,
+}: Props) => (
+  <ProtectedComponent
+    expiresAt={tokenExpiration}
+    notAuthenticated={<RedirectComponent redirectUrl={Route.HomePage} />}
+  >
+    {!errors && spreadsheetUrl && (
       <>
         <Head>
           <title>Spreadsheet generated - Quantum Budget</title>
@@ -38,11 +41,11 @@ export const GeneratorResponse = ({
           <div className="col-9 col-xs-7 col-md-5 col-lg-3">
             <a
               href={spreadsheetUrl}
-              style={{ display: "block" }}
+              style={{ display: 'block' }}
               className="mt-2 btn btn-light btn-lg"
               target="_blank"
             >
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: 'center' }}>
                 <p>
                   <TableChartIcon htmlColor="#000" style={{ fontSize: 64 }} />
                 </p>
@@ -55,11 +58,11 @@ export const GeneratorResponse = ({
           <div className="col-9 col-xs-7 col-md-5 col-lg-3">
             <a
               href={Route.MessangerBot}
-              style={{ display: "block" }}
+              style={{ display: 'block' }}
               className="mt-2 btn btn-light btn-lg"
               target="_blank"
             >
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: 'center' }}>
                 <p>
                   <MessageIcon htmlColor="#000" style={{ fontSize: 32 }} />
                 </p>
@@ -80,8 +83,8 @@ export const GeneratorResponse = ({
                 <div className="media-body">
                   <h5 className="mt-0">Newsletter</h5>
                   <p>
-                    Thank You for joining my newsletter.{" "}
-                    <strong>Remember to confirm Your subscribction.</strong>{" "}
+                    Thank You for joining my newsletter.{' '}
+                    <strong>Remember to confirm Your subscribction.</strong>{' '}
                     Otherwise I won&apos;t be able to stay in touch with You.
                   </p>
                 </div>
@@ -90,9 +93,9 @@ export const GeneratorResponse = ({
           </div>
         )}
       </>
-    );
-  } else if (errors) {
-    return (
+    )}
+
+    {errors && (
       <>
         <Head>
           <title>Generator failed - Quantum Budget</title>
@@ -125,11 +128,11 @@ export const GeneratorResponse = ({
           <div className="col-9 col-xs-7 col-md-5 col-lg-3">
             <a
               href={Route.MessangerBot}
-              style={{ display: "block" }}
+              style={{ display: 'block' }}
               className="mt-2 btn btn-light btn-lg"
               target="_blank"
             >
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: 'center' }}>
                 <p>
                   <MessageIcon htmlColor="#000" style={{ fontSize: 32 }} />
                 </p>
@@ -139,17 +142,16 @@ export const GeneratorResponse = ({
           </div>
         </div>
       </>
-    );
-  }
-
-  return null;
-};
+    )}
+  </ProtectedComponent>
+);
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
     spreadsheetUrl: state.budgetSection.response?.spreadsheetUrl,
     errors: state.budgetSection.response?.errors,
     isNewsletterSubscriber: state.userSection.agreedToNewsletter,
+    tokenExpiration: state.userSection.user.expiresAt,
   };
 };
 
