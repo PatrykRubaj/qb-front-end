@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import ProtectedComponent from '../auth0/ProtectedComponent';
 import { Route } from '../redux/state';
 import { RootState } from '../redux/reducers';
+import RedirectComponent from '../components/common/redirectComponent';
 
 interface StateProps {
   tokenExpiresAt: number;
@@ -19,16 +20,6 @@ interface DispatchProps {
 }
 
 type Props = StateProps & DispatchProps;
-
-const RedirectComponent = (props: { redirectUrl: Route }) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push(props.redirectUrl);
-  }, []);
-
-  return null;
-};
 
 const AuthenticatedBilledPortal = (props: Props) => {
   const router = useRouter();
