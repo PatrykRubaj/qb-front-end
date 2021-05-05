@@ -5,7 +5,7 @@ import NavigationBar from '../components/common/navigation-bar';
 import Footer from '../components/common/footer';
 import CookieConsentDialog from '../components/common/CookiesConsentDialog';
 import GoogleAnalytics from '../components/common/googleAnalytics';
-import FacebookPixel from '../components/common/facebookPixel';
+import GoogleTagManager from '../components/common/googleAdsTracking';
 import { Provider } from 'react-redux';
 import getStore from '../redux/getStore';
 
@@ -50,12 +50,13 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <GoogleAnalytics />
       <div className="container-flex">
         <NavigationBar />
         <div className="container">
           <CookieConsentDialog />
           <DynamicFacebookPixel />
+          <GoogleAnalytics />
+          <GoogleTagManager />
           <Component {...pageProps} />
           <Footer />
         </div>

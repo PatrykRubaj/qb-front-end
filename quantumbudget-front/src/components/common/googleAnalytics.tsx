@@ -9,7 +9,7 @@ interface StateProps {
   statisticsTrackingAllowed: boolean;
 }
 
-function GoogleAnalytics(props: StateProps) {
+function GoogleAdsTracking(props: StateProps) {
   const router = useRouter();
 
   if (props.statisticsTrackingAllowed) {
@@ -20,7 +20,6 @@ function GoogleAnalytics(props: StateProps) {
   useEffect(() => {
     if (props.statisticsTrackingAllowed) {
       const handleRouteChange = (url: URL) => {
-        /* invoke analytics function only for production */
         ReactGA.pageview(url.toString());
       };
       router.events.on('routeChangeComplete', handleRouteChange);
@@ -39,5 +38,4 @@ const mapStateToProps = (state: RootState): StateProps => {
   };
 };
 
-export default connect(mapStateToProps)(GoogleAnalytics);
-// export default GoogleAnalytics;
+export default connect(mapStateToProps)(GoogleAdsTracking);
