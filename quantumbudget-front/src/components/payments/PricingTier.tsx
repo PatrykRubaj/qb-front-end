@@ -21,7 +21,9 @@ type Props = StateProps & DispatchProps;
 export default function PricingTier(props: Props) {
   return (
     <div className="col-sm-12 col-md col-xl-3 border rounded py-1 my-2 mx-1 d-flex flex-column">
-      <h3 className="pt-2">{props.name}</h3>
+      <h3 className="pt-2">
+        {props.name} <span className="badge badge-secondary">7 days trial</span>
+      </h3>
       <p>{props.description}</p>
       <div className="text-center">
         <span
@@ -48,11 +50,11 @@ export default function PricingTier(props: Props) {
           className={`btn btn-warning btn-lg btn-block mt-auto mb-1`}
           onClick={() => props.onClick(props.priceTier)}
         >
-          <PaymentIcon
+          {/* <PaymentIcon
             fontSize="large"
             className="mr-2 align-middle"
-          ></PaymentIcon>
-          Pay &amp; Generate
+          ></PaymentIcon> */}
+          Start your free trial
         </button>
       ) : (
         <button
