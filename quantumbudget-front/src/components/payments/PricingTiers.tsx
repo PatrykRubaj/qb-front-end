@@ -137,7 +137,7 @@ const PricingTiers = (props: Props) => {
       /> */}
       <PricingTier
         name="Basic"
-        price={10}
+        price={5}
         redirectInPropgress={redirectInProgress}
         description="Great to start your journey  with personal finances."
         priceTier={PriceTier.Basic}

@@ -8,7 +8,7 @@
         {
             switch (priceName)
             {
-                case "basic": return "price_1I6b3ZARU7b93yerMHYunXhA";
+                case "basic": return "price_1IsS3KARU7b93yerTNNpEj2F";
                 case "pro": return "price_1I6b6RARU7b93yerr2W0fY1I";
                 default: return "price_1I6b3ZARU7b93yerMHYunXhA";
             }
