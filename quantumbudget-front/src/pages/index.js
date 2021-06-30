@@ -15,7 +15,7 @@ export default function Home() {
       <div className="row mb-0 justify-content-center">
         <div className="col-lg-7 col">
           <h1 className="display-4">Is Your money properly spent?</h1>
-          <p className="lead">Many want the answer, not many put the effort.</p>
+          <p className="lead"><u><span className="font-weight-bold">Over 30</span></u> users already know this.</p>
         </div>
       </div>
       <div className="row pt-1 pb-2 justify-content-center">

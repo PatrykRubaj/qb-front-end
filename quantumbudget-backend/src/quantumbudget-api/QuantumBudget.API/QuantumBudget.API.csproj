@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -29,6 +30,23 @@
   <ItemGroup>
     <ProjectReference Include="..\QuantumBudget.Model\QuantumBudget.Model.csproj" />
     <ProjectReference Include="..\QuantumBudget.Services\QuantumBudget.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Dockerfile" />
+    <None Remove=".dockerignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+    <Content Include="..\docker-compose.yml">
+      <Link>docker-compose.yml</Link>
+    </Content>
+    <Content Include="..\Dockerfile">
+      <Link>Dockerfile</Link>
+    </Content>
   </ItemGroup>
 
 </Project>
