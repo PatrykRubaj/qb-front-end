@@ -1,19 +1,5 @@
 version: "3.8"
 services:
-#  functions_api:
-#    build: .
-#    ports:
-#      - "5002:7071"
-#    environment:
-#      AZURE_FUNCTIONS_ENVIRONMENT: "Development"
-#      AzureWebJobsStorage: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=https://azurite:5003/devstoreaccount1;QueueEndpoint=https://azurite:5004/devstoreaccount1;"
-#      AzureWebJobsMailchimpServiceQueue: "DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=https://azurite:5004/devstoreaccount1;"
-#      MongoDBConnectionString: "mongodb://mongo_database:5005"
-#  azurite:
-#    build: ./azurite
-#    ports:
-#      - "5003:10000"
-#      - "5004:10001"
   mongodatabase:
     build: ./mongodb
     command: mongod --bind_ip_all --noauth
@@ -25,13 +11,31 @@ services:
   stripe_cli:
     image: stripe/stripe-cli
     command: ["listen", "--forward-to", "http://backend/payments/stripe-webhook", "--api-key", "sk_test_51HQqj5ARU7b93yersR5KDXaC8Ru5oSjH9Fi6IoLHIRqcxohXvRNBLDmEGcPCou2YBY6j5UGm4JFvOUZtp17d5aOr00IRXhoQvX"]
-#  backend:
-#    build: .
-#    ports:
-#    - "5001:443"
-#    - "5002:80"
-
-networks:
-  default:
-    external: true
-    name: qb-net
+  backend:
+    build: .
+    depends_on:
+      - mongodatabase
+      - stripe_cli
+    ports:
+    - "5001:443"
+    - "5002:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      MongoDBConnectionString: ${MongoDBConnectionString}
+      MongoDBBudgetsCollectionName: ${MongoDBBudgetsCollectionName}
+      MongoDBDatabaseName: ${MongoDBDatabaseName}
+      Auth0__Instance: ${Auth0__Instance}
+      Auth0__TenantId: ${Auth0__TenantId}
+      Auth0__Audience: ${Auth0__Audience}
+      Auth0__ClientId: ${Auth0__ClientId}
+      Auth0__ClientSecret: ${Auth0__ClientSecret}
+      Stripe__Domain: ${Stripe__Domain}
+      Stripe__PublicKey: ${Stripe__PublicKey}
+      Stripe__SecretKey: ${Stripe__SecretKey}
+      Stripe__WebhookSecret: ${Stripe__WebhookSecret}
+      GoogleApiCredentials__ClientId: ${GoogleApiCredentials__ClientId}
+      GoogleApiCredentials__ClientSecret: ${GoogleApiCredentials__ClientSecret}
+      Mailchimp__ApiUrl: ${Mailchimp__ApiUrl}
+      Mailchimp__ApiKey: ${Mailchimp__ApiKey}
+      Mailchimp__AudienceId: ${Mailchimp__AudienceId}
+      Mailchimp__MarketingPermissionIdForEmail: ${Mailchimp__MarketingPermissionIdForEmail}
