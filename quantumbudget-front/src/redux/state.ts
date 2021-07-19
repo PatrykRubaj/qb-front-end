@@ -24,6 +24,7 @@ export enum PriceTier {
   Basic = 'basic',
   Premium = 'premium',
   Pro = 'pro',
+  Trial = 'trial',
 }
 
 export interface Country {

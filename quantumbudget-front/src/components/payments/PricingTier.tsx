@@ -11,6 +11,7 @@ export interface StateProps {
   featuresList: string[];
   priceTier: PriceTier;
   redirectInPropgress: boolean;
+  numberOfTrialDays: number;
 }
 export interface DispatchProps {
   onClick: (tier: PriceTier) => void;
@@ -22,7 +23,7 @@ export default function PricingTier(props: Props) {
   return (
     <div className="col-sm-12 col-md col-xl-3 border rounded py-1 my-2 mx-1 d-flex flex-column">
       <h3 className="pt-2">
-        {props.name} <span className="badge badge-secondary">7 days trial</span>
+        {props.name} <span className="badge badge-secondary">{props.numberOfTrialDays} days trial</span>
       </h3>
       <p>{props.description}</p>
       <div className="text-center">

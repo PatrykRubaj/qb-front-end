@@ -9,6 +9,7 @@ import PricingTier from './PricingTier';
 import NewsletterComponent from '../spreadsheet-generation/Save/NewsletterComponent';
 import { setNewsletter, setNewsletterPrompt } from '../../features/user/slice';
 import FbTrackingService from '../../services/fbService';
+import {useRouter} from "next/router";
 
 interface StateProps {
   agreedToNewsletter?: boolean;
@@ -39,7 +40,8 @@ const PricingTiers = (props: Props) => {
   );
   const [redirectInProgress, setRedirectInProgress] = useState(false);
   const [selectedPriceTier, setSelectedPriceTier] = useState<PriceTier>(null);
-
+  const router = useRouter();
+  
   const remaindToAcceptPolicies = (
     privacyPolicyAccepted: boolean,
     tosAccepted: boolean,
@@ -89,6 +91,25 @@ const PricingTiers = (props: Props) => {
     }
   };
 
+  const redirectToMailchimpLandingPage = (tier: PriceTier) => {
+    const {
+      privacyPolicyAccepted,
+      tosAccepted,
+      refToPolicies,
+    } = props;
+
+    setSelectedPriceTier(tier);
+    if (privacyPolicyAccepted && tosAccepted) {
+      router.push('https://mailchi.mp/d2b5af338e1f/30-days-trial-page');
+    } else {
+      remaindToAcceptPolicies(
+          privacyPolicyAccepted,
+          tosAccepted,
+          refToPolicies
+      );
+    }
+  }
+  
   const handleNewsletterOptionSelected = (agreed: boolean): void => {
     const { setNewsletterAgreement, setDisplayNewsletterPrompt } = props;
 
@@ -122,19 +143,8 @@ const PricingTiers = (props: Props) => {
           'You buy me more & better coffee ☕ (I don’t run on solar power, coffee on the other hand… 💻)',
         ]}
         onClick={handlePaymentClick}
+        numberOfTrialDays={7}
       />
-      {/* <PricingTier
-        name="Premium"
-        price={14.99}
-        redirectInPropgress={redirectInProgress}
-        description="For intermediate users who value their time."
-        priceTier={PriceTier.Premium}
-        featuresList={[
-          'Everything from Basic 📦 and…',
-          'Receive a new budget every month directly to your inbox (it’s going to help keep the good habit of managing personal finances)',
-        ]}
-        onClick={handlePaymentClick}
-      /> */}
       <PricingTier
         name="Basic"
         price={5}
@@ -143,6 +153,20 @@ const PricingTiers = (props: Props) => {
         priceTier={PriceTier.Basic}
         featuresList={['Generate a budget whenever you want']}
         onClick={handlePaymentClick}
+        numberOfTrialDays={7}
+      />
+      <PricingTier
+        name="Trial"
+        price={0}
+        redirectInPropgress={redirectInProgress}
+        description="Sign up for the newsletter and test Quantum Budget for 30 days."
+        priceTier={PriceTier.Trial}
+        featuresList={[
+          'Everything from Basic 📦 and…',
+          '💳 No credit card required.',
+        ]}
+        onClick={redirectToMailchimpLandingPage}
+        numberOfTrialDays={30}
       />
     </React.Fragment>
   );
