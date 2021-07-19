@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_DATABASE: QuantumBudget
   stripe_cli:
     image: stripe/stripe-cli
-    command: ["listen", "--forward-to", "http://backend/payments/stripe-webhook", "--api-key", "sk_test_51HQqj5ARU7b93yersR5KDXaC8Ru5oSjH9Fi6IoLHIRqcxohXvRNBLDmEGcPCou2YBY6j5UGm4JFvOUZtp17d5aOr00IRXhoQvX"]
+    command: ["listen", "--forward-to", "http://backend/payments/stripe-webhook", "--api-key", "${Stripe__SecretKey}"]
   backend:
     build: .
     depends_on:
